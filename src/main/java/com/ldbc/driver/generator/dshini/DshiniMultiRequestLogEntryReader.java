@@ -7,6 +7,9 @@ import org.apache.log4j.Logger;
 
 import com.ldbc.driver.generator.GeneratorException;
 
+// TODO add support for ordering by time
+// TODO instead of MultiEntryReader do MultiGenerator?
+// TODO with MultiGenerator ordering would benefit ALL Generators
 class DshiniMultiRequestLogEntryReader implements Iterator<DshiniRequestLogEntry>
 {
     private static final Logger logger = Logger.getLogger( DshiniMultiRequestLogEntryReader.class );

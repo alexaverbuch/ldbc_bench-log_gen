@@ -1,14 +1,8 @@
 package com.ldbc.driver.generator.dshini;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
-
-import org.junit.Ignore;
 import org.junit.Test;
-import org.neo4j.cypher.IterableRequiredException;
 
 import com.ldbc.driver.Operation;
 import com.ldbc.driver.generator.Generator;
@@ -33,72 +27,15 @@ import static com.ldbc.driver.generator.dshini.TestUtils.*;
 public class DshiniRequestLogGeneratorTest
 {
     @Test
-    public void testDshiniRequestLogEntryReader() throws IOException
-    {
-        // String requestLogPath = "/test_request_log.log";
-        // File requestLogFile = getResource( requestLogPath );
-        String requestLogPath = "logs/dshini-request-logs-2013-04-29/request-ip-10-3-55-181.log";
-        File requestLogFile = new File( requestLogPath );
-        DshiniRequestLogEntryReader requestLogReader = new DshiniRequestLogEntryReader( requestLogFile );
-        boolean unexpectedEntriesEncountered = false;
-        int requestLogEntryCount = 0;
-        while ( requestLogReader.hasNext() )
-        {
-            DshiniRequestLogEntry entry = requestLogReader.next();
-
-            if ( entry.getHttpMethod().equals( "POST" ) && entry.getUrl().endsWith( "db/data/batch" ) )
-            {
-                // Batch
-            }
-            else if ( entry.getHttpMethod().equals( "POST" ) && entry.getUrl().endsWith( "db/data/cypher" ) )
-            {
-                // Cypher
-            }
-            else if ( entry.getHttpMethod().equals( "GET" ) && entry.getUrl().contains( "db/data/index" ) )
-            {
-                // Index Get
-            }
-            else if ( entry.getHttpMethod().equals( "POST" ) && entry.getUrl().contains( "db/data/index" ) )
-            {
-                // Post Index
-            }
-            else if ( entry.getHttpMethod().equals( "DELETE" ) && entry.getUrl().contains( "db/data/index" ) )
-            {
-                // Delete Index
-            }
-            else if ( entry.getHttpMethod().equals( "GET" ) && entry.getUrl().contains( "db/data/node" ) )
-            {
-                // Node Get
-            }
-            else if ( entry.getHttpMethod().equals( "POST" ) && entry.getUrl().contains( "db/data/node" ) )
-            {
-                // Node Post
-            }
-            else if ( entry.getHttpMethod().equals( "PUT" ) && entry.getUrl().contains( "db/data/node" ) )
-            {
-                // Node Put
-            }
-            else
-            {
-                System.out.println( entry.getHttpMethod() + "  " + entry.getUrl() );
-                unexpectedEntriesEncountered = true;
-
-            }
-            requestLogEntryCount++;
-        }
-        assertEquals( 4296, requestLogEntryCount );
-        assertEquals( unexpectedEntriesEncountered, false );
-    }
-
-    @Test
     public void testDshiniRequestLogGenerator()
     {
+        // Given
         // String requestLogPath = "/test_request_log.log";
         String requestLogPath = "logs/dshini-request-logs-2013-04-29/request-ip-10-3-55-181.log";
         File requestLogFile = new File( requestLogPath );
 
+        // When
         DshiniRequestLogOperationGenerator requestLogGenerator = new DshiniRequestLogOperationGenerator( requestLogFile );
-        List<Class> operationClasses = generateClassSequence( requestLogGenerator );
 
         Histogram<Class, Long> distribution = new Histogram<Class, Long>( 0l );
         distribution.addBucket( DiscreteBucket.create( (Class) DshiniCypherOperation.class ), 0l );
@@ -111,27 +48,25 @@ public class DshiniRequestLogGeneratorTest
         distribution.addBucket( DiscreteBucket.create( (Class) DshiniNodePostOperation.class ), 0l );
         distribution.addBucket( DiscreteBucket.create( (Class) DshiniNodePutOperation.class ), 0l );
 
-        distribution.importValueSequence( operationClasses );
+        distribution.importValueSequence( new OperationToClassConvertor( requestLogGenerator ) );
 
-        System.out.println( distribution.toPrettyString() );
-        // System.out.println(
-        // distribution.toPercentageValues().toPrettyString() );
-
-        assertEquals( distribution.sumOfAllBucketValues(), new Long( operationClasses.size() ) );
-        assertEquals( 4296, operationClasses.size() );
+        // When
+        // System.out.println( distribution.toPrettyString() );
+        assertEquals( new Long( 4296 ), distribution.sumOfAllBucketValues() );
     }
 
     @Test
     public void testDshiniMultiRequestLogGenerator()
     {
+        // Given
         String requestLogPath1 = "/test_request_log.log";
         String requestLogPath2 = "logs/dshini-request-logs-2013-04-29/request-ip-10-3-55-181.log";
         File requestLogFile1 = getResource( requestLogPath1 );
         File requestLogFile2 = new File( requestLogPath2 );
 
+        // When
         DshiniRequestLogOperationGenerator requestLogGenerator = new DshiniRequestLogOperationGenerator(
                 requestLogFile1, requestLogFile2 );
-        List<Class> operationClasses = generateClassSequence( requestLogGenerator );
 
         Histogram<Class, Long> distribution = new Histogram<Class, Long>( 0l );
         distribution.addBucket( DiscreteBucket.create( (Class) DshiniCypherOperation.class ), 0l );
@@ -144,19 +79,17 @@ public class DshiniRequestLogGeneratorTest
         distribution.addBucket( DiscreteBucket.create( (Class) DshiniNodePostOperation.class ), 0l );
         distribution.addBucket( DiscreteBucket.create( (Class) DshiniNodePutOperation.class ), 0l );
 
-        distribution.importValueSequence( operationClasses );
+        distribution.importValueSequence( new OperationToClassConvertor( requestLogGenerator ) );
 
-        System.out.println( distribution.toPrettyString() );
-        // System.out.println(
-        // distribution.toPercentageValues().toPrettyString() );
-
-        assertEquals( distribution.sumOfAllBucketValues(), new Long( operationClasses.size() ) );
-        assertEquals( 4307, operationClasses.size() );
+        // Then
+        // System.out.println( distribution.toPrettyString() );
+        assertEquals( new Long( 4307 ), distribution.sumOfAllBucketValues() );
     }
 
     @Test
     public void testDshiniMultiRequestLogGeneratorAllLogs()
     {
+        // Given
         final File requestLogFile1 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-3-55-181.log" );
         final File requestLogFile2 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-196-162-95.log" );
         final File requestLogFile3 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-76-97-169.log" );
@@ -164,37 +97,9 @@ public class DshiniRequestLogGeneratorTest
         final File requestLogFile5 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-90-59-251.log" );
         final File requestLogFile6 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-98-203-214.log" );
 
+        // When
         final DshiniRequestLogOperationGenerator requestLogGenerator = new DshiniRequestLogOperationGenerator(
                 requestLogFile1, requestLogFile2, requestLogFile3, requestLogFile4, requestLogFile5, requestLogFile6 );
-
-        final Iterator<Class> operationClassesIterator = new Iterator<Class>()
-        {
-            @Override
-            public void remove()
-            {
-            }
-
-            @Override
-            public Class next()
-            {
-                return requestLogGenerator.next().getClass();
-            }
-
-            @Override
-            public boolean hasNext()
-            {
-                return requestLogGenerator.hasNext();
-            }
-        };
-
-        Iterable<Class> operationClasses = new Iterable<Class>()
-        {
-            @Override
-            public Iterator<Class> iterator()
-            {
-                return operationClassesIterator;
-            }
-        };
 
         Histogram<Class, Long> distribution = new Histogram<Class, Long>( 0l );
         distribution.addBucket( DiscreteBucket.create( (Class) DshiniCypherOperation.class ), 0l );
@@ -209,27 +114,37 @@ public class DshiniRequestLogGeneratorTest
         distribution.addBucket( DiscreteBucket.create( (Class) DshiniRelationshipGetOperation.class ), 0l );
         distribution.addBucket( DiscreteBucket.create( (Class) DshiniRelationshipDeleteOperation.class ), 0l );
 
-        distribution.importValueSequence( operationClasses );
+        distribution.importValueSequence( new OperationToClassConvertor( requestLogGenerator ) );
 
-        System.out.println( distribution.toPrettyString() );
-
-        System.out.println( distribution.sumOfAllBucketValues() );
-        assertEquals( true, true );
-    }
-
-    public final List<Class> generateClassSequence( Generator<Operation<?>> generator )
-    {
-        return generateClassSequence( generator, -1 );
-    }
-
-    public final List<Class> generateClassSequence( Generator<Operation<?>> generator, int size )
-    {
-        List<Class> generatedSequence = new ArrayList<Class>();
-        int operationCount = 0;
-        while ( generator.hasNext() && ( operationCount < size || size == -1 ) )
-        {
-            generatedSequence.add( generator.next().getClass() );
-        }
-        return generatedSequence;
+        // Then
+        // System.out.println( distribution.toPrettyString() );
+        assertEquals( new Long( 13043166 ), distribution.sumOfAllBucketValues() );
     }
 }
+
+class OperationToClassConvertor implements Iterator<Class>
+{
+    final Generator<Operation<?>> operationsGenerator;
+
+    public OperationToClassConvertor( Generator<Operation<?>> operationsGenerator )
+    {
+        this.operationsGenerator = operationsGenerator;
+    }
+
+    @Override
+    public void remove()
+    {
+    }
+
+    @Override
+    public Class next()
+    {
+        return operationsGenerator.next().getClass();
+    }
+
+    @Override
+    public boolean hasNext()
+    {
+        return operationsGenerator.hasNext();
+    }
+};
