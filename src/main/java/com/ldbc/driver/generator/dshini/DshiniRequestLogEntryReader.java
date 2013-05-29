@@ -18,6 +18,7 @@ class DshiniRequestLogEntryReader implements Iterator<DshiniRequestLogEntry>
 {
     private static final Logger logger = Logger.getLogger( DshiniRequestLogEntryReader.class );
 
+    private final File requestLogFile;
     private final BufferedReader requestLogReader;
     private final Pattern semiColonPattern = Pattern.compile( ";" );
 
@@ -26,6 +27,7 @@ class DshiniRequestLogEntryReader implements Iterator<DshiniRequestLogEntry>
 
     public DshiniRequestLogEntryReader( File requestLogFile )
     {
+        this.requestLogFile = requestLogFile;
         try
         {
             requestLogReader = new BufferedReader( new FileReader( requestLogFile ) );
@@ -66,21 +68,54 @@ class DshiniRequestLogEntryReader implements Iterator<DshiniRequestLogEntry>
         throw new UnsupportedOperationException();
     }
 
+    // // Return null if nothing left
+    // private DshiniRequestLogEntry nextDshiniRequestLogEntry()
+    // {
+    // String requestLogLine = null;
+    // try
+    // {
+    // requestLogLine = requestLogReader.readLine();
+    // }
+    // catch ( IOException e )
+    // {
+    // String errMsg = String.format(
+    // "Error retrieving next request log entry from file [%s]",
+    // requestLogReader );
+    // logger.error( errMsg, e );
+    // throw new GeneratorException( errMsg, e.getCause() );
+    // }
+    // return ( null == requestLogLine ) ? null : buildDshiniRequestLogEntry(
+    // requestLogLine );
+    // }
+
     // Return null if nothing left
     private DshiniRequestLogEntry nextDshiniRequestLogEntry()
     {
+        DshiniRequestLogEntry logEntry = null;
+        boolean exceptionThrown;
         String requestLogLine = null;
-        try
+        do
         {
-            requestLogLine = requestLogReader.readLine();
+            exceptionThrown = false;
+            try
+            {
+                requestLogLine = requestLogReader.readLine();
+                logEntry = ( null == requestLogLine ) ? null : buildDshiniRequestLogEntry( requestLogLine );
+            }
+            catch ( IOException e )
+            {
+                String errMsg = String.format( "Error retrieving next request log entry from file [%s]",
+                        requestLogReader );
+                logger.error( errMsg, e );
+                throw new GeneratorException( errMsg, e.getCause() );
+            }
+            catch ( GeneratorException e )
+            {
+                exceptionThrown = true;
+            }
         }
-        catch ( IOException e )
-        {
-            String errMsg = String.format( "Error retrieving next request log entry from file [%s]", requestLogReader );
-            logger.error( errMsg, e );
-            throw new GeneratorException( errMsg, e.getCause() );
-        }
-        return ( null == requestLogLine ) ? null : buildDshiniRequestLogEntry( requestLogLine );
+        while ( exceptionThrown == true );
+        return logEntry;
     }
 
     private DshiniRequestLogEntry buildDshiniRequestLogEntry( String requestLogLine )
@@ -90,8 +125,8 @@ class DshiniRequestLogEntryReader implements Iterator<DshiniRequestLogEntry>
         String[] tokens = semiColonPattern.split( requestLogLine, limit );
         if ( tokens.length != 5 )
         {
-            String errMsg = String.format( "Unexpected token count [expected=5, actual=%s]\n%s", tokens.length,
-                    Arrays.toString( tokens ) );
+            String errMsg = String.format( "Unexpected token count in %s [expected=5, actual=%s]\n%s\n%s",
+                    requestLogFile.getName(), tokens.length, Arrays.toString( tokens ), requestLogLine );
             logger.error( errMsg );
             throw new GeneratorException( errMsg );
         }

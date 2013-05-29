@@ -12,9 +12,12 @@ import com.ldbc.driver.workloads.dshini.DshiniCypherOperation;
 import com.ldbc.driver.workloads.dshini.DshiniIndexDeleteOperation;
 import com.ldbc.driver.workloads.dshini.DshiniIndexGetOperation;
 import com.ldbc.driver.workloads.dshini.DshiniIndexPostOperation;
+import com.ldbc.driver.workloads.dshini.DshiniNodeDeleteOperation;
 import com.ldbc.driver.workloads.dshini.DshiniNodeGetOperation;
 import com.ldbc.driver.workloads.dshini.DshiniNodePostOperation;
 import com.ldbc.driver.workloads.dshini.DshiniNodePutOperation;
+import com.ldbc.driver.workloads.dshini.DshiniRelationshipDeleteOperation;
+import com.ldbc.driver.workloads.dshini.DshiniRelationshipGetOperation;
 
 public class DshiniRequestLogOperationGenerator extends Generator<Operation<?>>
 {
@@ -42,8 +45,11 @@ public class DshiniRequestLogOperationGenerator extends Generator<Operation<?>>
         if ( isNodeGet( requestLogEntry ) ) return new DshiniNodeGetOperation();
         if ( isNodePost( requestLogEntry ) ) return new DshiniNodePostOperation();
         if ( isNodePut( requestLogEntry ) ) return new DshiniNodePutOperation();
+        if ( isNodeDelete( requestLogEntry ) ) return new DshiniNodeDeleteOperation();
+        if ( isRelationshipGet( requestLogEntry ) ) return new DshiniRelationshipGetOperation();
+        if ( isRelationshipDelete( requestLogEntry ) ) return new DshiniRelationshipDeleteOperation();
 
-        String errMsg = String.format( "No entry matching Dshini log entry: %s" + requestLogEntry.toString() );
+        String errMsg = String.format( "No entry matching Dshini log entry: %s", requestLogEntry.toString() );
         logger.error( errMsg );
         throw new GeneratorException( errMsg );
     }
@@ -91,5 +97,22 @@ public class DshiniRequestLogOperationGenerator extends Generator<Operation<?>>
     private boolean isNodePut( DshiniRequestLogEntry requestLogEntry )
     {
         return requestLogEntry.getHttpMethod().equals( "PUT" ) && requestLogEntry.getUrl().contains( "db/data/node" );
+    }
+
+    private boolean isNodeDelete( DshiniRequestLogEntry requestLogEntry )
+    {
+        return requestLogEntry.getHttpMethod().equals( "DELETE" ) && requestLogEntry.getUrl().contains( "db/data/node" );
+    }
+
+    private boolean isRelationshipGet( DshiniRequestLogEntry requestLogEntry )
+    {
+        return requestLogEntry.getHttpMethod().equals( "GET" )
+               && requestLogEntry.getUrl().contains( "db/data/relationship" );
+    }
+
+    private boolean isRelationshipDelete( DshiniRequestLogEntry requestLogEntry )
+    {
+        return requestLogEntry.getHttpMethod().equals( "DELETE" )
+               && requestLogEntry.getUrl().contains( "db/data/relationship" );
     }
 }
