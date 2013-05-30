@@ -12,11 +12,9 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
-import com.ldbc.driver.generator.GeneratorException;
-
-class DshiniRequestLogEntryReader implements Iterator<DshiniRequestLogEntry>
+class RequestLogEntryReader implements Iterator<RequestLogEntry>
 {
-    private static final Logger logger = Logger.getLogger( DshiniRequestLogEntryReader.class );
+    private static final Logger logger = Logger.getLogger( RequestLogEntryReader.class );
 
     private final int EXPECTED_TOKEN_COUNT = 5;
     private final Pattern TOKEN_SEPARATOR_PATTERN = Pattern.compile( ";" );
@@ -24,13 +22,13 @@ class DshiniRequestLogEntryReader implements Iterator<DshiniRequestLogEntry>
     private final File requestLogFile;
     private final BufferedReader requestLogReader;
 
-    private DshiniRequestLogEntry next = null;
+    private RequestLogEntry next = null;
     private boolean closed = false;
 
     private int badLineCount = 0;
     private int lineNumber = -1;
 
-    public DshiniRequestLogEntryReader( File requestLogFile )
+    public RequestLogEntryReader( File requestLogFile )
     {
         this.requestLogFile = requestLogFile;
         try
@@ -41,7 +39,7 @@ class DshiniRequestLogEntryReader implements Iterator<DshiniRequestLogEntry>
         {
             String errMsg = String.format( "Error opening request log file [%s]", requestLogFile );
             logger.error( errMsg, e );
-            throw new GeneratorException( errMsg, e.getCause() );
+            throw new RequestLogEntryReaderException( errMsg, e.getCause() );
         }
     }
 
@@ -55,22 +53,22 @@ class DshiniRequestLogEntryReader implements Iterator<DshiniRequestLogEntry>
             {
                 closed = closeReader();
             }
-            catch ( DshiniRequestLogEntryException e )
+            catch ( RequestLogEntryReaderException e )
             {
                 String errMsg = String.format( "Error encountered while closing file [%s]", requestLogFile.getName() );
                 logger.error( errMsg, e );
-                throw new RuntimeException( errMsg, e );
+                throw new RequestLogEntryReaderException( errMsg, e );
             }
         }
         return ( null != next );
     }
 
     @Override
-    public DshiniRequestLogEntry next()
+    public RequestLogEntry next()
     {
         next = ( null == next ) ? nextDshiniRequestLogEntry() : next;
         if ( null == next ) throw new NoSuchElementException( "No more request logs to read" );
-        DshiniRequestLogEntry tempNext = next;
+        RequestLogEntry tempNext = next;
         next = null;
         return tempNext;
     }
@@ -82,9 +80,9 @@ class DshiniRequestLogEntryReader implements Iterator<DshiniRequestLogEntry>
     }
 
     // Return null if nothing left
-    private DshiniRequestLogEntry nextDshiniRequestLogEntry()
+    private RequestLogEntry nextDshiniRequestLogEntry()
     {
-        DshiniRequestLogEntry logEntry = null;
+        RequestLogEntry logEntry = null;
         boolean exceptionThrown;
         String requestLogLine = null;
         // try until non-"corrupted" request log entry found
@@ -95,16 +93,16 @@ class DshiniRequestLogEntryReader implements Iterator<DshiniRequestLogEntry>
             {
                 lineNumber++;
                 requestLogLine = requestLogReader.readLine();
-                logEntry = ( null == requestLogLine ) ? null : buildDshiniRequestLogEntry( requestLogLine );
+                logEntry = ( null == requestLogLine ) ? null : parseDshiniRequestLogEntry( requestLogLine );
             }
             catch ( IOException e )
             {
                 String errMsg = String.format( "Error retrieving next request log entry from file [%s]",
                         requestLogReader );
                 logger.error( errMsg, e );
-                throw new GeneratorException( errMsg, e.getCause() );
+                throw new RequestLogEntryReaderException( errMsg, e.getCause() );
             }
-            catch ( DshiniRequestLogEntryException e )
+            catch ( RequestLogEntryException e )
             {
                 exceptionThrown = true;
             }
@@ -113,8 +111,7 @@ class DshiniRequestLogEntryReader implements Iterator<DshiniRequestLogEntry>
         return logEntry;
     }
 
-    private DshiniRequestLogEntry buildDshiniRequestLogEntry( String requestLogLine )
-            throws DshiniRequestLogEntryException
+    private RequestLogEntry parseDshiniRequestLogEntry( String requestLogLine ) throws RequestLogEntryException
     {
         int limit = 0;
         String[] tokens = TOKEN_SEPARATOR_PATTERN.split( requestLogLine, limit );
@@ -126,19 +123,18 @@ class DshiniRequestLogEntryReader implements Iterator<DshiniRequestLogEntry>
             // TODO uncomment? output gets messy with 100s of bad records
             // logger.error( errMsg );
             badLineCount++;
-            throw new DshiniRequestLogEntryException( errMsg );
+            throw new RequestLogEntryException( errMsg );
         }
 
-        String time = tokens[0].replace( "\"", "" );
+        String time = tokens[0];
         String httpMethod = tokens[1];
         String url = tokens[2];
         String cypher = tokens[3];
         String httpHeaders = tokens[4];
-
-        return new DshiniRequestLogEntry( time, httpMethod, url, cypher, httpHeaders );
+        return new RequestLogEntry( time, httpMethod, url, cypher, httpHeaders );
     }
 
-    private boolean closeReader() throws DshiniRequestLogEntryException
+    private boolean closeReader()
     {
         logger.info( String.format( "%s read - contained [%s/%s] bad lines", requestLogFile.getName(), badLineCount,
                 lineNumber ) );
@@ -146,13 +142,13 @@ class DshiniRequestLogEntryReader implements Iterator<DshiniRequestLogEntry>
         {
             String errMsg = "Can not close log file multiple times";
             logger.error( errMsg );
-            throw new DshiniRequestLogEntryException( errMsg );
+            throw new RequestLogEntryReaderException( errMsg );
         }
         if ( null == requestLogReader )
         {
             String errMsg = "Can not close log file - reader is null";
             logger.error( errMsg );
-            throw new DshiniRequestLogEntryException( errMsg );
+            throw new RequestLogEntryReaderException( errMsg );
         }
         try
         {
@@ -162,7 +158,7 @@ class DshiniRequestLogEntryReader implements Iterator<DshiniRequestLogEntry>
         {
             String errMsg = String.format( "Error closing request log file [%s]", requestLogReader );
             logger.error( errMsg, e );
-            throw new DshiniRequestLogEntryException( errMsg, e.getCause() );
+            throw new RequestLogEntryReaderException( errMsg, e.getCause() );
         }
         return true;
     }

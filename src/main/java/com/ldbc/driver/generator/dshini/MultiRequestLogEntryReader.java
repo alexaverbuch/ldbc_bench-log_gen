@@ -10,15 +10,15 @@ import com.ldbc.driver.generator.GeneratorException;
 // TODO add support for ordering by time
 // TODO instead of MultiEntryReader do MultiGenerator?
 // TODO with MultiGenerator ordering would benefit ALL Generators
-class DshiniMultiRequestLogEntryReader implements Iterator<DshiniRequestLogEntry>
+class MultiRequestLogEntryReader implements Iterator<RequestLogEntry>
 {
-    private static final Logger logger = Logger.getLogger( DshiniMultiRequestLogEntryReader.class );
+    private static final Logger logger = Logger.getLogger( MultiRequestLogEntryReader.class );
 
-    private final DshiniRequestLogEntryReader[] requesLogReaders;
+    private final RequestLogEntryReader[] requesLogReaders;
 
     private int currentRequestLogReaderIndex = 0;
 
-    public DshiniMultiRequestLogEntryReader( File... requestLogFiles )
+    public MultiRequestLogEntryReader( File... requestLogFiles )
     {
         if ( requestLogFiles.length <= 0 )
         {
@@ -27,10 +27,10 @@ class DshiniMultiRequestLogEntryReader implements Iterator<DshiniRequestLogEntry
             throw new GeneratorException( errMsg );
         }
 
-        requesLogReaders = new DshiniRequestLogEntryReader[requestLogFiles.length];
+        requesLogReaders = new RequestLogEntryReader[requestLogFiles.length];
         for ( int i = 0; i < requesLogReaders.length; i++ )
         {
-            requesLogReaders[i] = new DshiniRequestLogEntryReader( requestLogFiles[i] );
+            requesLogReaders[i] = new RequestLogEntryReader( requestLogFiles[i] );
         }
     }
 
@@ -47,7 +47,7 @@ class DshiniMultiRequestLogEntryReader implements Iterator<DshiniRequestLogEntry
     }
 
     @Override
-    public DshiniRequestLogEntry next()
+    public RequestLogEntry next()
     {
         return requesLogReaders[currentRequestLogReaderIndex].next();
     }

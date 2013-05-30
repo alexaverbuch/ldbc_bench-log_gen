@@ -15,12 +15,12 @@ public class DshiniRequestLogReaderTest
         // File requestLogFile = getResource( requestLogPath );
         String requestLogPath = "logs/dshini-request-logs-2013-04-29/request-ip-10-3-55-181.log";
         File requestLogFile = new File( requestLogPath );
-        DshiniRequestLogEntryReader requestLogReader = new DshiniRequestLogEntryReader( requestLogFile );
+        RequestLogEntryReader requestLogReader = new RequestLogEntryReader( requestLogFile );
         boolean unexpectedEntriesEncountered = false;
         int requestLogEntryCount = 0;
         while ( requestLogReader.hasNext() )
         {
-            DshiniRequestLogEntry entry = requestLogReader.next();
+            RequestLogEntry entry = requestLogReader.next();
 
             if ( entry.getHttpMethod().equals( "POST" ) && entry.getUrl().endsWith( "db/data/batch" ) )
             {
