@@ -3,20 +3,21 @@ package com.ldbc.driver.workloads.dshini;
 import com.ldbc.driver.Operation;
 import com.ldbc.driver.generator.dshini.RequestLogEntryException;
 
-public class NodeGetOperation extends Operation<Object>
+public class GetRelationshipOperation extends Operation<Object>
 {
     private final long time;
 
     // TODO something other than String
     private final String description;
 
-    public static NodeGetOperation create( long time, String descriptionString ) throws RequestLogEntryException
+    public static GetRelationshipOperation create( long time, String descriptionString )
+            throws RequestLogEntryException
     {
         String description = descriptionString;
-        return new NodeGetOperation( time, description );
+        return new GetRelationshipOperation( time, description );
     }
 
-    public NodeGetOperation( long time, String description )
+    public GetRelationshipOperation( long time, String description )
     {
         super();
         this.time = time;

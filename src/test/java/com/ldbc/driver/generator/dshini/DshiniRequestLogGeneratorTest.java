@@ -1,10 +1,7 @@
 package com.ldbc.driver.generator.dshini;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.Iterator;
-import java.util.regex.Pattern;
 
 import org.junit.Test;
 
@@ -12,18 +9,17 @@ import com.ldbc.driver.Operation;
 import com.ldbc.driver.generator.Generator;
 import com.ldbc.driver.util.Bucket.DiscreteBucket;
 import com.ldbc.driver.util.Histogram;
-import com.ldbc.driver.util.Pair;
 import com.ldbc.driver.workloads.dshini.BatchOperation;
 import com.ldbc.driver.workloads.dshini.CypherOperation;
-import com.ldbc.driver.workloads.dshini.IndexNodeDeleteOperation;
-import com.ldbc.driver.workloads.dshini.IndexNodeQueryGetOperation;
-import com.ldbc.driver.workloads.dshini.IndexNodePostOperation;
-import com.ldbc.driver.workloads.dshini.NodeDeleteOperation;
-import com.ldbc.driver.workloads.dshini.NodeGetOperation;
-import com.ldbc.driver.workloads.dshini.NodePostOperation;
+import com.ldbc.driver.workloads.dshini.IndexDeleteNodeOperation;
+import com.ldbc.driver.workloads.dshini.IndexQueryGetNodeOperation;
+import com.ldbc.driver.workloads.dshini.AddNodeToIndexOperation;
+import com.ldbc.driver.workloads.dshini.DeleteNodeOperation;
+import com.ldbc.driver.workloads.dshini.GetNodeOperation;
+import com.ldbc.driver.workloads.dshini.PostNodeOperation;
 import com.ldbc.driver.workloads.dshini.NodePutOperation;
-import com.ldbc.driver.workloads.dshini.RelationshipDeleteOperation;
-import com.ldbc.driver.workloads.dshini.RelationshipGetOperation;
+import com.ldbc.driver.workloads.dshini.DeleteRelationshipOperation;
+import com.ldbc.driver.workloads.dshini.GetRelationshipOperation;
 
 import static org.junit.Assert.assertEquals;
 
@@ -44,18 +40,18 @@ public class DshiniRequestLogGeneratorTest
         Histogram<Class, Long> distribution = new Histogram<Class, Long>( 0l );
         distribution.addBucket( DiscreteBucket.create( (Class) CypherOperation.class ), 0l );
         distribution.addBucket( DiscreteBucket.create( (Class) BatchOperation.class ), 0l );
-        distribution.addBucket( DiscreteBucket.create( (Class) IndexNodeQueryGetOperation.class ), 0l );
-        distribution.addBucket( DiscreteBucket.create( (Class) IndexNodePostOperation.class ), 0l );
-        distribution.addBucket( DiscreteBucket.create( (Class) IndexNodeDeleteOperation.class ), 0l );
-        distribution.addBucket( DiscreteBucket.create( (Class) NodeGetOperation.class ), 0l );
-        distribution.addBucket( DiscreteBucket.create( (Class) NodePostOperation.class ), 0l );
-        distribution.addBucket( DiscreteBucket.create( (Class) NodePostOperation.class ), 0l );
+        distribution.addBucket( DiscreteBucket.create( (Class) IndexQueryGetNodeOperation.class ), 0l );
+        distribution.addBucket( DiscreteBucket.create( (Class) AddNodeToIndexOperation.class ), 0l );
+        distribution.addBucket( DiscreteBucket.create( (Class) IndexDeleteNodeOperation.class ), 0l );
+        distribution.addBucket( DiscreteBucket.create( (Class) GetNodeOperation.class ), 0l );
+        distribution.addBucket( DiscreteBucket.create( (Class) PostNodeOperation.class ), 0l );
+        distribution.addBucket( DiscreteBucket.create( (Class) PostNodeOperation.class ), 0l );
         distribution.addBucket( DiscreteBucket.create( (Class) NodePutOperation.class ), 0l );
 
         distribution.importValueSequence( new OperationToClassConvertor( requestLogGenerator ) );
 
-        // When
-        assertEquals( new Long( 4296 ), distribution.sumOfAllBucketValues() );
+        // Then
+        assertEquals( new Long( 11 ), distribution.sumOfAllBucketValues() );
     }
 
     @Test
@@ -74,12 +70,12 @@ public class DshiniRequestLogGeneratorTest
         Histogram<Class, Long> distribution = new Histogram<Class, Long>( 0l );
         distribution.addBucket( DiscreteBucket.create( (Class) CypherOperation.class ), 0l );
         distribution.addBucket( DiscreteBucket.create( (Class) BatchOperation.class ), 0l );
-        distribution.addBucket( DiscreteBucket.create( (Class) IndexNodeQueryGetOperation.class ), 0l );
-        distribution.addBucket( DiscreteBucket.create( (Class) IndexNodePostOperation.class ), 0l );
-        distribution.addBucket( DiscreteBucket.create( (Class) IndexNodeDeleteOperation.class ), 0l );
-        distribution.addBucket( DiscreteBucket.create( (Class) NodeGetOperation.class ), 0l );
-        distribution.addBucket( DiscreteBucket.create( (Class) NodePostOperation.class ), 0l );
-        distribution.addBucket( DiscreteBucket.create( (Class) NodePostOperation.class ), 0l );
+        distribution.addBucket( DiscreteBucket.create( (Class) IndexQueryGetNodeOperation.class ), 0l );
+        distribution.addBucket( DiscreteBucket.create( (Class) AddNodeToIndexOperation.class ), 0l );
+        distribution.addBucket( DiscreteBucket.create( (Class) IndexDeleteNodeOperation.class ), 0l );
+        distribution.addBucket( DiscreteBucket.create( (Class) GetNodeOperation.class ), 0l );
+        distribution.addBucket( DiscreteBucket.create( (Class) PostNodeOperation.class ), 0l );
+        distribution.addBucket( DiscreteBucket.create( (Class) PostNodeOperation.class ), 0l );
         distribution.addBucket( DiscreteBucket.create( (Class) NodePutOperation.class ), 0l );
 
         distribution.importValueSequence( new OperationToClassConvertor( requestLogGenerator ) );
@@ -106,15 +102,15 @@ public class DshiniRequestLogGeneratorTest
         Histogram<Class, Long> distribution = new Histogram<Class, Long>( 0l );
         distribution.addBucket( DiscreteBucket.create( (Class) CypherOperation.class ), 0l );
         distribution.addBucket( DiscreteBucket.create( (Class) BatchOperation.class ), 0l );
-        distribution.addBucket( DiscreteBucket.create( (Class) IndexNodeQueryGetOperation.class ), 0l );
-        distribution.addBucket( DiscreteBucket.create( (Class) IndexNodePostOperation.class ), 0l );
-        distribution.addBucket( DiscreteBucket.create( (Class) IndexNodeDeleteOperation.class ), 0l );
-        distribution.addBucket( DiscreteBucket.create( (Class) NodeGetOperation.class ), 0l );
-        distribution.addBucket( DiscreteBucket.create( (Class) NodePostOperation.class ), 0l );
+        distribution.addBucket( DiscreteBucket.create( (Class) IndexQueryGetNodeOperation.class ), 0l );
+        distribution.addBucket( DiscreteBucket.create( (Class) AddNodeToIndexOperation.class ), 0l );
+        distribution.addBucket( DiscreteBucket.create( (Class) IndexDeleteNodeOperation.class ), 0l );
+        distribution.addBucket( DiscreteBucket.create( (Class) GetNodeOperation.class ), 0l );
+        distribution.addBucket( DiscreteBucket.create( (Class) PostNodeOperation.class ), 0l );
         distribution.addBucket( DiscreteBucket.create( (Class) NodePutOperation.class ), 0l );
-        distribution.addBucket( DiscreteBucket.create( (Class) NodeDeleteOperation.class ), 0l );
-        distribution.addBucket( DiscreteBucket.create( (Class) RelationshipGetOperation.class ), 0l );
-        distribution.addBucket( DiscreteBucket.create( (Class) RelationshipDeleteOperation.class ), 0l );
+        distribution.addBucket( DiscreteBucket.create( (Class) DeleteNodeOperation.class ), 0l );
+        distribution.addBucket( DiscreteBucket.create( (Class) GetRelationshipOperation.class ), 0l );
+        distribution.addBucket( DiscreteBucket.create( (Class) DeleteRelationshipOperation.class ), 0l );
 
         long startTime = System.nanoTime();
 
@@ -152,11 +148,6 @@ public class DshiniRequestLogGeneratorTest
 
         // Then
         assertEquals( new Long( 13043166 ), distribution.sumOfAllBucketValues() );
-    }
-
-    @Test
-    public void temp() throws UnsupportedEncodingException, RequestLogEntryException
-    {
     }
 }
 

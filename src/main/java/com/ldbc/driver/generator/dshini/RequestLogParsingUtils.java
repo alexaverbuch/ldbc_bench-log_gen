@@ -4,12 +4,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.ldbc.driver.util.Pair;
+import com.ldbc.driver.util.Triple;
 
 public class RequestLogParsingUtils
 {
@@ -21,6 +23,8 @@ public class RequestLogParsingUtils
     private static final Pattern EXPECTED_DSHINI_TIME_STAMP_PATTERN = Pattern.compile( "^\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}:\\d{2}.\\d{6}" );
     private static final SimpleDateFormat DESIRED_DATE_FORMAT = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS" );
     private static final String CHAR_SET = "UTF-8";
+    private static final String NODE_STRING = "db/data/node/";
+    private static final int NODE_STRING_LENGTH = NODE_STRING.length();
     private static final String INDEX_NODE_STRING = "db/data/index/node/";
     private static final int INDEX_NODE_STRING_LENGTH = INDEX_NODE_STRING.length();
     private static final String QUERY_PARAM = "?query=";
@@ -96,12 +100,11 @@ public class RequestLogParsingUtils
             int startIndex = urlString.indexOf( INDEX_NODE_STRING ) + INDEX_NODE_STRING_LENGTH;
             int endIndex = urlString.indexOf( QUERY_PARAM );
             String indexName = URLDecoder.decode( urlString.substring( startIndex, endIndex ), CHAR_SET );
-            String query = URLDecoder.decode( urlString.substring( endIndex + QUERY_PARAM_LENGTH ), CHAR_SET );
-            return Pair.create( indexName, query );
+            String indexQuery = URLDecoder.decode( urlString.substring( endIndex + QUERY_PARAM_LENGTH ), CHAR_SET );
+            return Pair.create( indexName, indexQuery );
         }
         catch ( UnsupportedEncodingException e )
         {
-            // TODO
             String errMsg = String.format( "Error parsing URL for IndexNodeQueryGet operation\nURL: %s", urlString );
             logger.error( errMsg, e );
             throw new RequestLogEntryException( errMsg, e.getCause() );
@@ -231,6 +234,46 @@ public class RequestLogParsingUtils
     public static void parseBatchDescription( String batchDescription )
     {
         // TODO
+    }
+
+    public static String parseIndexNameForAddNodeToIndex( String urlString ) throws RequestLogEntryException
+    {
+        try
+        {
+            int startIndex = urlString.indexOf( INDEX_NODE_STRING ) + INDEX_NODE_STRING_LENGTH;
+            return URLDecoder.decode( urlString.substring( startIndex ), CHAR_SET );
+        }
+        catch ( UnsupportedEncodingException e )
+        {
+            String errMsg = String.format( "Error parsing URL for AddNodeToIndex operation\nURL: %s", urlString );
+            logger.error( errMsg, e );
+            throw new RequestLogEntryException( errMsg, e.getCause() );
+        }
+    }
+
+    public static Triple<String, Object, Long> parseKeyValueNodeForAddNodeToIndex( String descriptionString )
+            throws RequestLogEntryException
+    {
+        try
+        {
+            String operationStringWithoutSurroundQuotes = stripSurroundingCharacters( descriptionString );
+            String singleQuotedOperationString = convertDoubleQuotesToSingleQuote( operationStringWithoutSurroundQuotes );
+            Map<String, Object> operationMap = OBJECT_MAPPER.readValue( singleQuotedOperationString, Map.class );
+            String key = (String) operationMap.get( "key" );
+            Object value = operationMap.get( "value" );
+            String uriString = (String) operationMap.get( "uri" );
+            int startIndex = uriString.indexOf( NODE_STRING ) + NODE_STRING_LENGTH;
+            String nodeIdString = uriString.substring( startIndex );
+            long nodeId = Long.parseLong( nodeIdString );
+            return Triple.create( key, value, nodeId );
+        }
+        catch ( Exception e )
+        {
+            String errMsg = String.format( "Error parsing JSON for AddNodeToIndex operation\nURL: %s",
+                    descriptionString );
+            logger.error( errMsg, e );
+            throw new RequestLogEntryException( errMsg, e.getCause() );
+        }
     }
 
     /*

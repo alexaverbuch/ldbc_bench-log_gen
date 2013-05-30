@@ -10,15 +10,15 @@ import com.ldbc.driver.generator.Generator;
 import com.ldbc.driver.generator.GeneratorException;
 import com.ldbc.driver.workloads.dshini.BatchOperation;
 import com.ldbc.driver.workloads.dshini.CypherOperation;
-import com.ldbc.driver.workloads.dshini.IndexNodeDeleteOperation;
-import com.ldbc.driver.workloads.dshini.IndexNodeQueryGetOperation;
-import com.ldbc.driver.workloads.dshini.IndexNodePostOperation;
-import com.ldbc.driver.workloads.dshini.NodeDeleteOperation;
-import com.ldbc.driver.workloads.dshini.NodeGetOperation;
-import com.ldbc.driver.workloads.dshini.NodePostOperation;
+import com.ldbc.driver.workloads.dshini.IndexDeleteNodeOperation;
+import com.ldbc.driver.workloads.dshini.IndexQueryGetNodeOperation;
+import com.ldbc.driver.workloads.dshini.AddNodeToIndexOperation;
+import com.ldbc.driver.workloads.dshini.DeleteNodeOperation;
+import com.ldbc.driver.workloads.dshini.GetNodeOperation;
+import com.ldbc.driver.workloads.dshini.PostNodeOperation;
 import com.ldbc.driver.workloads.dshini.NodePutOperation;
-import com.ldbc.driver.workloads.dshini.RelationshipDeleteOperation;
-import com.ldbc.driver.workloads.dshini.RelationshipGetOperation;
+import com.ldbc.driver.workloads.dshini.DeleteRelationshipOperation;
+import com.ldbc.driver.workloads.dshini.GetRelationshipOperation;
 
 public class RequestLogOperationGenerator extends Generator<Operation<?>>
 {
@@ -52,26 +52,25 @@ public class RequestLogOperationGenerator extends Generator<Operation<?>>
             if ( isCypher( entry ) ) return CypherOperation.create( time, entry.getDescription() );
             // TODO
             if ( isBatch( entry ) ) return BatchOperation.create( time, entry.getDescription() );
+            if ( isIndexQueryGetNode( entry ) ) return IndexQueryGetNodeOperation.create( time, entry.getUrl() );
             // TODO
-            if ( isIndexNodeQueryGet( entry ) )
-                return IndexNodeQueryGetOperation.create( time, entry.getDescription() );
+            if ( isAddNodeToIndex( entry ) )
+                return AddNodeToIndexOperation.create( time, entry.getUrl(), entry.getDescription() );
             // TODO
-            if ( isIndexNodePost( entry ) ) return IndexNodePostOperation.create( time, entry.getDescription() );
+            if ( isIndexDeleteNode( entry ) ) return IndexDeleteNodeOperation.create( time, entry.getDescription() );
             // TODO
-            if ( isIndexNodeDelete( entry ) ) return IndexNodeDeleteOperation.create( time, entry.getDescription() );
+            if ( isGetNode( entry ) ) return GetNodeOperation.create( time, entry.getDescription() );
             // TODO
-            if ( isNodeGet( entry ) ) return NodeGetOperation.create( time, entry.getDescription() );
+            if ( isPostNode( entry ) ) return PostNodeOperation.create( time, entry.getDescription() );
             // TODO
-            if ( isNodePost( entry ) ) return NodePostOperation.create( time, entry.getDescription() );
+            if ( isPutNode( entry ) ) return NodePutOperation.create( time, entry.getDescription() );
             // TODO
-            if ( isNodePut( entry ) ) return NodePutOperation.create( time, entry.getDescription() );
+            if ( isDeleteNode( entry ) ) return DeleteNodeOperation.create( time, entry.getDescription() );
             // TODO
-            if ( isNodeDelete( entry ) ) return NodeDeleteOperation.create( time, entry.getDescription() );
+            if ( isGetRelationship( entry ) ) return GetRelationshipOperation.create( time, entry.getDescription() );
             // TODO
-            if ( isRelationshipGet( entry ) ) return RelationshipGetOperation.create( time, entry.getDescription() );
-            // TODO
-            if ( isRelationshipDelete( entry ) )
-                return RelationshipDeleteOperation.create( time, entry.getDescription() );
+            if ( isDeleteRelationship( entry ) )
+                return DeleteRelationshipOperation.create( time, entry.getDescription() );
         }
         catch ( RequestLogEntryException e )
         {
@@ -99,55 +98,55 @@ public class RequestLogOperationGenerator extends Generator<Operation<?>>
         return BATCH_PATTERN.matcher( requestLogEntry.getUrl() ).matches();
     }
 
-    private boolean isIndexNodeQueryGet( RequestLogEntry requestLogEntry )
+    private boolean isIndexQueryGetNode( RequestLogEntry requestLogEntry )
     {
         return requestLogEntry.getHttpMethod().equals( "GET" )
                && NODE_INDEX_QUERY_PATTERN.matcher( requestLogEntry.getUrl() ).matches();
     }
 
-    private boolean isIndexNodePost( RequestLogEntry requestLogEntry )
+    private boolean isAddNodeToIndex( RequestLogEntry requestLogEntry )
     {
         return requestLogEntry.getHttpMethod().equals( "POST" )
                && NODE_INDEX_PATTERN.matcher( requestLogEntry.getUrl() ).matches();
     }
 
-    private boolean isIndexNodeDelete( RequestLogEntry requestLogEntry )
+    private boolean isIndexDeleteNode( RequestLogEntry requestLogEntry )
     {
         return requestLogEntry.getHttpMethod().equals( "DELETE" )
                && NODE_INDEX_PATTERN.matcher( requestLogEntry.getUrl() ).matches();
     }
 
-    private boolean isNodeGet( RequestLogEntry requestLogEntry )
+    private boolean isGetNode( RequestLogEntry requestLogEntry )
     {
         return requestLogEntry.getHttpMethod().equals( "GET" )
                && NODE_PATTERN.matcher( requestLogEntry.getUrl() ).matches();
     }
 
-    private boolean isNodePost( RequestLogEntry requestLogEntry )
+    private boolean isPostNode( RequestLogEntry requestLogEntry )
     {
         return requestLogEntry.getHttpMethod().equals( "POST" )
                && NODE_PATTERN.matcher( requestLogEntry.getUrl() ).matches();
     }
 
-    private boolean isNodePut( RequestLogEntry requestLogEntry )
+    private boolean isPutNode( RequestLogEntry requestLogEntry )
     {
         return requestLogEntry.getHttpMethod().equals( "PUT" )
                && NODE_PATTERN.matcher( requestLogEntry.getUrl() ).matches();
     }
 
-    private boolean isNodeDelete( RequestLogEntry requestLogEntry )
+    private boolean isDeleteNode( RequestLogEntry requestLogEntry )
     {
         return requestLogEntry.getHttpMethod().equals( "DELETE" )
                && NODE_PATTERN.matcher( requestLogEntry.getUrl() ).matches();
     }
 
-    private boolean isRelationshipGet( RequestLogEntry requestLogEntry )
+    private boolean isGetRelationship( RequestLogEntry requestLogEntry )
     {
         return requestLogEntry.getHttpMethod().equals( "GET" )
                && RELATIONSHIP_PATTERN.matcher( requestLogEntry.getUrl() ).matches();
     }
 
-    private boolean isRelationshipDelete( RequestLogEntry requestLogEntry )
+    private boolean isDeleteRelationship( RequestLogEntry requestLogEntry )
     {
         return requestLogEntry.getHttpMethod().equals( "DELETE" )
                && RELATIONSHIP_PATTERN.matcher( requestLogEntry.getUrl() ).matches();
