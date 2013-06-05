@@ -30,7 +30,7 @@ public class CreateNodeOperationFactory implements MatchableOperationCreator
         return new CreateNodeOperation( entry.getTime(), entry.getDescriptionAsMap() );
     }
 
-    public class CreateNodeOperation extends Operation<Object>
+    public class CreateNodeOperation extends Operation<Long>
     {
         private final long time;
         private final Map<String, Object> properties;

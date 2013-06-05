@@ -36,7 +36,7 @@ public class CreateRelationshipOperationFactory implements MatchableOperationCre
         return new CreateRelationshipOperation( entry.getTime(), startNodeId, endNodeId, relationshipType, properties );
     }
 
-    public class CreateRelationshipOperation extends Operation<Object>
+    public class CreateRelationshipOperation extends Operation<Long>
     {
         private final long time;
         private final long startNodeId;

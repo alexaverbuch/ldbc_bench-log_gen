@@ -13,7 +13,7 @@ public class EmbeddedCreateNodeOperationHandler extends OperationHandler<CreateN
     {
         Neo4jDb db = ( (Neo4jDb) getDb() );
         int resultCode = -1;
-        Object result = null;
+        Long result = null;
         return operation.buildResult( resultCode, result );
     }
 

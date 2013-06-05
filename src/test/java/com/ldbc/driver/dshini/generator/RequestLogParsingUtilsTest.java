@@ -1,21 +1,14 @@
 package com.ldbc.driver.dshini.generator;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 import org.junit.Test;
 
 import com.ldbc.driver.dshini.generator.RequestLogEntryException;
@@ -159,116 +152,6 @@ public class RequestLogParsingUtilsTest
         // "CreatedAt" ) );
     }
 
-    /*
-    POST;
-    http://graph-master.dshini.net:7474/db/data/batch;
-    "[
-        {
-            ""method"":""POST"",
-            ""to"":""\/node"",
-            ""body"": {
-                          ""ObjectType"":""NeoPin"",
-                          ""Message"":"""",
-                          ""CommentsClosed"":false,
-                          ""CreatedAt"":1367242102,
-                          ""PinIdentifier"":""279a7016759215a60cfa8d2417b6580696a7a474"",
-                          ""LikeCount"":0,""RepinCount"":0
-                      },
-             ""id"":0
-         },
-         {
-             ""method"":""POST"",
-             ""to"":""\/index\/node\/neo_pin"",
-             ""body"": {
-                           ""key"":""ObjectType"",
-                           ""value"":""NeoPin"",
-                           ""uri"":""{0}""
-                       },
-             ""id"":1
-         },
-         {
-             ""method"":""POST"",
-             ""to"":""\/index\/node\/neo_pin"",
-             ""body"": {
-                           ""key"":""Message"",
-                           ""value"":"""",
-                           ""uri"":""{0}""
-                       },
-             ""id"":2
-         },
-         {
-             ""method"":""POST"",
-             ""to"":""\/index\/node\/neo_pin"",
-             ""body"": {
-                           ""key"":""CommentsClosed"",
-                           ""value"":false,
-                           ""uri"":""{0}""
-                       },
-             ""id"":3
-         },
-         {
-             ""method"":""POST"",
-             ""to"":""\/index\/node\/neo_pin"",
-             ""body"": {
-                           ""key"":""CreatedAt"",
-                           ""value"":1367242102,
-                           ""uri"":""{0}""
-                       },
-             ""id"":4
-         },
-         {
-             ""method"":""POST"",
-             ""to"":""\/index\/node\/neo_pin"",
-             ""body"": {
-                           ""key"":""PinIdentifier"",
-                           ""value"":""279a7016759215a60cfa8d2417b6580696a7a474"",
-                           ""uri"":""{0}""
-                       },
-             ""id"":5
-         },
-         {
-             ""method"":""POST"",
-             ""to"":""\/index\/node\/neo_pin"",
-             ""body"": {
-                           ""key"":""LikeCount"",
-                           ""value"":0,
-                           ""uri"":""{0}""
-                       },
-             ""id"":6
-         },
-         {
-             ""method"":""POST"",
-             ""to"":""\/index\/node\/neo_pin"",
-             ""body"": {
-                           ""key"":""RepinCount"",
-                           ""value"":0,
-                           ""uri"":""{0}""
-                       },
-             ""id"":7
-         },
-         {
-             ""method"":""POST"",
-             ""to"":""{0}\/relationships"",
-             ""body"": {
-                           ""to"":""\/node\/11434545"",
-                           ""data"": {
-                                         ""CreatedAt"":1367242102
-                                     },
-                                     ""type"":""REPINS""
-                       },
-             ""id"":8
-         },
-         {
-             ""method"":""POST"",
-             ""to"":""\/cypher"",
-             ""body"": {
-                           ""query"":""START n=node({STARTIDS}) MATCH n<-[repins?:REPINS]-() WITH n, COUNT(repins) as repin_count SET n.RepinCount = repin_count RETURN n"",
-                           ""params"":{""STARTIDS"":11434545}
-                       },
-             ""id"":9
-         } 
-    ]";
-    */
     @Test
     public void batch() throws RequestLogEntryException, JsonGenerationException, JsonMappingException, IOException
     {

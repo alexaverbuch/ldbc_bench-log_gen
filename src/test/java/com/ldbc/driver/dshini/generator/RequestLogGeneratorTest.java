@@ -30,7 +30,7 @@ import com.ldbc.driver.util.Histogram;
 
 import static org.junit.Assert.assertEquals;
 
-import static com.ldbc.driver.dshini.generator.TestUtils.*;
+import static com.ldbc.driver.util.TestUtils.*;
 
 public class RequestLogGeneratorTest
 {
@@ -82,8 +82,6 @@ public class RequestLogGeneratorTest
     @Test
     public void performanceTest()
     {
-        // TODO remove "db/data/" prefix from regex expressions
-
         // Given
         final File requestLogFile1 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-3-55-181.log" );
         final File requestLogFile2 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-196-162-95.log" );
@@ -109,26 +107,6 @@ public class RequestLogGeneratorTest
         System.out.println( String.format( "Runtime: %s seconds", runtime ) );
         System.out.println( String.format( "Operations: %s ", operations ) );
         System.out.println( String.format( "Throughput: %s (operations/second)", operations / runtime ) );
-
-        // CYPHER PARSING - STRING:No, JSON:NO
-        // Runtime: 106 seconds
-        // Operations: 13,043,166
-        // Throughput: 123,048 (operations/second)
-
-        // CYPHER PARSING - STRING:Pattern, JSON:NO
-        // Runtime: 158 seconds
-        // Operations: 13,043,166
-        // Throughput: 82,551 (operations/second)
-
-        // CYPHER PARSING - STRING:String, JSON:NO
-        // Runtime: 167 seconds
-        // Operations: 13,043,166
-        // Throughput: 78,102 (operations/second)
-
-        // CYPHER PARSING - STRING:Pattern, JSON:YES
-        // Runtime: 200 seconds
-        // Operations: 13,043,166
-        // Throughput: 65,215 (operations/second)
 
         // Then
         assertEquals( 13049989, operations );

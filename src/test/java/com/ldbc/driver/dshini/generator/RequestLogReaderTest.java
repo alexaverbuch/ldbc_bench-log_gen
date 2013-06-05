@@ -2,7 +2,6 @@ package com.ldbc.driver.dshini.generator;
 
 import java.io.File;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -82,6 +81,6 @@ public class RequestLogReaderTest
         System.out.println( String.format( "Throughput: %s (entries/second)", entries / runtime ) );
 
         // Then
-        assertEquals( 13043166l, entries );
+        assertEquals( 13049991l, entries );
     }
 }
