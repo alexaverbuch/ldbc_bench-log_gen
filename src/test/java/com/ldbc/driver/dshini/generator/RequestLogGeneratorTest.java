@@ -52,6 +52,7 @@ public class RequestLogGeneratorTest
         assertEquals( new Long( 11 ), distribution.sumOfAllBucketValues() );
     }
 
+    @Ignore
     @Test
     public void checkAllOperationsRecognizedTest()
     {

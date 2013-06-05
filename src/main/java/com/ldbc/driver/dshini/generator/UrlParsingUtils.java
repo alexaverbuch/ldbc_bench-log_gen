@@ -11,20 +11,30 @@ public class UrlParsingUtils
 {
     private static final Logger logger = Logger.getLogger( UrlParsingUtils.class );
 
-    private static final Pattern INDEX_DELETE_NODE_PATTERN = Pattern.compile( "db/data/index/node/\\w*/" );
+    // private static final Pattern INDEX_DELETE_NODE_PATTERN = Pattern.compile(
+    // "db/data/index/node/\\w*/" );
+    private static final Pattern INDEX_DELETE_NODE_PATTERN = Pattern.compile( "/index/node/\\w*/" );
 
-    private static final Pattern NODE_FROM_RELATIONSHIP_URL_START_PATTERN = Pattern.compile( "db/data/node/" );
+    // private static final Pattern NODE_FROM_RELATIONSHIP_URL_START_PATTERN =
+    // Pattern.compile( "db/data/node/" );
+    private static final Pattern NODE_FROM_RELATIONSHIP_URL_START_PATTERN = Pattern.compile( "/node/" );
     private static final Pattern NODE_FROM_RELATIONSHIP_URL_END_PATTERN = Pattern.compile( "/relationships.*$" );
 
     private static final Pattern RELATIONSHIP_TYPE_FROM_RELATIONSHIP_URL_START_PATTERN = Pattern.compile( "/relationships/(in|out|all)/" );
 
-    private static final Pattern NODE_PATTERN = Pattern.compile( "db/data/node/" );
+    // private static final Pattern NODE_PATTERN = Pattern.compile(
+    // "db/data/node/" );
+    private static final Pattern NODE_PATTERN = Pattern.compile( "/node/" );
 
     private static final Pattern PROPERTIES_PATTERN = Pattern.compile( "/properties$" );
 
-    private static final Pattern RELATIONSHIP_PATTERN = Pattern.compile( "db/data/relationship/" );
+    // private static final Pattern RELATIONSHIP_PATTERN = Pattern.compile(
+    // "db/data/relationship/" );
+    private static final Pattern RELATIONSHIP_PATTERN = Pattern.compile( "/relationship/" );
 
-    private static final Pattern INDEX_NODE_PATTERN = Pattern.compile( "db/data/index/node/" );
+    // private static final Pattern INDEX_NODE_PATTERN = Pattern.compile(
+    // "db/data/index/node/" );
+    private static final Pattern INDEX_NODE_PATTERN = Pattern.compile( "/index/node/" );
 
     private static final Pattern QUERY_PARAM_PATTERN = Pattern.compile( "\\?query=" );
 

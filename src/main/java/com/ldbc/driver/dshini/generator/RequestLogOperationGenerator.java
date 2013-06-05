@@ -93,8 +93,10 @@ public class RequestLogOperationGenerator extends Generator<Operation<?>>
             }
             catch ( RequestLogEntryException e )
             {
-                String errMsg = String.format( "Error parsing log entry\n%s", entry.toString() );
-                logger.error( errMsg );
+                // TODO uncomment to see Entry that could not be parsed
+                // String errMsg = String.format( "Error parsing log entry\n%s",
+                // entry.toString() );
+                // logger.error( errMsg );
             }
             catch ( MatchableException e )
             {

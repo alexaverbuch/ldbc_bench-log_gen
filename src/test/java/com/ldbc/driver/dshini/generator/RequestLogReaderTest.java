@@ -20,6 +20,7 @@ import static org.junit.Assert.*;
 
 public class RequestLogReaderTest
 {
+    @Ignore
     @Test
     public void requestLogEntryReaderAllLogsExactlyOneEntryTest() throws MatchableException, RequestLogEntryException
     {
