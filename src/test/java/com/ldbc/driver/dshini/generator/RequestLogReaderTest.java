@@ -1,7 +1,6 @@
 package com.ldbc.driver.dshini.generator;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -12,76 +11,17 @@ import com.ldbc.driver.Operation;
 import com.ldbc.driver.dshini.generator.MultiRequestLogEntryReader;
 import com.ldbc.driver.dshini.generator.RequestLogEntry;
 import com.ldbc.driver.dshini.generator.RequestLogEntryException;
-import com.ldbc.driver.dshini.generator.RequestLogEntryReader;
 import com.ldbc.driver.dshini.generator.RequestLogOperationGenerator;
 import com.ldbc.driver.dshini.operations.MatchableException;
+import com.ldbc.driver.dshini.operations.MatchableOperationCreator;
 import com.ldbc.driver.dshini.operations.OperationMatcher;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class RequestLogReaderTest
 {
     @Test
-    public void testDshiniRequestLogEntryReader() throws IOException
-    {
-        // String requestLogPath = "/test_request_log.log";
-        // File requestLogFile = getResource( requestLogPath );
-        String requestLogPath = "logs/dshini-request-logs-2013-04-29/request-ip-10-3-55-181.log";
-        File requestLogFile = new File( requestLogPath );
-        RequestLogEntryReader requestLogReader = new RequestLogEntryReader( requestLogFile );
-        boolean unexpectedEntriesEncountered = false;
-        int requestLogEntryCount = 0;
-        while ( requestLogReader.hasNext() )
-        {
-            RequestLogEntry entry = requestLogReader.next();
-
-            if ( entry.getHttpMethod().equals( "POST" ) && entry.getUrl().endsWith( "db/data/batch" ) )
-            {
-                // Batch
-            }
-            else if ( entry.getHttpMethod().equals( "POST" ) && entry.getUrl().endsWith( "db/data/cypher" ) )
-            {
-                // Cypher
-            }
-            else if ( entry.getHttpMethod().equals( "GET" ) && entry.getUrl().contains( "db/data/index" ) )
-            {
-                // Index Get
-            }
-            else if ( entry.getHttpMethod().equals( "POST" ) && entry.getUrl().contains( "db/data/index" ) )
-            {
-                // Post Index
-            }
-            else if ( entry.getHttpMethod().equals( "DELETE" ) && entry.getUrl().contains( "db/data/index" ) )
-            {
-                // Delete Index
-            }
-            else if ( entry.getHttpMethod().equals( "GET" ) && entry.getUrl().contains( "db/data/node" ) )
-            {
-                // Node Get
-            }
-            else if ( entry.getHttpMethod().equals( "POST" ) && entry.getUrl().contains( "db/data/node" ) )
-            {
-                // Node Post
-            }
-            else if ( entry.getHttpMethod().equals( "PUT" ) && entry.getUrl().contains( "db/data/node" ) )
-            {
-                // Node Put
-            }
-            else
-            {
-                System.out.println( entry.getHttpMethod() + "  " + entry.getUrl() );
-                unexpectedEntriesEncountered = true;
-
-            }
-            requestLogEntryCount++;
-        }
-        assertEquals( 4296, requestLogEntryCount );
-        assertEquals( unexpectedEntriesEncountered, false );
-    }
-
-    @Ignore
-    @Test
-    public void testDshiniRequestLogEntryReaderAllLogs() throws MatchableException, RequestLogEntryException
+    public void requestLogEntryReaderAllLogsExactlyOneEntryTest() throws MatchableException, RequestLogEntryException
     {
         // Given
         final File requestLogFile1 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-3-55-181.log" );
@@ -94,7 +34,10 @@ public class RequestLogReaderTest
         MultiRequestLogEntryReader requestLogReader = new MultiRequestLogEntryReader( requestLogFile1, requestLogFile2,
                 requestLogFile3, requestLogFile4, requestLogFile5, requestLogFile6 );
 
-        OperationMatcher matcher = new OperationMatcher( RequestLogOperationGenerator.operations() );
+        OperationMatcher matcher = new OperationMatcher();
+        MatchableOperationCreator[] operations = RequestLogOperationGenerator.operations( matcher );
+        matcher.setOperations( operations );
+
         // When
         while ( requestLogReader.hasNext() )
         {
@@ -105,5 +48,39 @@ public class RequestLogReaderTest
             assertEquals( String.format( "Too many matched operations, expected one: ", matchedOperations.toArray() ),
                     1, matchedOperations.size() );
         }
+    }
+
+    @Ignore
+    @Test
+    public void performanceTest() throws MatchableException, RequestLogEntryException
+    {
+        // Given
+        final File requestLogFile1 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-3-55-181.log" );
+        final File requestLogFile2 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-196-162-95.log" );
+        final File requestLogFile3 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-76-97-169.log" );
+        final File requestLogFile4 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-84-146-61.log" );
+        final File requestLogFile5 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-90-59-251.log" );
+        final File requestLogFile6 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-98-203-214.log" );
+
+        MultiRequestLogEntryReader requestLogReader = new MultiRequestLogEntryReader( requestLogFile1, requestLogFile2,
+                requestLogFile3, requestLogFile4, requestLogFile5, requestLogFile6 );
+
+        // When
+        int entries = 0;
+        long startTime = System.nanoTime();
+        while ( requestLogReader.hasNext() )
+        {
+            RequestLogEntry entry = requestLogReader.next();
+            entries++;
+        }
+        long endTime = System.nanoTime();
+
+        long runtime = ( endTime - startTime ) / 1000000000;
+        System.out.println( String.format( "Runtime: %s seconds", runtime ) );
+        System.out.println( String.format( "Entries: %s ", entries ) );
+        System.out.println( String.format( "Throughput: %s (entries/second)", entries / runtime ) );
+
+        // Then
+        assertEquals( 13043166l, entries );
     }
 }

@@ -135,7 +135,6 @@ public class RequestLogEntry
         if ( null == descriptionString )
         {
             String errMsg = "Description string is null";
-            logger.error( errMsg );
             throw new RequestLogEntryException( errMsg );
         }
         return descriptionString;
@@ -178,7 +177,6 @@ public class RequestLogEntry
         catch ( Exception e )
         {
             String errMsg = String.format( "Error parsing map json string\n%s", jsonString );
-            logger.error( errMsg, e );
             throw new RequestLogEntryException( errMsg );
         }
     }
@@ -195,7 +193,6 @@ public class RequestLogEntry
         catch ( Exception e )
         {
             String errMsg = String.format( "Error parsing list of maps json string\n%s", jsonString );
-            logger.error( errMsg, e );
             throw new RequestLogEntryException( errMsg );
         }
     }
@@ -218,7 +215,6 @@ public class RequestLogEntry
         catch ( ParseException e )
         {
             String errMsg = String.format( "Error converting time stamp string [%s] to ms", timeStampString );
-            logger.error( errMsg );
             throw new RequestLogEntryException( errMsg );
         }
     }
@@ -229,7 +225,6 @@ public class RequestLogEntry
         {
             String errMsg = String.format( "Time stamp [%s] does not match pattern [%s]", timeStampString,
                     pattern.toString() );
-            logger.error( errMsg );
             throw new RequestLogEntryException( errMsg );
         }
     }

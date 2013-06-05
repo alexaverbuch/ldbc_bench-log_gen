@@ -31,18 +31,17 @@ public class RequestLogOperationGenerator extends Generator<Operation<?>>
 {
     private static final Logger logger = Logger.getLogger( RequestLogOperationGenerator.class );
 
-    private final MatchableOperationCreator[] operations = operations();
-    private final OperationMatcher operationMatcher = new OperationMatcher( operations );
+    private final MatchableOperationCreator[] operations;
+    private final OperationMatcher operationMatcher;
     private final MultiRequestLogEntryReader requestLogReader;
 
-    public static MatchableOperationCreator[] operations()
+    public static MatchableOperationCreator[] operations( OperationMatcher matcher )
     {
         return new MatchableOperationCreator[] {
-
                 // add a node to the index
                 new AddNodeToIndexOperationFactory(),
                 // batch operations
-                new BatchOperationFactory(),
+                new BatchOperationFactory( matcher ),
                 // create a node
                 new CreateNodeOperationFactory(),
                 // cypher query
@@ -77,28 +76,33 @@ public class RequestLogOperationGenerator extends Generator<Operation<?>>
     {
         super( null );
         this.requestLogReader = new MultiRequestLogEntryReader( requestLogFiles );
+        operationMatcher = new OperationMatcher();
+        operations = operations( operationMatcher );
+        operationMatcher.setOperations( operations );
     }
 
     @Override
     protected Operation<?> doNext() throws GeneratorException
     {
-        if ( false == requestLogReader.hasNext() ) return null;
-        RequestLogEntry entry = requestLogReader.next();
-        try
+        while ( requestLogReader.hasNext() )
         {
-            return operationMatcher.getSingleMatchingOperation( entry );
+            RequestLogEntry entry = requestLogReader.next();
+            try
+            {
+                return operationMatcher.getSingleMatchingOperation( entry );
+            }
+            catch ( RequestLogEntryException e )
+            {
+                String errMsg = String.format( "Error parsing log entry\n%s", entry.toString() );
+                logger.error( errMsg );
+            }
+            catch ( MatchableException e )
+            {
+                String errMsg = String.format( "Error matching operation to log entry\n%s", entry.toString() );
+                logger.error( errMsg );
+                throw new GeneratorException( errMsg, e.getCause() );
+            }
         }
-        catch ( RequestLogEntryException e )
-        {
-            String errMsg = String.format( "Error parsing log entry: %s", entry.toString() );
-            logger.error( errMsg );
-            throw new GeneratorException( errMsg );
-        }
-        catch ( MatchableException e )
-        {
-            String errMsg = String.format( "Error matching operation to log entry: %s", entry.toString() );
-            logger.error( errMsg );
-            throw new GeneratorException( errMsg );
-        }
+        return null;
     }
 }

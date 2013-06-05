@@ -9,11 +9,20 @@ import com.ldbc.driver.dshini.generator.RequestLogEntryException;
 
 public class OperationMatcher
 {
-    private final MatchableOperationCreator[] operations;
+    private MatchableOperationCreator[] operations;
 
-    public OperationMatcher( MatchableOperationCreator[] operations )
+    public OperationMatcher()
+    {
+    }
+
+    public void setOperations( MatchableOperationCreator[] operations )
     {
         this.operations = operations;
+    }
+
+    public MatchableOperationCreator[] getOperations()
+    {
+        return operations;
     }
 
     public Operation<?> getSingleMatchingOperation( RequestLogEntry entry ) throws MatchableException,

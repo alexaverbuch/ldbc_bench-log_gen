@@ -20,7 +20,10 @@ public class CypherOperationFactory implements MatchableOperationCreator
     @Override
     public boolean matches( RequestLogEntry entry ) throws MatchableException
     {
-        return entry.getHttpMethod().equals( "POST" ) && CYPHER_PATTERN.matcher( entry.getUrl() ).matches();
+        // TODO cypher is always POST?
+        // return entry.getHttpMethod().equals( "POST" ) &&
+        // CYPHER_PATTERN.matcher( entry.getUrl() ).matches();
+        return CYPHER_PATTERN.matcher( entry.getUrl() ).matches();
     }
 
     @Override

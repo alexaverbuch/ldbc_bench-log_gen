@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
@@ -19,8 +20,13 @@ class RequestLogEntryReader implements Iterator<RequestLogEntry>
 
     private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    private final int EXPECTED_TOKEN_COUNT = 5;
-    private final Pattern TOKEN_SEPARATOR_PATTERN = Pattern.compile( ";" );
+    private final Pattern SEMICOLON_PATTERN = Pattern.compile( ";" );
+
+    private final String NORMAL_START_BRACKET = "\"\\[\"\"";
+    private final String WEIRD_START_BRACKET_1 = "\"a:4:\\{i:0;s:24:\"";
+    private final String WEIRD_START_BRACKET_2 = "\"a:2:\\{i:0;s:8:\"";
+    private final Pattern HEADERS_START_PATTERN = Pattern.compile( String.format( "(%s)|(%s)|(%s)",
+            WEIRD_START_BRACKET_1, WEIRD_START_BRACKET_2, NORMAL_START_BRACKET ) );
 
     private final File requestLogFile;
     private final BufferedReader requestLogReader;
@@ -85,7 +91,6 @@ class RequestLogEntryReader implements Iterator<RequestLogEntry>
     // Return null if nothing left
     private RequestLogEntry nextDshiniRequestLogEntry()
     {
-        RequestLogEntry logEntry = null;
         boolean exceptionThrown;
         String requestLogLine = null;
         // try until non-"corrupted" request log entry found
@@ -96,7 +101,7 @@ class RequestLogEntryReader implements Iterator<RequestLogEntry>
             {
                 lineNumber++;
                 requestLogLine = requestLogReader.readLine();
-                logEntry = ( null == requestLogLine ) ? null : parseDshiniRequestLogEntry( requestLogLine );
+                return ( null == requestLogLine ) ? null : parseDshiniRequestLogEntry( requestLogLine );
             }
             catch ( IOException e )
             {
@@ -111,18 +116,30 @@ class RequestLogEntryReader implements Iterator<RequestLogEntry>
             }
         }
         while ( exceptionThrown == true );
-        return logEntry;
+        return null;
     }
 
     private RequestLogEntry parseDshiniRequestLogEntry( String requestLogLine ) throws RequestLogEntryException
     {
-        int limit = 0;
-        String[] tokens = TOKEN_SEPARATOR_PATTERN.split( requestLogLine, limit );
-        if ( tokens.length != EXPECTED_TOKEN_COUNT )
+        // parse first 3 columns (time, httpMethod, url)
+        int limit = 4;
+        String[] tokens = SEMICOLON_PATTERN.split( requestLogLine, limit );
+        if ( tokens.length != limit )
         {
-            String errMsg = String.format( "File [%s] Line [%s] - unexpected token count [expected=%s, actual=%s]\n"
-                                           + "Tokens: %s\n" + "Line: %s", requestLogFile.getName(), lineNumber,
-                    EXPECTED_TOKEN_COUNT, tokens.length, Arrays.toString( tokens ), requestLogLine );
+            String errMsg = String.format(
+                    "File [%s] Line [%s] - unexpected token count [expected=%s, actual=%s]\nTokens: %s\n%s",
+                    requestLogFile.getName(), lineNumber, limit, tokens.length, Arrays.toString( tokens ),
+                    requestLogLine );
+            badLineCount++;
+            throw new RequestLogEntryException( errMsg );
+        }
+
+        // parse last 2 columns (description, httpHeaders)
+        Matcher matcher = HEADERS_START_PATTERN.matcher( tokens[3] );
+        if ( false == matcher.find() )
+        {
+            String errMsg = String.format( "File [%s] Line [%s] - HTTP Headers column not found in end of line\n%s",
+                    requestLogFile.getName(), lineNumber, requestLogLine );
             badLineCount++;
             throw new RequestLogEntryException( errMsg );
         }
@@ -130,9 +147,21 @@ class RequestLogEntryReader implements Iterator<RequestLogEntry>
         String time = tokens[0];
         String httpMethod = tokens[1];
         String url = tokens[2];
-        String cypher = tokens[3];
-        String httpHeaders = tokens[4];
-        return new RequestLogEntry( OBJECT_MAPPER, time, httpMethod, url, cypher, httpHeaders );
+        String description = tokens[3].substring( 0, matcher.start() - 1 );
+        String httpHeaders = tokens[3].substring( matcher.start() );
+
+        try
+        {
+            return new RequestLogEntry( OBJECT_MAPPER, time, httpMethod, url, description, httpHeaders );
+        }
+        catch ( RequestLogEntryException e )
+        {
+            String errMsg = String.format( "File [%s] Line [%s] - Error creating RequestLogEntry from line\n%s",
+                    requestLogFile.getName(), lineNumber, requestLogLine );
+            badLineCount++;
+            logger.error( errMsg );
+            throw new RequestLogEntryException( errMsg );
+        }
     }
 
     private boolean closeReader()
