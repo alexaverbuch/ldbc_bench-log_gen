@@ -51,10 +51,10 @@ public class Neo4jDb extends Db
     protected void onInit( Map<String, String> properties ) throws DbException
     {
         // Initialize Neo4j driver
-        url = MapUtils.mapGetDefault( properties, "neo4j.url", "http://localhost:7474/db/data" );
-        clear = Boolean.parseBoolean( MapUtils.mapGetDefault( properties, "neo4j.clear", "false" ) );
-        path = MapUtils.mapGetDefault( properties, "neo4j.path", "/tmp/db" );
-        dbType = MapUtils.mapGetDefault( properties, "neo4j.dbtype", "embedded" );
+        url = MapUtils.getDefault( properties, "neo4j.url", "http://localhost:7474/db/data" );
+        clear = Boolean.parseBoolean( MapUtils.getDefault( properties, "neo4j.clear", "false" ) );
+        path = MapUtils.getDefault( properties, "neo4j.path", "/tmp/db" );
+        dbType = MapUtils.getDefault( properties, "neo4j.dbtype", "embedded" );
 
         logger.info( "*** Neo4j Properties ***" );
         logger.info( "clear database = " + clear );

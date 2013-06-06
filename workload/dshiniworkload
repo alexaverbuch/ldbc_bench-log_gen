@@ -1,0 +1,9 @@
+# Linked Data Benchmark Council
+# Real Dshini workload
+
+workload=com.ldbc.driver.dshini.workloads.DshiniWorkload
+operationcount=-1
+neo4j.url=http://localhost:7474/db/data
+neo4j.clear=false
+neo4j.path=/tmp/db
+neo4j.dbtype=embedded

@@ -55,20 +55,20 @@ public class Neo4jDshiniCommandsEmbedded implements Neo4jDshiniCommands
 
     public void init()
     {
-        this.db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder( this.path ).newGraphDatabase();
-        this.queryEngine = new ExecutionEngine( this.db );
-        registerShutdownHook( this.db );
+        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder( path ).newGraphDatabase();
+        queryEngine = new ExecutionEngine( db );
+        registerShutdownHook( db );
     }
 
     public void cleanUp()
     {
-        this.db.shutdown();
+        db.shutdown();
     }
 
     public void clearDb()
     {
-        this.queryEngine.execute( "START r=rel(*) DELETE r", MapUtil.map() );
-        this.queryEngine.execute( "START n=node(*) DELETE n", MapUtil.map() );
+        queryEngine.execute( "START r=rel(*) DELETE r", MapUtil.map() );
+        queryEngine.execute( "START n=node(*) DELETE n", MapUtil.map() );
     }
 
     private static void registerShutdownHook( final GraphDatabaseService graphDb )

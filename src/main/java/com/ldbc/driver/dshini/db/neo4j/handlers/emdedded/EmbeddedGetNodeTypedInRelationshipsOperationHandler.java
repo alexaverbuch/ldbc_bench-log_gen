@@ -18,7 +18,8 @@ public class EmbeddedGetNodeTypedInRelationshipsOperationHandler extends
         Neo4jDb db = ( (Neo4jDb) getDb() );
         int resultCode = -1;
         Object result = null;
-        logger.info( String.format( "Executing handler for %s", getClass().getSimpleName() ) );
+        // logger.info( String.format( "Executing handler for %s",
+        // getClass().getSimpleName() ) );
         return operation.buildResult( resultCode, result );
     }
 
