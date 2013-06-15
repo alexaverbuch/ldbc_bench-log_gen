@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 
-class RequestLogEntryReader implements Iterator<RequestLogEntry>
+public class RequestLogEntryReader implements Iterator<RequestLogEntry>
 {
     private static final Logger logger = Logger.getLogger( RequestLogEntryReader.class );
 

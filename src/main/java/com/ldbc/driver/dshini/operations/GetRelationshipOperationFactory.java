@@ -21,24 +21,18 @@ public class GetRelationshipOperationFactory implements MatchableOperationCreato
     public Operation<?> createFromEntry( RequestLogEntry entry ) throws RequestLogEntryException
     {
         long relationshipId = UrlParsingUtils.parseRelationshipIdFromRelationshipUrl( entry.getUrl() );
-        return new GetRelationshipOperation( entry.getTime(), relationshipId );
+        return new GetRelationshipOperation( entry.getTimeNanoSeconds(), relationshipId );
     }
 
-    public class GetRelationshipOperation extends Operation<Object>
+    public static class GetRelationshipOperation extends Operation<Long>
     {
-        private final long time;
         private final long relationshipId;
 
         private GetRelationshipOperation( long time, long relationshipId )
         {
             super();
-            this.time = time;
+            setScheduledStartTimeNanoSeconds( time );
             this.relationshipId = relationshipId;
-        }
-
-        public long getTime()
-        {
-            return time;
         }
 
         public long getRelationshipId()
@@ -49,7 +43,28 @@ public class GetRelationshipOperationFactory implements MatchableOperationCreato
         @Override
         public String toString()
         {
-            return "GetRelationshipOperation [time=" + time + ", relationshipId=" + relationshipId + "]";
+            return "GetRelationshipOperation [time=" + getScheduledStartTimeNanoSeconds() + ", relationshipId="
+                   + relationshipId + "]";
+        }
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + (int) ( relationshipId ^ ( relationshipId >>> 32 ) );
+            return result;
+        }
+
+        @Override
+        public boolean equals( Object obj )
+        {
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
+            GetRelationshipOperation other = (GetRelationshipOperation) obj;
+            if ( relationshipId != other.relationshipId ) return false;
+            return true;
         }
     }
 }

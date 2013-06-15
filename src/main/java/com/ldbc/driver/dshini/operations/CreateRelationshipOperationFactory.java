@@ -33,31 +33,26 @@ public class CreateRelationshipOperationFactory implements MatchableOperationCre
         long endNodeId = UrlParsingUtils.parseNodeIdFromNodeUrl( (String) map.get( "to" ) );
         String relationshipType = (String) map.get( "type" );
         Map<String, Object> properties = (Map<String, Object>) map.get( "data" );
-        return new CreateRelationshipOperation( entry.getTime(), startNodeId, endNodeId, relationshipType, properties );
+        return new CreateRelationshipOperation( entry.getTimeNanoSeconds(), startNodeId, endNodeId, relationshipType,
+                properties );
     }
 
-    public class CreateRelationshipOperation extends Operation<Long>
+    public static class CreateRelationshipOperation extends Operation<Integer>
     {
-        private final long time;
         private final long startNodeId;
         private final long endNodeId;
         private final String relationshipType;
         private final Map<String, Object> properties;
 
-        private CreateRelationshipOperation( long time, long startNodeId, long endNodeId, String relationshipType,
-                Map<String, Object> properties )
+        private CreateRelationshipOperation( long timeNanoSeconds, long startNodeId, long endNodeId,
+                String relationshipType, Map<String, Object> properties )
         {
             super();
-            this.time = time;
+            setScheduledStartTimeNanoSeconds( timeNanoSeconds );
             this.startNodeId = startNodeId;
             this.endNodeId = endNodeId;
             this.relationshipType = relationshipType;
             this.properties = properties;
-        }
-
-        public long getTime()
-        {
-            return time;
         }
 
         public long getStartNodeId()
@@ -83,8 +78,43 @@ public class CreateRelationshipOperationFactory implements MatchableOperationCre
         @Override
         public String toString()
         {
-            return "CreateRelationshipOperation [time=" + time + ", startNodeId=" + startNodeId + ", endNodeId="
-                   + endNodeId + ", relationshipType=" + relationshipType + ", properties=" + properties + "]";
+            return "CreateRelationshipOperation [time=" + getScheduledStartTimeNanoSeconds() + ", startNodeId="
+                   + startNodeId + ", endNodeId=" + endNodeId + ", relationshipType=" + relationshipType
+                   + ", properties=" + properties + "]";
+        }
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + (int) ( endNodeId ^ ( endNodeId >>> 32 ) );
+            result = prime * result + ( ( properties == null ) ? 0 : properties.hashCode() );
+            result = prime * result + ( ( relationshipType == null ) ? 0 : relationshipType.hashCode() );
+            result = prime * result + (int) ( startNodeId ^ ( startNodeId >>> 32 ) );
+            return result;
+        }
+
+        @Override
+        public boolean equals( Object obj )
+        {
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
+            CreateRelationshipOperation other = (CreateRelationshipOperation) obj;
+            if ( endNodeId != other.endNodeId ) return false;
+            if ( properties == null )
+            {
+                if ( other.properties != null ) return false;
+            }
+            else if ( !properties.equals( other.properties ) ) return false;
+            if ( relationshipType == null )
+            {
+                if ( other.relationshipType != null ) return false;
+            }
+            else if ( !relationshipType.equals( other.relationshipType ) ) return false;
+            if ( startNodeId != other.startNodeId ) return false;
+            return true;
         }
     }
 }

@@ -3,17 +3,30 @@ package com.ldbc.driver.dshini.workloads;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.google.common.base.Predicate;
 import com.ldbc.driver.Operation;
 import com.ldbc.driver.Workload;
 import com.ldbc.driver.WorkloadException;
 import com.ldbc.driver.dshini.generator.RequestLogOperationGenerator;
+import com.ldbc.driver.dshini.operations.CypherOperationFactory.CypherOperation;
+import com.ldbc.driver.dshini.operations.GetNodeOperationFactory.GetNodeOperation;
+import com.ldbc.driver.dshini.operations.GetNodesOutRelationshipsOperationFactory.GetNodeOutRelationshipsOperation;
+import com.ldbc.driver.dshini.operations.GetNodesRelationshipsOperationFactory.GetNodeRelationshipsOperation;
+import com.ldbc.driver.dshini.operations.GetNodesTypedInRelationshipsOperationFactory.GetNodeTypedInRelationshipsOperation;
+import com.ldbc.driver.dshini.operations.GetNodesTypedOutRelationshipsOperationFactory.GetNodeTypedOutRelationshipsOperation;
+import com.ldbc.driver.dshini.operations.GetRelationshipOperationFactory.GetRelationshipOperation;
+import com.ldbc.driver.dshini.operations.IndexQueryGetNodeOperationFactory.IndexQueryGetNodeOperation;
 import com.ldbc.driver.generator.Generator;
 import com.ldbc.driver.generator.GeneratorBuilder;
+import com.ldbc.driver.generator.wrapper.FilterGeneratorWrapper;
+import com.ldbc.driver.generator.wrapper.OrderedMultiGeneratorWrapper;
 
 public class DshiniWorkload extends Workload
 {
@@ -46,7 +59,22 @@ public class DshiniWorkload extends Workload
     public Generator<Operation<?>> getTransactionalOperations( GeneratorBuilder generatorBuilder )
             throws WorkloadException
     {
-        return new RequestLogOperationGenerator( logFiles );
+        // Predicate<Operation<?>> filter = new
+        // IncludeOnlyClassesPredicate<Operation<?>>( GetNodeOperation.class,
+        // GetNodeOutRelationshipsOperation.class,
+        // GetNodeRelationshipsOperation.class,
+        // GetNodeTypedInRelationshipsOperation.class,
+        // GetNodeTypedOutRelationshipsOperation.class,
+        // GetRelationshipOperation.class, IndexQueryGetNodeOperation.class );
+        Predicate<Operation<?>> filter = new IncludeOnlyClassesPredicate<Operation<?>>( GetNodeOperation.class );
+
+        RequestLogOperationGenerator[] requestLogReaderGenerators = new RequestLogOperationGenerator[logFiles.length];
+        for ( int i = 0; i < logFiles.length; i++ )
+        {
+            requestLogReaderGenerators[i] = new RequestLogOperationGenerator( logFiles[i] );
+        }
+        Generator<Operation<?>> generator = OrderedMultiGeneratorWrapper.operationsByScheduledStartTime( requestLogReaderGenerators );
+        return new FilterGeneratorWrapper<Operation<?>>( generator, filter );
     }
 
     @Override
@@ -72,5 +100,21 @@ public class DshiniWorkload extends Workload
             paths.add( path.trim() );
         }
         return paths.toArray( new String[paths.size()] );
+    }
+}
+
+class IncludeOnlyClassesPredicate<T> implements Predicate<T>
+{
+    private final Set<Class<?>> includedItems;
+
+    public IncludeOnlyClassesPredicate( Class<?>... includedItems )
+    {
+        this.includedItems = new HashSet<Class<?>>( Arrays.asList( includedItems ) );
+    }
+
+    @Override
+    public boolean apply( T input )
+    {
+        return true == includedItems.contains( input.getClass() );
     }
 }

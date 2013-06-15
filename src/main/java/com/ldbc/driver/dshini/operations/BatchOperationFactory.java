@@ -90,8 +90,8 @@ public class BatchOperationFactory implements MatchableOperationCreator
             String url = "db/data" + (String) map.get( "to" );
             Map<String, Object> description = (Map<String, Object>) map.get( "body" );
             String httpHeaders = "";
-            RequestLogEntry innerEntry = new RequestLogEntry( mapper, entry.getTime(), httpMethod, url, description,
-                    httpHeaders );
+            RequestLogEntry innerEntry = new RequestLogEntry( mapper, entry.getTimeNanoSeconds(), httpMethod, url,
+                    description, httpHeaders );
             entries.add( innerEntry );
             // try
             // {
@@ -110,24 +110,18 @@ public class BatchOperationFactory implements MatchableOperationCreator
             // throw new RequestLogEntryException( errMsg, e.getCause() );
             // }
         }
-        return new BatchOperation( entry.getTime(), entries );
+        return new BatchOperation( entry.getTimeNanoSeconds(), entries );
     }
 
     public static class BatchOperation extends Operation<Object>
     {
-        private final long time;
         private final List<RequestLogEntry> operationBatch;
 
         private BatchOperation( long time, List<RequestLogEntry> operationBatch )
         {
             super();
-            this.time = time;
+            setScheduledStartTimeNanoSeconds( time );
             this.operationBatch = operationBatch;
-        }
-
-        public long getTime()
-        {
-            return time;
         }
 
         public List<RequestLogEntry> getOperationBatch()
@@ -138,7 +132,32 @@ public class BatchOperationFactory implements MatchableOperationCreator
         @Override
         public String toString()
         {
-            return "BatchOperation [time=" + time + ", operationBatch=" + operationBatch + "]";
+            return "BatchOperation [time=" + getScheduledStartTimeNanoSeconds() + ", operationBatch=" + operationBatch
+                   + "]";
+        }
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ( ( operationBatch == null ) ? 0 : operationBatch.hashCode() );
+            return result;
+        }
+
+        @Override
+        public boolean equals( Object obj )
+        {
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
+            BatchOperation other = (BatchOperation) obj;
+            if ( operationBatch == null )
+            {
+                if ( other.operationBatch != null ) return false;
+            }
+            else if ( !operationBatch.equals( other.operationBatch ) ) return false;
+            return true;
         }
     }
 }

@@ -28,24 +28,21 @@ public class DeleteNodeFromIndexOperationFactory implements MatchableOperationCr
     public Operation<?> createFromEntry( RequestLogEntry entry ) throws RequestLogEntryException
     {
         long nodeId = UrlParsingUtils.parseNodeIdFromNodeIndexUrl( entry.getUrl() );
-        return new DeleteNodeFromIndexOperation( entry.getTime(), nodeId );
+        String indexName = UrlParsingUtils.parseIndexNameFromNodeIndexUrl( entry.getUrl() );
+        return new DeleteNodeFromIndexOperation( entry.getTimeNanoSeconds(), nodeId, indexName );
     }
 
-    public static class DeleteNodeFromIndexOperation extends Operation<Object>
+    public static class DeleteNodeFromIndexOperation extends Operation<Integer>
     {
-        private final long time;
         private final long nodeId;
+        private final String indexName;
 
-        private DeleteNodeFromIndexOperation( long time, long nodeId )
+        private DeleteNodeFromIndexOperation( long time, long nodeId, String indexName )
         {
             super();
-            this.time = time;
+            setScheduledStartTimeNanoSeconds( time );
             this.nodeId = nodeId;
-        }
-
-        public long getTime()
-        {
-            return time;
+            this.indexName = indexName;
         }
 
         public long getNodeId()
@@ -53,10 +50,42 @@ public class DeleteNodeFromIndexOperationFactory implements MatchableOperationCr
             return nodeId;
         }
 
+        public String getIndexName()
+        {
+            return indexName;
+        }
+
         @Override
         public String toString()
         {
-            return "IndexDeleteNodeOperation [time=" + time + ", nodeId=" + nodeId + "]";
+            return "DeleteNodeFromIndexOperation [time=" + getScheduledStartTimeNanoSeconds() + ",nodeId=" + nodeId
+                   + ", indexName=" + indexName + "]";
+        }
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ( ( indexName == null ) ? 0 : indexName.hashCode() );
+            result = prime * result + (int) ( nodeId ^ ( nodeId >>> 32 ) );
+            return result;
+        }
+
+        @Override
+        public boolean equals( Object obj )
+        {
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
+            DeleteNodeFromIndexOperation other = (DeleteNodeFromIndexOperation) obj;
+            if ( indexName == null )
+            {
+                if ( other.indexName != null ) return false;
+            }
+            else if ( !indexName.equals( other.indexName ) ) return false;
+            if ( nodeId != other.nodeId ) return false;
+            return true;
         }
     }
 }

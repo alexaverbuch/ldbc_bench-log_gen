@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 import com.ldbc.driver.Operation;
 import com.ldbc.driver.dshini.generator.RequestLogEntry;
 import com.ldbc.driver.dshini.generator.RequestLogEntryException;
-import com.ldbc.driver.dshini.generator.UrlParsingUtils;
 
 /*
 httpMethod=POST, 
@@ -27,24 +26,18 @@ public class CreateNodeOperationFactory implements MatchableOperationCreator
     @Override
     public Operation<?> createFromEntry( RequestLogEntry entry ) throws RequestLogEntryException
     {
-        return new CreateNodeOperation( entry.getTime(), entry.getDescriptionAsMap() );
+        return new CreateNodeOperation( entry.getTimeNanoSeconds(), entry.getDescriptionAsMap() );
     }
 
-    public class CreateNodeOperation extends Operation<Long>
+    public static class CreateNodeOperation extends Operation<Integer>
     {
-        private final long time;
         private final Map<String, Object> properties;
 
         private CreateNodeOperation( long time, Map<String, Object> properties )
         {
             super();
-            this.time = time;
+            setScheduledStartTimeNanoSeconds( time );
             this.properties = properties;
-        }
-
-        public long getTime()
-        {
-            return time;
         }
 
         public Map<String, Object> getProperties()
@@ -55,7 +48,32 @@ public class CreateNodeOperationFactory implements MatchableOperationCreator
         @Override
         public String toString()
         {
-            return "CreateNodeOperation [time=" + time + ", properties=" + properties + "]";
+            return "CreateNodeOperation [time=" + getScheduledStartTimeNanoSeconds() + ", properties=" + properties
+                   + "]";
         }
+    }
+
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ( ( CREATE_NODE_PATTERN == null ) ? 0 : CREATE_NODE_PATTERN.hashCode() );
+        return result;
+    }
+
+    @Override
+    public boolean equals( Object obj )
+    {
+        if ( this == obj ) return true;
+        if ( obj == null ) return false;
+        if ( getClass() != obj.getClass() ) return false;
+        CreateNodeOperationFactory other = (CreateNodeOperationFactory) obj;
+        if ( CREATE_NODE_PATTERN == null )
+        {
+            if ( other.CREATE_NODE_PATTERN != null ) return false;
+        }
+        else if ( !CREATE_NODE_PATTERN.equals( other.CREATE_NODE_PATTERN ) ) return false;
+        return true;
     }
 }

@@ -32,26 +32,20 @@ public class CypherOperationFactory implements MatchableOperationCreator
         Map<String, Object> cypherMap = entry.getDescriptionAsMap();
         String cypherQueryString = (String) cypherMap.get( "query" );
         Map<String, Object> cypherParams = (Map<String, Object>) cypherMap.get( "params" );
-        return new CypherOperation( entry.getTime(), cypherQueryString, cypherParams );
+        return new CypherOperation( entry.getTimeNanoSeconds(), cypherQueryString, cypherParams );
     }
 
     public static class CypherOperation extends Operation<Object>
     {
-        private final long time;
         private final String queryString;
         private final Map<String, Object> params;
 
         private CypherOperation( long time, String queryString, Map<String, Object> params )
         {
             super();
-            this.time = time;
+            setScheduledStartTimeNanoSeconds( time );
             this.queryString = queryString;
             this.params = params;
-        }
-
-        public long getTime()
-        {
-            return time;
         }
 
         public String getQueryString()
@@ -67,7 +61,38 @@ public class CypherOperationFactory implements MatchableOperationCreator
         @Override
         public String toString()
         {
-            return "CypherOperation [time=" + time + ", queryString=" + queryString + ", params=" + params + "]";
+            return "CypherOperation [time=" + getScheduledStartTimeNanoSeconds() + ", queryString=" + queryString
+                   + ", params=" + params + "]";
+        }
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ( ( params == null ) ? 0 : params.hashCode() );
+            result = prime * result + ( ( queryString == null ) ? 0 : queryString.hashCode() );
+            return result;
+        }
+
+        @Override
+        public boolean equals( Object obj )
+        {
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
+            CypherOperation other = (CypherOperation) obj;
+            if ( params == null )
+            {
+                if ( other.params != null ) return false;
+            }
+            else if ( !params.equals( other.params ) ) return false;
+            if ( queryString == null )
+            {
+                if ( other.queryString != null ) return false;
+            }
+            else if ( !queryString.equals( other.queryString ) ) return false;
+            return true;
         }
     }
 }

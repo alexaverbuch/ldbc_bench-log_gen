@@ -27,24 +27,18 @@ public class DeleteNodeOperationFactory implements MatchableOperationCreator
     public Operation<?> createFromEntry( RequestLogEntry entry ) throws RequestLogEntryException
     {
         long nodeId = UrlParsingUtils.parseNodeIdFromNodeUrl( entry.getUrl() );
-        return new DeleteNodeOperation( entry.getTime(), nodeId );
+        return new DeleteNodeOperation( entry.getTimeNanoSeconds(), nodeId );
     }
 
-    public static class DeleteNodeOperation extends Operation<Object>
+    public static class DeleteNodeOperation extends Operation<Integer>
     {
-        private final long time;
         private final long nodeId;
 
         private DeleteNodeOperation( long time, long nodeId )
         {
             super();
-            this.time = time;
+            setScheduledStartTimeNanoSeconds( time );
             this.nodeId = nodeId;
-        }
-
-        public long getTime()
-        {
-            return time;
         }
 
         public long getNodeId()
@@ -55,7 +49,27 @@ public class DeleteNodeOperationFactory implements MatchableOperationCreator
         @Override
         public String toString()
         {
-            return "DeleteNodeOperation [time=" + time + ", nodeId=" + nodeId + "]";
+            return "DeleteNodeOperation [time=" + getScheduledStartTimeNanoSeconds() + ", nodeId=" + nodeId + "]";
+        }
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + (int) ( nodeId ^ ( nodeId >>> 32 ) );
+            return result;
+        }
+
+        @Override
+        public boolean equals( Object obj )
+        {
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
+            DeleteNodeOperation other = (DeleteNodeOperation) obj;
+            if ( nodeId != other.nodeId ) return false;
+            return true;
         }
     }
 }

@@ -28,24 +28,18 @@ public class DeleteRelationshipOperationFactory implements MatchableOperationCre
     public Operation<?> createFromEntry( RequestLogEntry entry ) throws RequestLogEntryException
     {
         long relationshipId = UrlParsingUtils.parseRelationshipIdFromRelationshipUrl( entry.getUrl() );
-        return new DeleteRelationshipOperation( entry.getTime(), relationshipId );
+        return new DeleteRelationshipOperation( entry.getTimeNanoSeconds(), relationshipId );
     }
 
-    public class DeleteRelationshipOperation extends Operation<Object>
+    public static class DeleteRelationshipOperation extends Operation<Integer>
     {
-        private final long time;
         private final long relationshipId;
 
         private DeleteRelationshipOperation( long time, long relationshipId )
         {
             super();
-            this.time = time;
+            setScheduledStartTimeNanoSeconds( time );
             this.relationshipId = relationshipId;
-        }
-
-        public long getTime()
-        {
-            return time;
         }
 
         public long getRelationshipId()
@@ -56,7 +50,28 @@ public class DeleteRelationshipOperationFactory implements MatchableOperationCre
         @Override
         public String toString()
         {
-            return "DeleteRelationshipOperation [time=" + time + ", relationshipId=" + relationshipId + "]";
+            return "DeleteRelationshipOperation [time=" + getScheduledStartTimeNanoSeconds() + ", relationshipId="
+                   + relationshipId + "]";
+        }
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + (int) ( relationshipId ^ ( relationshipId >>> 32 ) );
+            return result;
+        }
+
+        @Override
+        public boolean equals( Object obj )
+        {
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
+            DeleteRelationshipOperation other = (DeleteRelationshipOperation) obj;
+            if ( relationshipId != other.relationshipId ) return false;
+            return true;
         }
     }
 }

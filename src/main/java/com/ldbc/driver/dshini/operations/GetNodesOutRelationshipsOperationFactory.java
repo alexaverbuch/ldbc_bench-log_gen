@@ -27,24 +27,18 @@ public class GetNodesOutRelationshipsOperationFactory implements MatchableOperat
     public Operation<?> createFromEntry( RequestLogEntry entry ) throws RequestLogEntryException
     {
         long nodeId = UrlParsingUtils.parseNodeIdFromNodeRelationshipsUrl( entry.getUrl() );
-        return new GetNodeOutRelationshipsOperation( entry.getTime(), nodeId );
+        return new GetNodeOutRelationshipsOperation( entry.getTimeNanoSeconds(), nodeId );
     }
 
-    public class GetNodeOutRelationshipsOperation extends Operation<Object>
+    public static class GetNodeOutRelationshipsOperation extends Operation<Integer>
     {
-        private final long time;
         private final long nodeId;
 
         private GetNodeOutRelationshipsOperation( long time, long nodeId )
         {
             super();
-            this.time = time;
+            setScheduledStartTimeNanoSeconds( time );
             this.nodeId = nodeId;
-        }
-
-        public long getTime()
-        {
-            return time;
         }
 
         public long getNodeId()
@@ -55,7 +49,28 @@ public class GetNodesOutRelationshipsOperationFactory implements MatchableOperat
         @Override
         public String toString()
         {
-            return "GetNodeOutRelationshipsOperation [time=" + time + ", nodeId=" + nodeId + "]";
+            return "GetNodeOutRelationshipsOperation [time=" + getScheduledStartTimeNanoSeconds() + ", nodeId="
+                   + nodeId + "]";
+        }
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + (int) ( nodeId ^ ( nodeId >>> 32 ) );
+            return result;
+        }
+
+        @Override
+        public boolean equals( Object obj )
+        {
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
+            GetNodeOutRelationshipsOperation other = (GetNodeOutRelationshipsOperation) obj;
+            if ( nodeId != other.nodeId ) return false;
+            return true;
         }
     }
 }

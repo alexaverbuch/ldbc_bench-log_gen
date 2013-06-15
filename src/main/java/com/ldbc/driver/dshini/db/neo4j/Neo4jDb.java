@@ -5,7 +5,9 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.ldbc.driver.Db;
+import com.ldbc.driver.DbConnectionState;
 import com.ldbc.driver.DbException;
+import com.ldbc.driver.dshini.db.neo4j.emdedded.Neo4jDshiniCommandsEmbedded;
 import com.ldbc.driver.dshini.operations.AddNodeToIndexOperationFactory.AddNodeToIndexOperation;
 import com.ldbc.driver.dshini.operations.BatchOperationFactory.BatchOperation;
 import com.ldbc.driver.dshini.operations.CreateNodeOperationFactory.CreateNodeOperation;
@@ -130,5 +132,11 @@ public class Neo4jDb extends Db
             logger.error( msg, e.getCause() );
             throw new DbException( msg, e.getCause() );
         }
+    }
+
+    @Override
+    protected DbConnectionState getConnectionState() throws DbException
+    {
+        return commands.getDbConnectionState();
     }
 }

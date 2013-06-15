@@ -28,24 +28,18 @@ public class GetNodesRelationshipsOperationFactory implements MatchableOperation
     public Operation<?> createFromEntry( RequestLogEntry entry ) throws RequestLogEntryException
     {
         long nodeId = UrlParsingUtils.parseNodeIdFromNodeRelationshipsUrl( entry.getUrl() );
-        return new GetNodeRelationshipsOperation( entry.getTime(), nodeId );
+        return new GetNodeRelationshipsOperation( entry.getTimeNanoSeconds(), nodeId );
     }
 
-    public class GetNodeRelationshipsOperation extends Operation<Object>
+    public static class GetNodeRelationshipsOperation extends Operation<Integer>
     {
-        private final long time;
         private final long nodeId;
 
         private GetNodeRelationshipsOperation( long time, long nodeId )
         {
             super();
-            this.time = time;
+            setScheduledStartTimeNanoSeconds( time );
             this.nodeId = nodeId;
-        }
-
-        public long getTime()
-        {
-            return time;
         }
 
         public long getNodeId()
@@ -56,7 +50,28 @@ public class GetNodesRelationshipsOperationFactory implements MatchableOperation
         @Override
         public String toString()
         {
-            return "GetNodeRelationshipsOperation [time=" + time + ", nodeId=" + nodeId + "]";
+            return "GetNodeRelationshipsOperation [time=" + getScheduledStartTimeNanoSeconds() + ", nodeId=" + nodeId
+                   + "]";
+        }
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + (int) ( nodeId ^ ( nodeId >>> 32 ) );
+            return result;
+        }
+
+        @Override
+        public boolean equals( Object obj )
+        {
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
+            GetNodeRelationshipsOperation other = (GetNodeRelationshipsOperation) obj;
+            if ( nodeId != other.nodeId ) return false;
+            return true;
         }
     }
 }

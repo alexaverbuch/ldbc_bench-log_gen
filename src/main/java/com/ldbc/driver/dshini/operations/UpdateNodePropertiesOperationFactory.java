@@ -29,26 +29,20 @@ public class UpdateNodePropertiesOperationFactory implements MatchableOperationC
     {
         long nodeId = UrlParsingUtils.parseNodeIdFromNodeUrl( entry.getUrl() );
         Map<String, Object> properties = entry.getDescriptionAsMap();
-        return new UpdateNodePropertiesOperation( entry.getTime(), nodeId, properties );
+        return new UpdateNodePropertiesOperation( entry.getTimeNanoSeconds(), nodeId, properties );
     }
 
-    public class UpdateNodePropertiesOperation extends Operation<Object>
+    public static class UpdateNodePropertiesOperation extends Operation<Integer>
     {
-        private final long time;
         private final long nodeId;
         private final Map<String, Object> properties;
 
         private UpdateNodePropertiesOperation( long time, long nodeId, Map<String, Object> properties )
         {
             super();
-            this.time = time;
+            setScheduledStartTimeNanoSeconds( time );
             this.nodeId = nodeId;
             this.properties = properties;
-        }
-
-        public long getTime()
-        {
-            return time;
         }
 
         public long getNodeId()
@@ -64,8 +58,34 @@ public class UpdateNodePropertiesOperationFactory implements MatchableOperationC
         @Override
         public String toString()
         {
-            return "UpdateNodePropertiesOperation [time=" + time + ", nodeId=" + nodeId + ", properties=" + properties
-                   + "]";
+            return "UpdateNodePropertiesOperation [time=" + getScheduledStartTimeNanoSeconds() + ", nodeId=" + nodeId
+                   + ", properties=" + properties + "]";
+        }
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + (int) ( nodeId ^ ( nodeId >>> 32 ) );
+            result = prime * result + ( ( properties == null ) ? 0 : properties.hashCode() );
+            return result;
+        }
+
+        @Override
+        public boolean equals( Object obj )
+        {
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
+            UpdateNodePropertiesOperation other = (UpdateNodePropertiesOperation) obj;
+            if ( nodeId != other.nodeId ) return false;
+            if ( properties == null )
+            {
+                if ( other.properties != null ) return false;
+            }
+            else if ( !properties.equals( other.properties ) ) return false;
+            return true;
         }
     }
 }

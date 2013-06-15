@@ -29,26 +29,20 @@ public class GetNodesTypedInRelationshipsOperationFactory implements MatchableOp
     {
         long nodeId = UrlParsingUtils.parseNodeIdFromNodeRelationshipsUrl( entry.getUrl() );
         String relationshipType = UrlParsingUtils.parseRelationshipTypeFromNodeRelationshipsUrl( entry.getUrl() );
-        return new GetNodeTypedInRelationshipsOperation( entry.getTime(), nodeId, relationshipType );
+        return new GetNodeTypedInRelationshipsOperation( entry.getTimeNanoSeconds(), nodeId, relationshipType );
     }
 
-    public class GetNodeTypedInRelationshipsOperation extends Operation<Object>
+    public static class GetNodeTypedInRelationshipsOperation extends Operation<Integer>
     {
-        private final long time;
         private final long nodeId;
         private final String relationshipType;
 
         private GetNodeTypedInRelationshipsOperation( long time, long nodeId, String relationshipType )
         {
             super();
-            this.time = time;
+            setScheduledStartTimeNanoSeconds( time );
             this.nodeId = nodeId;
             this.relationshipType = relationshipType;
-        }
-
-        public long getTime()
-        {
-            return time;
         }
 
         public long getNodeId()
@@ -64,8 +58,34 @@ public class GetNodesTypedInRelationshipsOperationFactory implements MatchableOp
         @Override
         public String toString()
         {
-            return "GetNodeTypedInRelationshipsOperation [time=" + time + ", nodeId=" + nodeId + ", relationshipType="
-                   + relationshipType + "]";
+            return "GetNodeTypedInRelationshipsOperation [time=" + getScheduledStartTimeNanoSeconds() + ", nodeId="
+                   + nodeId + ", relationshipType=" + relationshipType + "]";
+        }
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + (int) ( nodeId ^ ( nodeId >>> 32 ) );
+            result = prime * result + ( ( relationshipType == null ) ? 0 : relationshipType.hashCode() );
+            return result;
+        }
+
+        @Override
+        public boolean equals( Object obj )
+        {
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
+            GetNodeTypedInRelationshipsOperation other = (GetNodeTypedInRelationshipsOperation) obj;
+            if ( nodeId != other.nodeId ) return false;
+            if ( relationshipType == null )
+            {
+                if ( other.relationshipType != null ) return false;
+            }
+            else if ( !relationshipType.equals( other.relationshipType ) ) return false;
+            return true;
         }
     }
 }

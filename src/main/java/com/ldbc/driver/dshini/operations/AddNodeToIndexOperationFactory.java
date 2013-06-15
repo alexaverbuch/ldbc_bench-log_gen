@@ -32,12 +32,11 @@ public class AddNodeToIndexOperationFactory implements MatchableOperationCreator
         String key = (String) operationMap.get( "key" );
         Object value = operationMap.get( "value" );
         long nodeId = UrlParsingUtils.parseNodeIdFromNodeUrl( (String) operationMap.get( "uri" ) );
-        return new AddNodeToIndexOperation( entry.getTime(), indexName, key, value, nodeId );
+        return new AddNodeToIndexOperation( entry.getTimeNanoSeconds(), indexName, key, value, nodeId );
     }
 
-    public static class AddNodeToIndexOperation extends Operation<Object>
+    public static class AddNodeToIndexOperation extends Operation<Integer>
     {
-        private final long time;
         private final String indexName;
         private final String key;
         private final Object value;
@@ -46,16 +45,11 @@ public class AddNodeToIndexOperationFactory implements MatchableOperationCreator
         private AddNodeToIndexOperation( long time, String indexName, String key, Object value, long nodeId )
         {
             super();
-            this.time = time;
+            setScheduledStartTimeNanoSeconds( time );
             this.indexName = indexName;
             this.key = key;
             this.value = value;
             this.nodeId = nodeId;
-        }
-
-        public long getTime()
-        {
-            return time;
         }
 
         public String getIndexName()
@@ -81,8 +75,46 @@ public class AddNodeToIndexOperationFactory implements MatchableOperationCreator
         @Override
         public String toString()
         {
-            return "AddNodeToIndexOperation [time=" + time + ", indexName=" + indexName + ", key=" + key + ", value="
-                   + value + ", nodeId=" + nodeId + "]";
+            return "AddNodeToIndexOperation [time=" + getScheduledStartTimeNanoSeconds() + ", indexName=" + indexName
+                   + ", key=" + key + ", value=" + value + ", nodeId=" + nodeId + "]";
+        }
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ( ( indexName == null ) ? 0 : indexName.hashCode() );
+            result = prime * result + ( ( key == null ) ? 0 : key.hashCode() );
+            result = prime * result + (int) ( nodeId ^ ( nodeId >>> 32 ) );
+            result = prime * result + ( ( value == null ) ? 0 : value.hashCode() );
+            return result;
+        }
+
+        @Override
+        public boolean equals( Object obj )
+        {
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
+            AddNodeToIndexOperation other = (AddNodeToIndexOperation) obj;
+            if ( indexName == null )
+            {
+                if ( other.indexName != null ) return false;
+            }
+            else if ( !indexName.equals( other.indexName ) ) return false;
+            if ( key == null )
+            {
+                if ( other.key != null ) return false;
+            }
+            else if ( !key.equals( other.key ) ) return false;
+            if ( nodeId != other.nodeId ) return false;
+            if ( value == null )
+            {
+                if ( other.value != null ) return false;
+            }
+            else if ( !value.equals( other.value ) ) return false;
+            return true;
         }
     }
 

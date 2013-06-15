@@ -31,9 +31,8 @@ public class RequestLogOperationGenerator extends Generator<Operation<?>>
 {
     private static final Logger logger = Logger.getLogger( RequestLogOperationGenerator.class );
 
-    private final MatchableOperationCreator[] operations;
     private final OperationMatcher operationMatcher;
-    private final MultiRequestLogEntryReader requestLogReader;
+    private final RequestLogEntryReader requestLogReader;
 
     public static MatchableOperationCreator[] operations( OperationMatcher matcher )
     {
@@ -72,12 +71,12 @@ public class RequestLogOperationGenerator extends Generator<Operation<?>>
                 new UpdateNodePropertiesOperationFactory() };
     }
 
-    public RequestLogOperationGenerator( File... requestLogFiles )
+    public RequestLogOperationGenerator( File requestLogFile )
     {
         super( null );
-        this.requestLogReader = new MultiRequestLogEntryReader( requestLogFiles );
+        this.requestLogReader = new RequestLogEntryReader( requestLogFile );
         operationMatcher = new OperationMatcher();
-        operations = operations( operationMatcher );
+        MatchableOperationCreator[] operations = operations( operationMatcher );
         operationMatcher.setOperations( operations );
     }
 
@@ -93,10 +92,9 @@ public class RequestLogOperationGenerator extends Generator<Operation<?>>
             }
             catch ( RequestLogEntryException e )
             {
-                // TODO uncomment to see Entry that could not be parsed
-                // String errMsg = String.format( "Error parsing log entry\n%s",
-                // entry.toString() );
-                // logger.error( errMsg );
+                // TODO hide notifications of entries that were not parsed
+                String errMsg = String.format( "Error parsing log entry\n%s", entry.toString() );
+                logger.error( errMsg );
             }
             catch ( MatchableException e )
             {

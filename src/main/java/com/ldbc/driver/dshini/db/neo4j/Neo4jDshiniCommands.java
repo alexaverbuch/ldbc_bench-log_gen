@@ -1,5 +1,6 @@
 package com.ldbc.driver.dshini.db.neo4j;
 
+import com.ldbc.driver.DbConnectionState;
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.dshini.operations.AddNodeToIndexOperationFactory.AddNodeToIndexOperation;
 import com.ldbc.driver.dshini.operations.BatchOperationFactory.BatchOperation;
@@ -25,6 +26,8 @@ public interface Neo4jDshiniCommands
     public void cleanUp();
 
     public void clearDb();
+
+    public DbConnectionState getDbConnectionState();
 
     public Class<? extends OperationHandler<CypherOperation>> getCypherOperationHandler();
 

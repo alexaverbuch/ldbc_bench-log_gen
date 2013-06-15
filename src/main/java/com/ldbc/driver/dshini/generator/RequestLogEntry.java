@@ -6,14 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
 public class RequestLogEntry
 {
-    private static final Logger logger = Logger.getLogger( RequestLogEntry.class );
-
     private final Pattern EXPECTED_DSHINI_TIME_STAMP_PATTERN = Pattern.compile( "^\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}:\\d{2}.\\d{6}" );
     private final SimpleDateFormat DESIRED_DATE_FORMAT = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS" );
     private static final String SINGLE_QUOTE_STRING = "\"";
@@ -21,7 +18,7 @@ public class RequestLogEntry
 
     private final ObjectMapper mapper;
 
-    private final long time;
+    private final long timeNanoSeconds;
     private final String httpMethod;
     private final String url;
 
@@ -36,7 +33,7 @@ public class RequestLogEntry
     {
         super();
         this.mapper = mapper;
-        this.time = parseTime( time );
+        this.timeNanoSeconds = parseTimeToNanoSeconds( time );
         this.httpMethod = httpMethod;
         this.url = url;
         this.descriptionString = description;
@@ -50,7 +47,7 @@ public class RequestLogEntry
     {
         super();
         this.mapper = mapper;
-        this.time = parseTime( time );
+        this.timeNanoSeconds = parseTimeToNanoSeconds( time );
         this.httpMethod = httpMethod;
         this.url = url;
         this.descriptionString = null;
@@ -64,7 +61,7 @@ public class RequestLogEntry
     {
         super();
         this.mapper = mapper;
-        this.time = parseTime( time );
+        this.timeNanoSeconds = parseTimeToNanoSeconds( time );
         this.httpMethod = httpMethod;
         this.url = url;
         this.descriptionString = null;
@@ -78,7 +75,7 @@ public class RequestLogEntry
     {
         super();
         this.mapper = mapper;
-        this.time = time;
+        this.timeNanoSeconds = time;
         this.httpMethod = httpMethod;
         this.url = url;
         this.descriptionString = description;
@@ -92,7 +89,7 @@ public class RequestLogEntry
     {
         super();
         this.mapper = mapper;
-        this.time = time;
+        this.timeNanoSeconds = time;
         this.httpMethod = httpMethod;
         this.url = url;
         this.descriptionString = null;
@@ -106,7 +103,7 @@ public class RequestLogEntry
     {
         super();
         this.mapper = mapper;
-        this.time = time;
+        this.timeNanoSeconds = time;
         this.httpMethod = httpMethod;
         this.url = url;
         this.descriptionString = null;
@@ -115,9 +112,9 @@ public class RequestLogEntry
         this.httpHeaders = httpHeaders;
     }
 
-    public long getTime()
+    public long getTimeNanoSeconds()
     {
-        return time;
+        return timeNanoSeconds;
     }
 
     public String getHttpMethod()
@@ -161,8 +158,8 @@ public class RequestLogEntry
     @Override
     public String toString()
     {
-        return "RequestLogEntry [mapper=" + mapper + ", time=" + time + ", httpMethod=" + httpMethod + ", url=" + url
-               + ", descriptionString=" + descriptionString + ", descriptionMap=" + descriptionMap
+        return "RequestLogEntry [mapper=" + mapper + ", time=" + timeNanoSeconds + ", httpMethod=" + httpMethod
+               + ", url=" + url + ", descriptionString=" + descriptionString + ", descriptionMap=" + descriptionMap
                + ", descriptionMapList=" + descriptionMapList + ", httpHeaders=" + httpHeaders + "]";
     }
 
@@ -198,23 +195,23 @@ public class RequestLogEntry
     }
 
     // "2013-04-29 15:32:53.661274"
-    public long parseTime( String timeString ) throws RequestLogEntryException
+    public long parseTimeToNanoSeconds( String timeString ) throws RequestLogEntryException
     {
         String timeStringWithoutQuote = stripSurroundingCharacters( timeString );
         assertTimeStampFormat( EXPECTED_DSHINI_TIME_STAMP_PATTERN, timeStringWithoutQuote );
         String timeStringMilli = timeStringWithoutQuote.substring( 0, timeStringWithoutQuote.length() - 3 );
-        return convertTimeStringToMs( timeStringMilli );
+        return convertTimeStringToNanoSeconds( timeStringMilli );
     }
 
-    private long convertTimeStringToMs( String timeStampString ) throws RequestLogEntryException
+    private long convertTimeStringToNanoSeconds( String timeStampString ) throws RequestLogEntryException
     {
         try
         {
-            return DESIRED_DATE_FORMAT.parse( timeStampString ).getTime();
+            return DESIRED_DATE_FORMAT.parse( timeStampString ).getTime() * 1000;
         }
         catch ( ParseException e )
         {
-            String errMsg = String.format( "Error converting time stamp string [%s] to ms", timeStampString );
+            String errMsg = String.format( "Error converting time stamp string [%s] to ns", timeStampString );
             throw new RequestLogEntryException( errMsg );
         }
     }

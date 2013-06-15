@@ -2,6 +2,7 @@ package com.ldbc.driver.dshini.operations;
 
 import java.util.regex.Pattern;
 
+import com.google.common.collect.Sets;
 import com.ldbc.driver.Operation;
 import com.ldbc.driver.dshini.generator.RequestLogEntry;
 import com.ldbc.driver.dshini.generator.RequestLogEntryException;
@@ -29,26 +30,20 @@ public class GetNodesTypedOutRelationshipsOperationFactory implements MatchableO
     {
         long nodeId = UrlParsingUtils.parseNodeIdFromNodeRelationshipsUrl( entry.getUrl() );
         String relationshipType = UrlParsingUtils.parseRelationshipTypeFromNodeRelationshipsUrl( entry.getUrl() );
-        return new GetNodeTypedOutRelationshipsOperation( entry.getTime(), nodeId, relationshipType );
+        return new GetNodeTypedOutRelationshipsOperation( entry.getTimeNanoSeconds(), nodeId, relationshipType );
     }
 
-    public class GetNodeTypedOutRelationshipsOperation extends Operation<Object>
+    public static class GetNodeTypedOutRelationshipsOperation extends Operation<Integer>
     {
-        private final long time;
         private final long nodeId;
         private final String relationshipType;
 
         private GetNodeTypedOutRelationshipsOperation( long time, long nodeId, String relationshipType )
         {
             super();
-            this.time = time;
+            setScheduledStartTimeNanoSeconds( time );
             this.nodeId = nodeId;
             this.relationshipType = relationshipType;
-        }
-
-        public long getTime()
-        {
-            return time;
         }
 
         public long getNodeId()
@@ -64,8 +59,34 @@ public class GetNodesTypedOutRelationshipsOperationFactory implements MatchableO
         @Override
         public String toString()
         {
-            return "GetNodeTypedOutRelationshipsOperation [time=" + time + ", nodeId=" + nodeId + ", relationshipType="
-                   + relationshipType + "]";
+            return "GetNodeTypedOutRelationshipsOperation [time=" + getScheduledStartTimeNanoSeconds() + ", nodeId="
+                   + nodeId + ", relationshipType=" + relationshipType + "]";
+        }
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + (int) ( nodeId ^ ( nodeId >>> 32 ) );
+            result = prime * result + ( ( relationshipType == null ) ? 0 : relationshipType.hashCode() );
+            return result;
+        }
+
+        @Override
+        public boolean equals( Object obj )
+        {
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
+            GetNodeTypedOutRelationshipsOperation other = (GetNodeTypedOutRelationshipsOperation) obj;
+            if ( nodeId != other.nodeId ) return false;
+            if ( relationshipType == null )
+            {
+                if ( other.relationshipType != null ) return false;
+            }
+            else if ( !relationshipType.equals( other.relationshipType ) ) return false;
+            return true;
         }
     }
 }

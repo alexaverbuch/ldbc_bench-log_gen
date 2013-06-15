@@ -28,26 +28,20 @@ public class IndexQueryGetNodeOperationFactory implements MatchableOperationCrea
     {
         String indexName = UrlParsingUtils.parseIndexNameForNodeIndexQueryUrl( entry.getUrl() );
         String indexQuery = UrlParsingUtils.parseIndexQueryFromNodeIndexQueryUrl( entry.getUrl() );
-        return new IndexQueryGetNodeOperation( entry.getTime(), indexName, indexQuery );
+        return new IndexQueryGetNodeOperation( entry.getTimeNanoSeconds(), indexName, indexQuery );
     }
 
-    public class IndexQueryGetNodeOperation extends Operation<Object>
+    public static class IndexQueryGetNodeOperation extends Operation<Integer>
     {
-        private final long time;
         private final String indexName;
         private final String indexQuery;
 
         private IndexQueryGetNodeOperation( long time, String indexName, String indexQuery )
         {
             super();
-            this.time = time;
+            setScheduledStartTimeNanoSeconds( time );
             this.indexName = indexName;
             this.indexQuery = indexQuery;
-        }
-
-        public long getTime()
-        {
-            return time;
         }
 
         public String getIndexName()
@@ -63,8 +57,38 @@ public class IndexQueryGetNodeOperationFactory implements MatchableOperationCrea
         @Override
         public String toString()
         {
-            return "IndexQueryGetNodeOperation [time=" + time + ", indexName=" + indexName + ", indexQuery="
-                   + indexQuery + "]";
+            return "IndexQueryGetNodeOperation [time=" + getScheduledStartTimeNanoSeconds() + ", indexName="
+                   + indexName + ", indexQuery=" + indexQuery + "]";
+        }
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ( ( indexName == null ) ? 0 : indexName.hashCode() );
+            result = prime * result + ( ( indexQuery == null ) ? 0 : indexQuery.hashCode() );
+            return result;
+        }
+
+        @Override
+        public boolean equals( Object obj )
+        {
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
+            IndexQueryGetNodeOperation other = (IndexQueryGetNodeOperation) obj;
+            if ( indexName == null )
+            {
+                if ( other.indexName != null ) return false;
+            }
+            else if ( !indexName.equals( other.indexName ) ) return false;
+            if ( indexQuery == null )
+            {
+                if ( other.indexQuery != null ) return false;
+            }
+            else if ( !indexQuery.equals( other.indexQuery ) ) return false;
+            return true;
         }
     }
 }

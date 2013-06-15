@@ -1,28 +1,16 @@
-package com.ldbc.driver.dshini.db.neo4j;
+package com.ldbc.driver.dshini.db.neo4j.emdedded;
 
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.helpers.collection.MapUtil;
 
+import com.ldbc.driver.DbConnectionState;
 import com.ldbc.driver.OperationHandler;
 
-import com.ldbc.driver.dshini.db.neo4j.handlers.emdedded.EmbeddedAddNodeToIndexOperationHandler;
-import com.ldbc.driver.dshini.db.neo4j.handlers.emdedded.EmbeddedBatchOperationHandler;
-import com.ldbc.driver.dshini.db.neo4j.handlers.emdedded.EmbeddedCreateNodeOperationHandler;
-import com.ldbc.driver.dshini.db.neo4j.handlers.emdedded.EmbeddedCreateRelationshipOperationHandler;
-import com.ldbc.driver.dshini.db.neo4j.handlers.emdedded.EmbeddedCypherOperationHandler;
-import com.ldbc.driver.dshini.db.neo4j.handlers.emdedded.EmbeddedDeleteNodeFromIndexOperationHandler;
-import com.ldbc.driver.dshini.db.neo4j.handlers.emdedded.EmbeddedDeleteNodeOperationHandler;
-import com.ldbc.driver.dshini.db.neo4j.handlers.emdedded.EmbeddedDeleteRelationshipOperationHandler;
-import com.ldbc.driver.dshini.db.neo4j.handlers.emdedded.EmbeddedGetNodeOperationHandler;
-import com.ldbc.driver.dshini.db.neo4j.handlers.emdedded.EmbeddedGetNodeOutRelationshipsOperationHandler;
-import com.ldbc.driver.dshini.db.neo4j.handlers.emdedded.EmbeddedGetNodeRelationshipsOperationHandler;
-import com.ldbc.driver.dshini.db.neo4j.handlers.emdedded.EmbeddedGetNodeTypedInRelationshipsOperationHandler;
-import com.ldbc.driver.dshini.db.neo4j.handlers.emdedded.EmbeddedGetNodeTypedOutRelationshipsOperationHandler;
-import com.ldbc.driver.dshini.db.neo4j.handlers.emdedded.EmbeddedGetRelationshipOperationHandler;
-import com.ldbc.driver.dshini.db.neo4j.handlers.emdedded.EmbeddedIndexQueryGetNodeOperationHandler;
-import com.ldbc.driver.dshini.db.neo4j.handlers.emdedded.EmbeddedUpdateNodePropertiesOperationHandler;
+import com.ldbc.driver.dshini.db.neo4j.Neo4jDshiniCommands;
+import com.ldbc.driver.dshini.db.neo4j.emdedded.unimplemented.EmbeddedBatchOperationHandler;
+import com.ldbc.driver.dshini.db.neo4j.emdedded.unimplemented.EmbeddedCypherOperationHandler;
 
 import com.ldbc.driver.dshini.operations.AddNodeToIndexOperationFactory.AddNodeToIndexOperation;
 import com.ldbc.driver.dshini.operations.BatchOperationFactory.BatchOperation;
@@ -47,6 +35,7 @@ public class Neo4jDshiniCommandsEmbedded implements Neo4jDshiniCommands
 
     private ExecutionEngine queryEngine;
     private GraphDatabaseService db;
+    private DbConnectionState dbConnectionState;
 
     public Neo4jDshiniCommandsEmbedded( String path )
     {
@@ -57,6 +46,7 @@ public class Neo4jDshiniCommandsEmbedded implements Neo4jDshiniCommands
     {
         db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder( path ).newGraphDatabase();
         queryEngine = new ExecutionEngine( db );
+        dbConnectionState = new Neo4jConnectionStateEmbedded( db, queryEngine );
         registerShutdownHook( db );
     }
 
@@ -69,6 +59,12 @@ public class Neo4jDshiniCommandsEmbedded implements Neo4jDshiniCommands
     {
         queryEngine.execute( "START r=rel(*) DELETE r", MapUtil.map() );
         queryEngine.execute( "START n=node(*) DELETE n", MapUtil.map() );
+    }
+
+    @Override
+    public DbConnectionState getDbConnectionState()
+    {
+        return dbConnectionState;
     }
 
     private static void registerShutdownHook( final GraphDatabaseService graphDb )

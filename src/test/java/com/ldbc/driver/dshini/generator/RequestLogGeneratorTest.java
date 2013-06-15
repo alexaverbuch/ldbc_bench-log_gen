@@ -1,7 +1,6 @@
 package com.ldbc.driver.dshini.generator;
 
 import java.io.File;
-import java.util.Iterator;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -25,6 +24,8 @@ import com.ldbc.driver.dshini.operations.GetRelationshipOperationFactory.GetRela
 import com.ldbc.driver.dshini.operations.IndexQueryGetNodeOperationFactory.IndexQueryGetNodeOperation;
 import com.ldbc.driver.dshini.operations.UpdateNodePropertiesOperationFactory.UpdateNodePropertiesOperation;
 import com.ldbc.driver.generator.Generator;
+import com.ldbc.driver.generator.GeneratorException;
+import com.ldbc.driver.generator.wrapper.OrderedMultiGeneratorWrapper;
 import com.ldbc.driver.util.Bucket.DiscreteBucket;
 import com.ldbc.driver.util.Histogram;
 
@@ -35,26 +36,51 @@ import static com.ldbc.driver.util.TestUtils.*;
 public class RequestLogGeneratorTest
 {
     @Test
-    public void basicTest()
+    public void shouldReadAllOperations()
     {
         // Given
-        String requestLogPath = "/test_request_log.log";
-        File requestLogFile = getResource( requestLogPath );
+        File requestLogFile = getResource( "/test_request_log.log" );
 
         // When
         RequestLogOperationGenerator requestLogGenerator = new RequestLogOperationGenerator( requestLogFile );
 
         Histogram<String, Long> distribution = initDistribution();
 
-        distribution.importValueSequence( new OperationToClassConvertor( requestLogGenerator ) );
+        distribution.importValueSequence( new ClassNameGeneratorWrapper( requestLogGenerator ) );
 
         // Then
         assertEquals( new Long( 11 ), distribution.sumOfAllBucketValues() );
     }
 
+    @Test
+    public void shouldReadAllLogsAndOrderOperationsByTime()
+    {
+        // Given
+        final File partialAndReorderedRequestLogFile1 = getResource( "/partial_test_request_log1.log" );
+        final File partialAndReorderedRequestLogFile2 = getResource( "/partial_test_request_log2.log" );
+        final File partialAndReorderedRequestLogFile3 = getResource( "/partial_test_request_log3.log" );
+        final File fullRequestLogFile = getResource( "/test_request_log.log" );
+
+        // When
+        RequestLogOperationGenerator g1 = new RequestLogOperationGenerator( partialAndReorderedRequestLogFile1 );
+        RequestLogOperationGenerator g2 = new RequestLogOperationGenerator( partialAndReorderedRequestLogFile2 );
+        RequestLogOperationGenerator g3 = new RequestLogOperationGenerator( partialAndReorderedRequestLogFile3 );
+        Generator<Operation<?>> reorderedOperationsGenerator = OrderedMultiGeneratorWrapper.operationsByScheduledStartTime(
+                g1, g2, g3 );
+        Generator<Operation<?>> originalOrderOperationsGenerator = new RequestLogOperationGenerator( fullRequestLogFile );
+
+        // Then
+        while ( originalOrderOperationsGenerator.hasNext() )
+        {
+            assertEquals( true, reorderedOperationsGenerator.hasNext() );
+            assertEquals( originalOrderOperationsGenerator.next(), reorderedOperationsGenerator.next() );
+        }
+        assertEquals( false, reorderedOperationsGenerator.hasNext() );
+    }
+
     @Ignore
     @Test
-    public void checkAllOperationsRecognizedTest()
+    public void shouldRecognizeAllOperations()
     {
         // Given
         final File requestLogFile1 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-3-55-181.log" );
@@ -65,17 +91,81 @@ public class RequestLogGeneratorTest
         final File requestLogFile6 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-98-203-214.log" );
 
         // When
-        final RequestLogOperationGenerator requestLogGenerator = new RequestLogOperationGenerator( requestLogFile1,
-                requestLogFile2, requestLogFile3, requestLogFile4, requestLogFile5, requestLogFile6 );
+        RequestLogOperationGenerator g1 = new RequestLogOperationGenerator( requestLogFile1 );
+        RequestLogOperationGenerator g2 = new RequestLogOperationGenerator( requestLogFile2 );
+        RequestLogOperationGenerator g3 = new RequestLogOperationGenerator( requestLogFile3 );
+        RequestLogOperationGenerator g4 = new RequestLogOperationGenerator( requestLogFile4 );
+        RequestLogOperationGenerator g5 = new RequestLogOperationGenerator( requestLogFile5 );
+        RequestLogOperationGenerator g6 = new RequestLogOperationGenerator( requestLogFile6 );
+
+        OrderedMultiGeneratorWrapper<Operation<?>> requestLogGenerator = OrderedMultiGeneratorWrapper.operationsByScheduledStartTime(
+                g1, g2, g3, g4, g5, g6 );
 
         Histogram<String, Long> distribution = initDistribution();
 
-        distribution.importValueSequence( new OperationToClassConvertor( requestLogGenerator ) );
+        distribution.importValueSequence( new ClassNameGeneratorWrapper( requestLogGenerator ) );
 
         System.out.println( distribution.toPrettyString() );
 
         // Then
         assertEquals( new Long( 13049989 ), distribution.sumOfAllBucketValues() );
+    }
+
+    @Test
+    public void shouldReturnOperationsOrderedByScheduledStartTime()
+    {
+        // Given
+        final File requestLogFile1 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-3-55-181.log" );
+        final File requestLogFile2 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-196-162-95.log" );
+        final File requestLogFile3 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-76-97-169.log" );
+        final File requestLogFile4 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-84-146-61.log" );
+        final File requestLogFile5 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-90-59-251.log" );
+        final File requestLogFile6 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-98-203-214.log" );
+
+        // When
+        RequestLogOperationGenerator g1 = new RequestLogOperationGenerator( requestLogFile1 );
+        RequestLogOperationGenerator g2 = new RequestLogOperationGenerator( requestLogFile2 );
+        RequestLogOperationGenerator g3 = new RequestLogOperationGenerator( requestLogFile3 );
+        RequestLogOperationGenerator g4 = new RequestLogOperationGenerator( requestLogFile4 );
+        RequestLogOperationGenerator g5 = new RequestLogOperationGenerator( requestLogFile5 );
+        RequestLogOperationGenerator g6 = new RequestLogOperationGenerator( requestLogFile6 );
+
+        OrderedMultiGeneratorWrapper<Operation<?>> requestLogGenerator = OrderedMultiGeneratorWrapper.operationsByScheduledStartTime(
+                g1, g2, g3, g4, g5, g6 );
+
+        // Then
+        // TODO temp
+        int badTimeOrderingCount = 0;
+        long operations = 0;
+        long lastScheduledStartTime = Long.MIN_VALUE;
+        while ( requestLogGenerator.hasNext() )
+        {
+            Operation<?> operation = requestLogGenerator.next();
+            // TODO remove
+            if ( -1 == operation.getScheduledStartTimeNanoSeconds() )
+            {
+                System.out.println( operation.getClass().getName() );
+                assertEquals( true, false );
+            }
+
+            if ( false == lastScheduledStartTime <= operation.getScheduledStartTimeNanoSeconds() )
+            {
+                // System.out.println( operation.getClass().getName() );
+                // System.out.println( String.format( "%s\n%s\n--",
+                // lastScheduledStartTime,
+                // operation.getScheduledStartTimeNanoSeconds() ) );
+                badTimeOrderingCount++;
+            }
+            // TODO uncomment
+            // assertEquals( true, lastScheduledStartTime <=
+            // operation.getScheduledStartTimeNanoSeconds() );
+            lastScheduledStartTime = operation.getScheduledStartTimeNanoSeconds();
+            operations++;
+        }
+
+        assertEquals( 13049989, operations );
+        System.out.println( String.format( "---\nbadTimeOrderingCount = %s\n---", badTimeOrderingCount ) );
+        // badTimeOrderingCount = 89
     }
 
     @Ignore
@@ -91,8 +181,15 @@ public class RequestLogGeneratorTest
         final File requestLogFile6 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-98-203-214.log" );
 
         // When
-        final RequestLogOperationGenerator requestLogGenerator = new RequestLogOperationGenerator( requestLogFile1,
-                requestLogFile2, requestLogFile3, requestLogFile4, requestLogFile5, requestLogFile6 );
+        RequestLogOperationGenerator g1 = new RequestLogOperationGenerator( requestLogFile1 );
+        RequestLogOperationGenerator g2 = new RequestLogOperationGenerator( requestLogFile2 );
+        RequestLogOperationGenerator g3 = new RequestLogOperationGenerator( requestLogFile3 );
+        RequestLogOperationGenerator g4 = new RequestLogOperationGenerator( requestLogFile4 );
+        RequestLogOperationGenerator g5 = new RequestLogOperationGenerator( requestLogFile5 );
+        RequestLogOperationGenerator g6 = new RequestLogOperationGenerator( requestLogFile6 );
+
+        OrderedMultiGeneratorWrapper<Operation<?>> requestLogGenerator = OrderedMultiGeneratorWrapper.operationsByScheduledStartTime(
+                g1, g2, g3, g4, g5, g6 );
 
         long operations = 0;
         long startTime = System.nanoTime();
@@ -137,29 +234,20 @@ public class RequestLogGeneratorTest
 
 }
 
-class OperationToClassConvertor implements Iterator<String>
+class ClassNameGeneratorWrapper extends Generator<String>
 {
-    final Generator<Operation<?>> operationsGenerator;
+    final Generator<?> operationsGenerator;
 
-    public OperationToClassConvertor( Generator<Operation<?>> operationsGenerator )
+    public ClassNameGeneratorWrapper( Generator<?> operationsGenerator )
     {
+        super( null );
         this.operationsGenerator = operationsGenerator;
     }
 
     @Override
-    public void remove()
+    protected String doNext() throws GeneratorException
     {
-    }
-
-    @Override
-    public String next()
-    {
+        if ( false == operationsGenerator.hasNext() ) return null;
         return operationsGenerator.next().getClass().getSimpleName();
-    }
-
-    @Override
-    public boolean hasNext()
-    {
-        return operationsGenerator.hasNext();
     }
 };

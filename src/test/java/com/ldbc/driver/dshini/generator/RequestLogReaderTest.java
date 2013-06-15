@@ -7,7 +7,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.ldbc.driver.Operation;
-import com.ldbc.driver.dshini.generator.MultiRequestLogEntryReader;
 import com.ldbc.driver.dshini.generator.RequestLogEntry;
 import com.ldbc.driver.dshini.generator.RequestLogEntryException;
 import com.ldbc.driver.dshini.generator.RequestLogOperationGenerator;
@@ -31,22 +30,41 @@ public class RequestLogReaderTest
         final File requestLogFile5 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-90-59-251.log" );
         final File requestLogFile6 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-98-203-214.log" );
 
-        MultiRequestLogEntryReader requestLogReader = new MultiRequestLogEntryReader( requestLogFile1, requestLogFile2,
-                requestLogFile3, requestLogFile4, requestLogFile5, requestLogFile6 );
+        RequestLogEntryReader r1 = new RequestLogEntryReader( requestLogFile1 );
+        RequestLogEntryReader r2 = new RequestLogEntryReader( requestLogFile2 );
+        RequestLogEntryReader r3 = new RequestLogEntryReader( requestLogFile3 );
+        RequestLogEntryReader r4 = new RequestLogEntryReader( requestLogFile4 );
+        RequestLogEntryReader r5 = new RequestLogEntryReader( requestLogFile5 );
+        RequestLogEntryReader r6 = new RequestLogEntryReader( requestLogFile6 );
+
+        RequestLogEntryReader[] readers = new RequestLogEntryReader[] { r1, r2, r3, r4, r5, r6 };
 
         OperationMatcher matcher = new OperationMatcher();
         MatchableOperationCreator[] operations = RequestLogOperationGenerator.operations( matcher );
         matcher.setOperations( operations );
 
         // When
-        while ( requestLogReader.hasNext() )
+        for ( RequestLogEntryReader reader : readers )
         {
-            RequestLogEntry entry = requestLogReader.next();
-            List<Operation<?>> matchedOperations = matcher.getAllMatchingOperations( entry );
+            while ( reader.hasNext() )
+            {
+                RequestLogEntry entry = reader.next();
+                try
+                {
+                    List<Operation<?>> matchedOperations = matcher.getAllMatchingOperations( entry );
 
-            // Then
-            assertEquals( String.format( "Too many matched operations, expected one: ", matchedOperations.toArray() ),
-                    1, matchedOperations.size() );
+                    // Then
+                    assertEquals(
+                            String.format( "Too many matched operations, expected one: %s", matchedOperations.toArray() ),
+                            1, matchedOperations.size() );
+                }
+                catch ( RequestLogEntryException e )
+                {
+                    String errMsg = String.format( "Error parsing log entry\n%s", entry.toString() );
+                    System.out.println( errMsg );
+                }
+
+            }
         }
     }
 
@@ -62,17 +80,28 @@ public class RequestLogReaderTest
         final File requestLogFile5 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-90-59-251.log" );
         final File requestLogFile6 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-98-203-214.log" );
 
-        MultiRequestLogEntryReader requestLogReader = new MultiRequestLogEntryReader( requestLogFile1, requestLogFile2,
-                requestLogFile3, requestLogFile4, requestLogFile5, requestLogFile6 );
+        RequestLogEntryReader r1 = new RequestLogEntryReader( requestLogFile1 );
+        RequestLogEntryReader r2 = new RequestLogEntryReader( requestLogFile2 );
+        RequestLogEntryReader r3 = new RequestLogEntryReader( requestLogFile3 );
+        RequestLogEntryReader r4 = new RequestLogEntryReader( requestLogFile4 );
+        RequestLogEntryReader r5 = new RequestLogEntryReader( requestLogFile5 );
+        RequestLogEntryReader r6 = new RequestLogEntryReader( requestLogFile6 );
+
+        RequestLogEntryReader[] readers = new RequestLogEntryReader[] { r1, r2, r3, r4, r5, r6 };
 
         // When
         int entries = 0;
         long startTime = System.nanoTime();
-        while ( requestLogReader.hasNext() )
+
+        for ( RequestLogEntryReader reader : readers )
         {
-            RequestLogEntry entry = requestLogReader.next();
-            entries++;
+            while ( reader.hasNext() )
+            {
+                RequestLogEntry entry = reader.next();
+                entries++;
+            }
         }
+
         long endTime = System.nanoTime();
 
         long runtime = ( endTime - startTime ) / 1000000000;
