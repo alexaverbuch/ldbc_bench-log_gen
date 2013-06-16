@@ -3,9 +3,11 @@ package com.ldbc.driver.dshini.operations;
 import java.util.regex.Pattern;
 
 import com.ldbc.driver.Operation;
-import com.ldbc.driver.dshini.generator.RequestLogEntry;
-import com.ldbc.driver.dshini.generator.RequestLogEntryException;
-import com.ldbc.driver.dshini.generator.UrlParsingUtils;
+import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchable;
+import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchableException;
+import com.ldbc.driver.dshini.log.RequestLogEntry;
+import com.ldbc.driver.dshini.log.RequestLogEntryException;
+import com.ldbc.driver.dshini.log.UrlParsingUtils;
 
 /*
 httpMethod=DELETE, 
@@ -13,21 +15,28 @@ url=http://graph-master.dshini.net:7474/db/data/node/11455077,
 operationDescription= 
 */
 
-public class DeleteNodeOperationFactory implements MatchableOperationCreator
+public class DeleteNodeOperationFactory implements DshiniLogEntryMatchable
 {
     private final Pattern DELETE_NODE_PATTERN = Pattern.compile( ".*db/data/node/\\d*$" );
 
     @Override
-    public boolean matches( RequestLogEntry entry ) throws MatchableException
+    public boolean matches( RequestLogEntry entry ) throws DshiniLogEntryMatchableException
     {
         return entry.getHttpMethod().equals( "DELETE" ) && DELETE_NODE_PATTERN.matcher( entry.getUrl() ).matches();
     }
 
     @Override
-    public Operation<?> createFromEntry( RequestLogEntry entry ) throws RequestLogEntryException
+    public Operation<?> createFromEntry( RequestLogEntry entry ) throws DshiniLogEntryMatchableException
     {
-        long nodeId = UrlParsingUtils.parseNodeIdFromNodeUrl( entry.getUrl() );
-        return new DeleteNodeOperation( entry.getTimeNanoSeconds(), nodeId );
+        try
+        {
+            long nodeId = UrlParsingUtils.parseNodeIdFromNodeUrl( entry.getUrl() );
+            return new DeleteNodeOperation( entry.getTimeNanoSeconds(), nodeId );
+        }
+        catch ( RequestLogEntryException e )
+        {
+            throw new DshiniLogEntryMatchableException( "Error creating operation from log entry", e.getCause() );
+        }
     }
 
     public static class DeleteNodeOperation extends Operation<Integer>

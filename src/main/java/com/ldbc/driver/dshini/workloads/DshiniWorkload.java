@@ -73,7 +73,8 @@ public class DshiniWorkload extends Workload
         {
             requestLogReaderGenerators[i] = new RequestLogOperationGenerator( logFiles[i] );
         }
-        Generator<Operation<?>> generator = OrderedMultiGeneratorWrapper.operationsByScheduledStartTime( requestLogReaderGenerators );
+        Generator<Operation<?>> generator = OrderedMultiGeneratorWrapper.operationsByScheduledStartTime( 1,
+                requestLogReaderGenerators );
         return new FilterGeneratorWrapper<Operation<?>>( generator, filter );
     }
 

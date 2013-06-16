@@ -4,8 +4,10 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import com.ldbc.driver.Operation;
-import com.ldbc.driver.dshini.generator.RequestLogEntry;
-import com.ldbc.driver.dshini.generator.RequestLogEntryException;
+import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchable;
+import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchableException;
+import com.ldbc.driver.dshini.log.RequestLogEntry;
+import com.ldbc.driver.dshini.log.RequestLogEntryException;
 
 /*
 httpMethod=POST, 
@@ -13,12 +15,12 @@ url=http://graph.internal.dshini.net:7474/db/data/cypher,
 operationDescription="{""query"":""START n=node({STARTIDS}) MATCH n-[:PIN_REFERENCES_URL]->other_nodes RETURN other_nodes"",""params"":{""STARTIDS"":11436417}}",
 */
 
-public class CypherOperationFactory implements MatchableOperationCreator
+public class CypherOperationFactory implements DshiniLogEntryMatchable
 {
     private final Pattern CYPHER_PATTERN = Pattern.compile( ".*db/data/cypher$" );
 
     @Override
-    public boolean matches( RequestLogEntry entry ) throws MatchableException
+    public boolean matches( RequestLogEntry entry ) throws DshiniLogEntryMatchableException
     {
         // TODO cypher is always POST?
         // return entry.getHttpMethod().equals( "POST" ) &&
@@ -27,12 +29,19 @@ public class CypherOperationFactory implements MatchableOperationCreator
     }
 
     @Override
-    public Operation<?> createFromEntry( RequestLogEntry entry ) throws RequestLogEntryException
+    public Operation<?> createFromEntry( RequestLogEntry entry ) throws DshiniLogEntryMatchableException
     {
-        Map<String, Object> cypherMap = entry.getDescriptionAsMap();
-        String cypherQueryString = (String) cypherMap.get( "query" );
-        Map<String, Object> cypherParams = (Map<String, Object>) cypherMap.get( "params" );
-        return new CypherOperation( entry.getTimeNanoSeconds(), cypherQueryString, cypherParams );
+        try
+        {
+            Map<String, Object> cypherMap = entry.getDescriptionAsMap();
+            String cypherQueryString = (String) cypherMap.get( "query" );
+            Map<String, Object> cypherParams = (Map<String, Object>) cypherMap.get( "params" );
+            return new CypherOperation( entry.getTimeNanoSeconds(), cypherQueryString, cypherParams );
+        }
+        catch ( RequestLogEntryException e )
+        {
+            throw new DshiniLogEntryMatchableException( "Error creating operation from log entry", e.getCause() );
+        }
     }
 
     public static class CypherOperation extends Operation<Object>

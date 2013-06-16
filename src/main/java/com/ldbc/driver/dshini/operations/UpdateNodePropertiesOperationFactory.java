@@ -4,9 +4,11 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import com.ldbc.driver.Operation;
-import com.ldbc.driver.dshini.generator.RequestLogEntry;
-import com.ldbc.driver.dshini.generator.RequestLogEntryException;
-import com.ldbc.driver.dshini.generator.UrlParsingUtils;
+import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchable;
+import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchableException;
+import com.ldbc.driver.dshini.log.RequestLogEntry;
+import com.ldbc.driver.dshini.log.RequestLogEntryException;
+import com.ldbc.driver.dshini.log.UrlParsingUtils;
 
 /*
 httpMethod=PUT, 
@@ -14,22 +16,29 @@ url=http://graph.internal.dshini.net:7474/db/data/node/11445682/properties,
 operationDescription="{""ObjectType"":""NeoPin"",""LikeCount"":0,""Message"":""\"Viele Menschen sind gut erzogen, um nicht mit vollem Mund zu sprechen, aber sie haben keine Bedenken, es mit leerem Kopf zu tun.\"\n\nOrson Welles"",""RepinCount"":0,""CreatedAt"":1367250908,""PinIdentifier"":""edc5f911dae036fc36e4eb00b7467347379e2c38"",""CommentsClosed"":false}",  
 */
 
-public class UpdateNodePropertiesOperationFactory implements MatchableOperationCreator
+public class UpdateNodePropertiesOperationFactory implements DshiniLogEntryMatchable
 {
     private final Pattern UPDATE_NODE_PATTERN = Pattern.compile( ".*db/data/node/\\d*/properties$" );
 
     @Override
-    public boolean matches( RequestLogEntry entry ) throws MatchableException
+    public boolean matches( RequestLogEntry entry ) throws DshiniLogEntryMatchableException
     {
         return entry.getHttpMethod().equals( "PUT" ) && UPDATE_NODE_PATTERN.matcher( entry.getUrl() ).matches();
     }
 
     @Override
-    public Operation<?> createFromEntry( RequestLogEntry entry ) throws RequestLogEntryException
+    public Operation<?> createFromEntry( RequestLogEntry entry ) throws DshiniLogEntryMatchableException
     {
-        long nodeId = UrlParsingUtils.parseNodeIdFromNodeUrl( entry.getUrl() );
-        Map<String, Object> properties = entry.getDescriptionAsMap();
-        return new UpdateNodePropertiesOperation( entry.getTimeNanoSeconds(), nodeId, properties );
+        try
+        {
+            long nodeId = UrlParsingUtils.parseNodeIdFromNodeUrl( entry.getUrl() );
+            Map<String, Object> properties = entry.getDescriptionAsMap();
+            return new UpdateNodePropertiesOperation( entry.getTimeNanoSeconds(), nodeId, properties );
+        }
+        catch ( RequestLogEntryException e )
+        {
+            throw new DshiniLogEntryMatchableException( "Error creating operation from log entry", e.getCause() );
+        }
     }
 
     public static class UpdateNodePropertiesOperation extends Operation<Integer>

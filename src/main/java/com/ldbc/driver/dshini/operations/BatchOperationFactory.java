@@ -9,8 +9,11 @@ import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.ldbc.driver.Operation;
-import com.ldbc.driver.dshini.generator.RequestLogEntry;
-import com.ldbc.driver.dshini.generator.RequestLogEntryException;
+import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchable;
+import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchableException;
+import com.ldbc.driver.dshini.generator.OperationMatcher;
+import com.ldbc.driver.dshini.log.RequestLogEntry;
+import com.ldbc.driver.dshini.log.RequestLogEntryException;
 
 /*
 POST;
@@ -43,7 +46,7 @@ http://graph-master.dshini.net:7474/db/data/batch;
 "[""Accept: application\/json"",""X-Stream:true"",""Content-Length: 1371"",""Content-Type: application\/json""]"
 */
 
-public class BatchOperationFactory implements MatchableOperationCreator
+public class BatchOperationFactory implements DshiniLogEntryMatchable
 {
     private static final Logger logger = Logger.getLogger( BatchOperationFactory.class );
 
@@ -57,7 +60,7 @@ public class BatchOperationFactory implements MatchableOperationCreator
     }
 
     @Override
-    public boolean matches( RequestLogEntry entry ) throws MatchableException
+    public boolean matches( RequestLogEntry entry ) throws DshiniLogEntryMatchableException
     {
         return entry.getHttpMethod().equals( "POST" ) && BATCH_PATTERN.matcher( entry.getUrl() ).matches();
     }
@@ -81,36 +84,44 @@ public class BatchOperationFactory implements MatchableOperationCreator
      */
 
     @Override
-    public Operation<?> createFromEntry( RequestLogEntry entry ) throws RequestLogEntryException
+    public Operation<?> createFromEntry( RequestLogEntry entry ) throws DshiniLogEntryMatchableException
     {
-        List<RequestLogEntry> entries = new ArrayList<RequestLogEntry>();
-        for ( Map<String, Object> map : entry.getDescriptionAsMapList() )
+        try
         {
-            String httpMethod = (String) map.get( "method" );
-            String url = "db/data" + (String) map.get( "to" );
-            Map<String, Object> description = (Map<String, Object>) map.get( "body" );
-            String httpHeaders = "";
-            RequestLogEntry innerEntry = new RequestLogEntry( mapper, entry.getTimeNanoSeconds(), httpMethod, url,
-                    description, httpHeaders );
-            entries.add( innerEntry );
-            // try
-            // {
-            // // TODO put into list to give to BatchOperation
-            // // TODO {0} means use result from previous
-            // // http://docs.neo4j.org/chunked/stable/rest-api-batch-ops.html
-            // // System.out.println( innerEntry );
-            // Operation<?> operation =
-            // operationMatcher.getSingleMatchingOperation( innerEntry );
-            // }
-            // catch ( MatchableException e )
-            // {
-            // String errMsg =
-            // "Error matching one of the batch entries to an operation";
-            // logger.error( errMsg, e );
-            // throw new RequestLogEntryException( errMsg, e.getCause() );
-            // }
+            List<RequestLogEntry> entries = new ArrayList<RequestLogEntry>();
+            for ( Map<String, Object> map : entry.getDescriptionAsMapList() )
+            {
+                String httpMethod = (String) map.get( "method" );
+                String url = "db/data" + (String) map.get( "to" );
+                Map<String, Object> description = (Map<String, Object>) map.get( "body" );
+                String httpHeaders = "";
+                RequestLogEntry innerEntry = new RequestLogEntry( mapper, entry.getTimeNanoSeconds(), httpMethod, url,
+                        description, httpHeaders );
+                entries.add( innerEntry );
+                // try
+                // {
+                // // TODO put into list to give to BatchOperation
+                // // TODO {0} means use result from previous
+                // //
+                // http://docs.neo4j.org/chunked/stable/rest-api-batch-ops.html
+                // // System.out.println( innerEntry );
+                // Operation<?> operation =
+                // operationMatcher.getSingleMatchingOperation( innerEntry );
+                // }
+                // catch ( MatchableException e )
+                // {
+                // String errMsg =
+                // "Error matching one of the batch entries to an operation";
+                // logger.error( errMsg, e );
+                // throw new RequestLogEntryException( errMsg, e.getCause() );
+                // }
+            }
+            return new BatchOperation( entry.getTimeNanoSeconds(), entries );
         }
-        return new BatchOperation( entry.getTimeNanoSeconds(), entries );
+        catch ( RequestLogEntryException e )
+        {
+            throw new DshiniLogEntryMatchableException( "Error creating operation from log entry", e.getCause() );
+        }
     }
 
     public static class BatchOperation extends Operation<Object>

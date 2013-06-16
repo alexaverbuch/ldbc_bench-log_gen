@@ -1,4 +1,4 @@
-package com.ldbc.driver.dshini.generator;
+package com.ldbc.driver.dshini.log;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;

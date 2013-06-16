@@ -7,20 +7,37 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.ldbc.driver.Operation;
-import com.ldbc.driver.dshini.generator.RequestLogEntry;
-import com.ldbc.driver.dshini.generator.RequestLogEntryException;
 import com.ldbc.driver.dshini.generator.RequestLogOperationGenerator;
-import com.ldbc.driver.dshini.operations.MatchableException;
-import com.ldbc.driver.dshini.operations.MatchableOperationCreator;
-import com.ldbc.driver.dshini.operations.OperationMatcher;
+import com.ldbc.driver.dshini.log.RequestLogEntry;
+import com.ldbc.driver.dshini.log.RequestLogEntryException;
+import com.ldbc.driver.dshini.log.RequestLogEntryReader;
 
+import static com.ldbc.driver.util.TestUtils.getResource;
 import static org.junit.Assert.*;
 
 public class RequestLogReaderTest
 {
+    @Test
+    public void shouldNotFailWhenHasNextCalledAfterReturningFalse()
+    {
+        // Given
+        File requestLogFile = getResource( "/test_request_log.log" );
+
+        // When
+        RequestLogEntryReader reader = new RequestLogEntryReader( requestLogFile );
+        while ( reader.hasNext() )
+        {
+            reader.next();
+        }
+
+        // Then
+        reader.hasNext();
+        assertEquals( true, true );
+    }
+
     @Ignore
     @Test
-    public void requestLogEntryReaderAllLogsExactlyOneEntryTest() throws MatchableException, RequestLogEntryException
+    public void requestLogEntryReaderAllLogsExactlyOneEntryTest() throws DshiniLogEntryMatchableException, RequestLogEntryException
     {
         // Given
         final File requestLogFile1 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-3-55-181.log" );
@@ -40,7 +57,7 @@ public class RequestLogReaderTest
         RequestLogEntryReader[] readers = new RequestLogEntryReader[] { r1, r2, r3, r4, r5, r6 };
 
         OperationMatcher matcher = new OperationMatcher();
-        MatchableOperationCreator[] operations = RequestLogOperationGenerator.operations( matcher );
+        DshiniLogEntryMatchable[] operations = RequestLogOperationGenerator.operations( matcher );
         matcher.setOperations( operations );
 
         // When
@@ -70,7 +87,7 @@ public class RequestLogReaderTest
 
     @Ignore
     @Test
-    public void performanceTest() throws MatchableException, RequestLogEntryException
+    public void performanceTest() throws DshiniLogEntryMatchableException, RequestLogEntryException
     {
         // Given
         final File requestLogFile1 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-3-55-181.log" );

@@ -1,4 +1,4 @@
-package com.ldbc.driver.dshini.generator;
+package com.ldbc.driver.dshini.log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
+
 
 public class RequestLogEntry
 {

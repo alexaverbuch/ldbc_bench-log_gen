@@ -4,9 +4,11 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import com.ldbc.driver.Operation;
-import com.ldbc.driver.dshini.generator.RequestLogEntry;
-import com.ldbc.driver.dshini.generator.RequestLogEntryException;
-import com.ldbc.driver.dshini.generator.UrlParsingUtils;
+import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchable;
+import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchableException;
+import com.ldbc.driver.dshini.log.RequestLogEntry;
+import com.ldbc.driver.dshini.log.RequestLogEntryException;
+import com.ldbc.driver.dshini.log.UrlParsingUtils;
 
 /*
 httpMethod=POST, 
@@ -14,27 +16,34 @@ url=http://graph-master.dshini.net:7474/db/data/node/11440883/relationships,
 operationDescription="{""to"":""http:\/\/graph.internal.dshini.net:7474\/db\/data\/node\/1526800"",""type"":""PINS"",""data"":null}"
 */
 
-public class CreateRelationshipOperationFactory implements MatchableOperationCreator
+public class CreateRelationshipOperationFactory implements DshiniLogEntryMatchable
 {
     private final Pattern CREATE_RELATIONSHIP_PATTERN = Pattern.compile( ".*db/data/node/\\d*/relationships" );
 
     @Override
-    public boolean matches( RequestLogEntry entry ) throws MatchableException
+    public boolean matches( RequestLogEntry entry ) throws DshiniLogEntryMatchableException
     {
         return entry.getHttpMethod().equals( "POST" )
                && CREATE_RELATIONSHIP_PATTERN.matcher( entry.getUrl() ).matches();
     }
 
     @Override
-    public Operation<?> createFromEntry( RequestLogEntry entry ) throws RequestLogEntryException
+    public Operation<?> createFromEntry( RequestLogEntry entry ) throws DshiniLogEntryMatchableException
     {
-        long startNodeId = UrlParsingUtils.parseNodeIdFromNodeRelationshipsUrl( entry.getUrl() );
-        Map<String, Object> map = entry.getDescriptionAsMap();
-        long endNodeId = UrlParsingUtils.parseNodeIdFromNodeUrl( (String) map.get( "to" ) );
-        String relationshipType = (String) map.get( "type" );
-        Map<String, Object> properties = (Map<String, Object>) map.get( "data" );
-        return new CreateRelationshipOperation( entry.getTimeNanoSeconds(), startNodeId, endNodeId, relationshipType,
-                properties );
+        try
+        {
+            long startNodeId = UrlParsingUtils.parseNodeIdFromNodeRelationshipsUrl( entry.getUrl() );
+            Map<String, Object> map = entry.getDescriptionAsMap();
+            long endNodeId = UrlParsingUtils.parseNodeIdFromNodeUrl( (String) map.get( "to" ) );
+            String relationshipType = (String) map.get( "type" );
+            Map<String, Object> properties = (Map<String, Object>) map.get( "data" );
+            return new CreateRelationshipOperation( entry.getTimeNanoSeconds(), startNodeId, endNodeId,
+                    relationshipType, properties );
+        }
+        catch ( RequestLogEntryException e )
+        {
+            throw new DshiniLogEntryMatchableException( "Error creating operation from log entry", e.getCause() );
+        }
     }
 
     public static class CreateRelationshipOperation extends Operation<Integer>

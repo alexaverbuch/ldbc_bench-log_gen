@@ -4,9 +4,11 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import com.ldbc.driver.Operation;
-import com.ldbc.driver.dshini.generator.RequestLogEntry;
-import com.ldbc.driver.dshini.generator.RequestLogEntryException;
-import com.ldbc.driver.dshini.generator.UrlParsingUtils;
+import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchable;
+import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchableException;
+import com.ldbc.driver.dshini.log.RequestLogEntry;
+import com.ldbc.driver.dshini.log.RequestLogEntryException;
+import com.ldbc.driver.dshini.log.UrlParsingUtils;
 
 /*
 httpMethod=POST, 
@@ -14,25 +16,32 @@ url=http://graph.internal.dshini.net:7474/db/data/index/node/neo_site,
 operationDescription="{""key"":""StatusMessage"",""value"":""<P>:D<\/P>"",""uri"":""http:\/\/graph.internal.dshini.net:7474\/db\/data\/node\/1144137""}"
 */
 
-public class AddNodeToIndexOperationFactory implements MatchableOperationCreator
+public class AddNodeToIndexOperationFactory implements DshiniLogEntryMatchable
 {
     private final Pattern ADD_NODE_TO_INDEX_PATTERN = Pattern.compile( ".*db/data/index/node/[[^/]\\w]*$" );
 
     @Override
-    public boolean matches( RequestLogEntry entry ) throws MatchableException
+    public boolean matches( RequestLogEntry entry ) throws DshiniLogEntryMatchableException
     {
         return entry.getHttpMethod().equals( "POST" ) && ADD_NODE_TO_INDEX_PATTERN.matcher( entry.getUrl() ).matches();
     }
 
     @Override
-    public Operation<?> createFromEntry( RequestLogEntry entry ) throws RequestLogEntryException
+    public Operation<?> createFromEntry( RequestLogEntry entry ) throws DshiniLogEntryMatchableException
     {
-        String indexName = UrlParsingUtils.parseIndexNameFromNodeIndexUrl( entry.getUrl() );
-        Map<String, Object> operationMap = entry.getDescriptionAsMap();
-        String key = (String) operationMap.get( "key" );
-        Object value = operationMap.get( "value" );
-        long nodeId = UrlParsingUtils.parseNodeIdFromNodeUrl( (String) operationMap.get( "uri" ) );
-        return new AddNodeToIndexOperation( entry.getTimeNanoSeconds(), indexName, key, value, nodeId );
+        try
+        {
+            String indexName = UrlParsingUtils.parseIndexNameFromNodeIndexUrl( entry.getUrl() );
+            Map<String, Object> operationMap = entry.getDescriptionAsMap();
+            String key = (String) operationMap.get( "key" );
+            Object value = operationMap.get( "value" );
+            long nodeId = UrlParsingUtils.parseNodeIdFromNodeUrl( (String) operationMap.get( "uri" ) );
+            return new AddNodeToIndexOperation( entry.getTimeNanoSeconds(), indexName, key, value, nodeId );
+        }
+        catch ( RequestLogEntryException e )
+        {
+            throw new DshiniLogEntryMatchableException( "Error creating operation from log entry", e.getCause() );
+        }
     }
 
     public static class AddNodeToIndexOperation extends Operation<Integer>

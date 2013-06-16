@@ -2,11 +2,12 @@ package com.ldbc.driver.dshini.operations;
 
 import java.util.regex.Pattern;
 
-import com.google.common.collect.Sets;
 import com.ldbc.driver.Operation;
-import com.ldbc.driver.dshini.generator.RequestLogEntry;
-import com.ldbc.driver.dshini.generator.RequestLogEntryException;
-import com.ldbc.driver.dshini.generator.UrlParsingUtils;
+import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchable;
+import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchableException;
+import com.ldbc.driver.dshini.log.RequestLogEntry;
+import com.ldbc.driver.dshini.log.RequestLogEntryException;
+import com.ldbc.driver.dshini.log.UrlParsingUtils;
 
 /*
 httpMethod=GET, 
@@ -14,23 +15,30 @@ url=http://graph.internal.dshini.net:7474/db/data/node/11440830/relationships/ou
 operationDescription=null,  
 */
 
-public class GetNodesTypedOutRelationshipsOperationFactory implements MatchableOperationCreator
+public class GetNodesTypedOutRelationshipsOperationFactory implements DshiniLogEntryMatchable
 {
     private final Pattern GET_NODE_TYPED_OUT_RELATIONSHIPS_PATTERN = Pattern.compile( ".*db/data/node/\\d*/relationships/out/[&\\w]*$" );
 
     @Override
-    public boolean matches( RequestLogEntry entry ) throws MatchableException
+    public boolean matches( RequestLogEntry entry ) throws DshiniLogEntryMatchableException
     {
         return entry.getHttpMethod().equals( "GET" )
                && GET_NODE_TYPED_OUT_RELATIONSHIPS_PATTERN.matcher( entry.getUrl() ).matches();
     }
 
     @Override
-    public Operation<?> createFromEntry( RequestLogEntry entry ) throws RequestLogEntryException
+    public Operation<?> createFromEntry( RequestLogEntry entry ) throws DshiniLogEntryMatchableException
     {
-        long nodeId = UrlParsingUtils.parseNodeIdFromNodeRelationshipsUrl( entry.getUrl() );
-        String relationshipType = UrlParsingUtils.parseRelationshipTypeFromNodeRelationshipsUrl( entry.getUrl() );
-        return new GetNodeTypedOutRelationshipsOperation( entry.getTimeNanoSeconds(), nodeId, relationshipType );
+        try
+        {
+            long nodeId = UrlParsingUtils.parseNodeIdFromNodeRelationshipsUrl( entry.getUrl() );
+            String relationshipType = UrlParsingUtils.parseRelationshipTypeFromNodeRelationshipsUrl( entry.getUrl() );
+            return new GetNodeTypedOutRelationshipsOperation( entry.getTimeNanoSeconds(), nodeId, relationshipType );
+        }
+        catch ( RequestLogEntryException e )
+        {
+            throw new DshiniLogEntryMatchableException( "Error creating operation from log entry", e.getCause() );
+        }
     }
 
     public static class GetNodeTypedOutRelationshipsOperation extends Operation<Integer>

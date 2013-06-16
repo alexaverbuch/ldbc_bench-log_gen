@@ -9,6 +9,9 @@ import java.util.Map;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
 
+import com.ldbc.driver.dshini.log.RequestLogEntry;
+import com.ldbc.driver.dshini.log.RequestLogEntryException;
+
 public class RequestLogEntryTest
 {
 

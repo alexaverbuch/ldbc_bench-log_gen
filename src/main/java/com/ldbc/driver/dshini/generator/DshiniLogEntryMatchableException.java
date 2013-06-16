@@ -20,26 +20,26 @@ package com.ldbc.driver.dshini.generator;
 /**
  * Something bad happened while interacting with the database.
  */
-public class RequestLogEntryException extends Exception
+public class DshiniLogEntryMatchableException extends Exception
 {
     private static final long serialVersionUID = 6646883591588721475L;
 
-    public RequestLogEntryException( String message )
+    public DshiniLogEntryMatchableException( String message )
     {
         super( message );
     }
 
-    public RequestLogEntryException()
+    public DshiniLogEntryMatchableException()
     {
         super();
     }
 
-    public RequestLogEntryException( String message, Throwable cause )
+    public DshiniLogEntryMatchableException( String message, Throwable cause )
     {
         super( message, cause );
     }
 
-    public RequestLogEntryException( Throwable cause )
+    public DshiniLogEntryMatchableException( Throwable cause )
     {
         super( cause );
     }

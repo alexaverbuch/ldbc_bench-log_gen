@@ -2,8 +2,8 @@ package com.ldbc.driver.dshini.generator;
 
 import org.junit.Test;
 
-import com.ldbc.driver.dshini.generator.RequestLogEntryException;
-import com.ldbc.driver.dshini.generator.UrlParsingUtils;
+import com.ldbc.driver.dshini.log.RequestLogEntryException;
+import com.ldbc.driver.dshini.log.UrlParsingUtils;
 
 import static org.junit.Assert.assertEquals;
 

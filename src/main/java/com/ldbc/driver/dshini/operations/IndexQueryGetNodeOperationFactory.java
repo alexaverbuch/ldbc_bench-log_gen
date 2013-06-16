@@ -3,9 +3,11 @@ package com.ldbc.driver.dshini.operations;
 import java.util.regex.Pattern;
 
 import com.ldbc.driver.Operation;
-import com.ldbc.driver.dshini.generator.RequestLogEntry;
-import com.ldbc.driver.dshini.generator.RequestLogEntryException;
-import com.ldbc.driver.dshini.generator.UrlParsingUtils;
+import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchable;
+import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchableException;
+import com.ldbc.driver.dshini.log.RequestLogEntry;
+import com.ldbc.driver.dshini.log.RequestLogEntryException;
+import com.ldbc.driver.dshini.log.UrlParsingUtils;
 
 /*
 httpMethod=GET, 
@@ -13,22 +15,29 @@ url=http://graph.internal.dshini.net:7474/db/data/index/node/user_profile?query=
 operationDescription=null,  
 */
 
-public class IndexQueryGetNodeOperationFactory implements MatchableOperationCreator
+public class IndexQueryGetNodeOperationFactory implements DshiniLogEntryMatchable
 {
     private final Pattern INDEX_QUERY_NODE_PATTERN = Pattern.compile( ".*db/data/index/node/.*\\?query=.*" );
 
     @Override
-    public boolean matches( RequestLogEntry entry ) throws MatchableException
+    public boolean matches( RequestLogEntry entry ) throws DshiniLogEntryMatchableException
     {
         return entry.getHttpMethod().equals( "GET" ) && INDEX_QUERY_NODE_PATTERN.matcher( entry.getUrl() ).matches();
     }
 
     @Override
-    public Operation<?> createFromEntry( RequestLogEntry entry ) throws RequestLogEntryException
+    public Operation<?> createFromEntry( RequestLogEntry entry ) throws DshiniLogEntryMatchableException
     {
-        String indexName = UrlParsingUtils.parseIndexNameForNodeIndexQueryUrl( entry.getUrl() );
-        String indexQuery = UrlParsingUtils.parseIndexQueryFromNodeIndexQueryUrl( entry.getUrl() );
-        return new IndexQueryGetNodeOperation( entry.getTimeNanoSeconds(), indexName, indexQuery );
+        try
+        {
+            String indexName = UrlParsingUtils.parseIndexNameForNodeIndexQueryUrl( entry.getUrl() );
+            String indexQuery = UrlParsingUtils.parseIndexQueryFromNodeIndexQueryUrl( entry.getUrl() );
+            return new IndexQueryGetNodeOperation( entry.getTimeNanoSeconds(), indexName, indexQuery );
+        }
+        catch ( RequestLogEntryException e )
+        {
+            throw new DshiniLogEntryMatchableException( "Error creating operation from log entry", e.getCause() );
+        }
     }
 
     public static class IndexQueryGetNodeOperation extends Operation<Integer>

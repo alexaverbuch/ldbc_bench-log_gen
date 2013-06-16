@@ -1,34 +1,34 @@
-package com.ldbc.driver.dshini.operations;
+package com.ldbc.driver.dshini.generator;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.ldbc.driver.Operation;
-import com.ldbc.driver.dshini.generator.RequestLogEntry;
-import com.ldbc.driver.dshini.generator.RequestLogEntryException;
+import com.ldbc.driver.dshini.log.RequestLogEntry;
+import com.ldbc.driver.dshini.log.RequestLogEntryException;
 
 public class OperationMatcher
 {
-    private MatchableOperationCreator[] operations;
+    private DshiniLogEntryMatchable[] operations;
 
     public OperationMatcher()
     {
     }
 
-    public void setOperations( MatchableOperationCreator[] operations )
+    public void setOperations( DshiniLogEntryMatchable[] operations )
     {
         this.operations = operations;
     }
 
-    public MatchableOperationCreator[] getOperations()
+    public DshiniLogEntryMatchable[] getOperations()
     {
         return operations;
     }
 
-    public Operation<?> getSingleMatchingOperation( RequestLogEntry entry ) throws MatchableException,
+    public Operation<?> getSingleMatchingOperation( RequestLogEntry entry ) throws DshiniLogEntryMatchableException,
             RequestLogEntryException
     {
-        for ( MatchableOperationCreator operation : operations )
+        for ( DshiniLogEntryMatchable operation : operations )
         {
             if ( operation.matches( entry ) )
             {
@@ -36,14 +36,14 @@ public class OperationMatcher
             }
         }
         String errMsg = String.format( "No matching operation for entry\nEntry: %s", entry );
-        throw new MatchableException( errMsg );
+        throw new DshiniLogEntryMatchableException( errMsg );
     }
 
-    public List<Operation<?>> getAllMatchingOperations( RequestLogEntry entry ) throws MatchableException,
+    public List<Operation<?>> getAllMatchingOperations( RequestLogEntry entry ) throws DshiniLogEntryMatchableException,
             RequestLogEntryException
     {
         List<Operation<?>> matchingOperations = new ArrayList<Operation<?>>();
-        for ( MatchableOperationCreator operation : operations )
+        for ( DshiniLogEntryMatchable operation : operations )
         {
             if ( operation.matches( entry ) )
             {

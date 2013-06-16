@@ -1,4 +1,4 @@
-package com.ldbc.driver.dshini.generator;
+package com.ldbc.driver.dshini.log;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
+
 
 public class RequestLogEntryReader implements Iterator<RequestLogEntry>
 {
@@ -55,8 +56,9 @@ public class RequestLogEntryReader implements Iterator<RequestLogEntry>
     @Override
     public boolean hasNext()
     {
+        if ( true == closed ) return false;
         next = ( next == null ) ? nextDshiniRequestLogEntry() : next;
-        if ( ( null == next ) && ( false == closed ) )
+        if ( null == next )
         {
             try
             {

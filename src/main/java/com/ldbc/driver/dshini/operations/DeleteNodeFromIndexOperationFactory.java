@@ -3,9 +3,11 @@ package com.ldbc.driver.dshini.operations;
 import java.util.regex.Pattern;
 
 import com.ldbc.driver.Operation;
-import com.ldbc.driver.dshini.generator.RequestLogEntry;
-import com.ldbc.driver.dshini.generator.RequestLogEntryException;
-import com.ldbc.driver.dshini.generator.UrlParsingUtils;
+import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchable;
+import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchableException;
+import com.ldbc.driver.dshini.log.RequestLogEntry;
+import com.ldbc.driver.dshini.log.RequestLogEntryException;
+import com.ldbc.driver.dshini.log.UrlParsingUtils;
 
 /*
 httpMethod=DELETE, 
@@ -13,23 +15,30 @@ url=http://graph.internal.dshini.net:7474/db/data/index/node/neo_pin/8027060,
 operationDescription=,
 */
 
-public class DeleteNodeFromIndexOperationFactory implements MatchableOperationCreator
+public class DeleteNodeFromIndexOperationFactory implements DshiniLogEntryMatchable
 {
     private final Pattern DELETE_NODE_FROM_INDEX_PATTERN = Pattern.compile( ".*db/data/index/node/[[^/]\\w]*/\\d*$" );
 
     @Override
-    public boolean matches( RequestLogEntry entry ) throws MatchableException
+    public boolean matches( RequestLogEntry entry ) throws DshiniLogEntryMatchableException
     {
         return entry.getHttpMethod().equals( "DELETE" )
                && DELETE_NODE_FROM_INDEX_PATTERN.matcher( entry.getUrl() ).matches();
     }
 
     @Override
-    public Operation<?> createFromEntry( RequestLogEntry entry ) throws RequestLogEntryException
+    public Operation<?> createFromEntry( RequestLogEntry entry ) throws DshiniLogEntryMatchableException
     {
-        long nodeId = UrlParsingUtils.parseNodeIdFromNodeIndexUrl( entry.getUrl() );
-        String indexName = UrlParsingUtils.parseIndexNameFromNodeIndexUrl( entry.getUrl() );
-        return new DeleteNodeFromIndexOperation( entry.getTimeNanoSeconds(), nodeId, indexName );
+        try
+        {
+            long nodeId = UrlParsingUtils.parseNodeIdFromNodeIndexUrl( entry.getUrl() );
+            String indexName = UrlParsingUtils.parseIndexNameFromNodeIndexUrl( entry.getUrl() );
+            return new DeleteNodeFromIndexOperation( entry.getTimeNanoSeconds(), nodeId, indexName );
+        }
+        catch ( RequestLogEntryException e )
+        {
+            throw new DshiniLogEntryMatchableException( "Error creating operation from log entry", e.getCause() );
+        }
     }
 
     public static class DeleteNodeFromIndexOperation extends Operation<Integer>

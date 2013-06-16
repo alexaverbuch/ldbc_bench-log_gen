@@ -53,7 +53,7 @@ public class RequestLogGeneratorTest
     }
 
     @Test
-    public void shouldReadAllLogsAndOrderOperationsByTime()
+    public void shouldReturnOperationsOrderedByScheduledStartTimeWhenIndividualLogsAreOrdered()
     {
         // Given
         final File partialAndReorderedRequestLogFile1 = getResource( "/partial_test_request_log1.log" );
@@ -66,7 +66,7 @@ public class RequestLogGeneratorTest
         RequestLogOperationGenerator g2 = new RequestLogOperationGenerator( partialAndReorderedRequestLogFile2 );
         RequestLogOperationGenerator g3 = new RequestLogOperationGenerator( partialAndReorderedRequestLogFile3 );
         Generator<Operation<?>> reorderedOperationsGenerator = OrderedMultiGeneratorWrapper.operationsByScheduledStartTime(
-                g1, g2, g3 );
+                1, g1, g2, g3 );
         Generator<Operation<?>> originalOrderOperationsGenerator = new RequestLogOperationGenerator( fullRequestLogFile );
 
         // Then
@@ -99,7 +99,7 @@ public class RequestLogGeneratorTest
         RequestLogOperationGenerator g6 = new RequestLogOperationGenerator( requestLogFile6 );
 
         OrderedMultiGeneratorWrapper<Operation<?>> requestLogGenerator = OrderedMultiGeneratorWrapper.operationsByScheduledStartTime(
-                g1, g2, g3, g4, g5, g6 );
+                1, g1, g2, g3, g4, g5, g6 );
 
         Histogram<String, Long> distribution = initDistribution();
 
@@ -111,8 +111,10 @@ public class RequestLogGeneratorTest
         assertEquals( new Long( 13049989 ), distribution.sumOfAllBucketValues() );
     }
 
+    // TODO
+    // @Ignore
     @Test
-    public void shouldReturnOperationsOrderedByScheduledStartTime()
+    public void shouldReturnAllDshiniOperationsOrderedByScheduledStartTime()
     {
         // Given
         final File requestLogFile1 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-3-55-181.log" );
@@ -131,7 +133,7 @@ public class RequestLogGeneratorTest
         RequestLogOperationGenerator g6 = new RequestLogOperationGenerator( requestLogFile6 );
 
         OrderedMultiGeneratorWrapper<Operation<?>> requestLogGenerator = OrderedMultiGeneratorWrapper.operationsByScheduledStartTime(
-                g1, g2, g3, g4, g5, g6 );
+                3, g1, g2, g3, g4, g5, g6 );
 
         // Then
         // TODO temp
@@ -170,8 +172,22 @@ public class RequestLogGeneratorTest
 
     @Ignore
     @Test
-    public void performanceTest()
+    public void performanceTestNoLookahead()
     {
+        doPerformanceTest( 1 );
+    }
+
+    @Ignore
+    @Test
+    public void performanceTestLookahead()
+    {
+        doPerformanceTest( 3 );
+    }
+
+    public void doPerformanceTest( int lookaheadDistance )
+    {
+        System.out.println( "Lookahead = " + lookaheadDistance );
+
         // Given
         final File requestLogFile1 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-3-55-181.log" );
         final File requestLogFile2 = new File( "logs/dshini-request-logs-2013-04-29/request-ip-10-196-162-95.log" );
@@ -189,7 +205,7 @@ public class RequestLogGeneratorTest
         RequestLogOperationGenerator g6 = new RequestLogOperationGenerator( requestLogFile6 );
 
         OrderedMultiGeneratorWrapper<Operation<?>> requestLogGenerator = OrderedMultiGeneratorWrapper.operationsByScheduledStartTime(
-                g1, g2, g3, g4, g5, g6 );
+                lookaheadDistance, g1, g2, g3, g4, g5, g6 );
 
         long operations = 0;
         long startTime = System.nanoTime();

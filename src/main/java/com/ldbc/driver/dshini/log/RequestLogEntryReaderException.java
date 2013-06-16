@@ -15,31 +15,31 @@
  * LICENSE file.                                                                                                                                                                   
  */
 
-package com.ldbc.driver.dshini.operations;
+package com.ldbc.driver.dshini.log;
 
 /**
  * Something bad happened while interacting with the database.
  */
-public class MatchableException extends Exception
+public class RequestLogEntryReaderException extends RuntimeException
 {
     private static final long serialVersionUID = 6646883591588721475L;
 
-    public MatchableException( String message )
+    public RequestLogEntryReaderException( String message )
     {
         super( message );
     }
 
-    public MatchableException()
+    public RequestLogEntryReaderException()
     {
         super();
     }
 
-    public MatchableException( String message, Throwable cause )
+    public RequestLogEntryReaderException( String message, Throwable cause )
     {
         super( message, cause );
     }
 
-    public MatchableException( Throwable cause )
+    public RequestLogEntryReaderException( Throwable cause )
     {
         super( cause );
     }

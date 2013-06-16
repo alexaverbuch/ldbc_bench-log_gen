@@ -5,6 +5,9 @@ import java.io.File;
 import org.apache.log4j.Logger;
 
 import com.ldbc.driver.Operation;
+import com.ldbc.driver.dshini.log.RequestLogEntry;
+import com.ldbc.driver.dshini.log.RequestLogEntryException;
+import com.ldbc.driver.dshini.log.RequestLogEntryReader;
 import com.ldbc.driver.dshini.operations.AddNodeToIndexOperationFactory;
 import com.ldbc.driver.dshini.operations.BatchOperationFactory;
 import com.ldbc.driver.dshini.operations.CreateNodeOperationFactory;
@@ -20,9 +23,6 @@ import com.ldbc.driver.dshini.operations.GetNodesTypedInRelationshipsOperationFa
 import com.ldbc.driver.dshini.operations.GetNodesTypedOutRelationshipsOperationFactory;
 import com.ldbc.driver.dshini.operations.GetRelationshipOperationFactory;
 import com.ldbc.driver.dshini.operations.IndexQueryGetNodeOperationFactory;
-import com.ldbc.driver.dshini.operations.MatchableException;
-import com.ldbc.driver.dshini.operations.MatchableOperationCreator;
-import com.ldbc.driver.dshini.operations.OperationMatcher;
 import com.ldbc.driver.dshini.operations.UpdateNodePropertiesOperationFactory;
 import com.ldbc.driver.generator.Generator;
 import com.ldbc.driver.generator.GeneratorException;
@@ -34,9 +34,9 @@ public class RequestLogOperationGenerator extends Generator<Operation<?>>
     private final OperationMatcher operationMatcher;
     private final RequestLogEntryReader requestLogReader;
 
-    public static MatchableOperationCreator[] operations( OperationMatcher matcher )
+    public static DshiniLogEntryMatchable[] operations( OperationMatcher matcher )
     {
-        return new MatchableOperationCreator[] {
+        return new DshiniLogEntryMatchable[] {
                 // add a node to the index
                 new AddNodeToIndexOperationFactory(),
                 // batch operations
@@ -76,7 +76,7 @@ public class RequestLogOperationGenerator extends Generator<Operation<?>>
         super( null );
         this.requestLogReader = new RequestLogEntryReader( requestLogFile );
         operationMatcher = new OperationMatcher();
-        MatchableOperationCreator[] operations = operations( operationMatcher );
+        DshiniLogEntryMatchable[] operations = operations( operationMatcher );
         operationMatcher.setOperations( operations );
     }
 
@@ -96,7 +96,7 @@ public class RequestLogOperationGenerator extends Generator<Operation<?>>
                 String errMsg = String.format( "Error parsing log entry\n%s", entry.toString() );
                 logger.error( errMsg );
             }
-            catch ( MatchableException e )
+            catch ( DshiniLogEntryMatchableException e )
             {
                 String errMsg = String.format( "Error matching operation to log entry\n%s", entry.toString() );
                 logger.error( errMsg );
