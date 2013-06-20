@@ -1,9 +1,30 @@
 # Linked Data Benchmark Council
 # Real Dshini workload
 
+# --------------------------------------
+# -------- LEAVE THESE VALUES ----------
+# --------------------------------------
+
 workload=com.ldbc.driver.dshini.workloads.DshiniWorkload
 operationcount=-1
 neo4j.url=http://localhost:7474/db/data
 neo4j.clear=false
-neo4j.path=/tmp/db
 neo4j.dbtype=embedded
+
+# ------------------------------------
+# -------- SET THESE VALUES ----------
+# ------------------------------------
+
+# TODO: point this to embedded neo4j instance after unpacking it
+neo4j.path=path/to/dshiniNeo4jInstance
+
+# TODO: point this to the dshini log files after unpacking them
+logfiles="path/to/request-ip-10-3-55-181.log,path/to/request-ip-10-196-162-95.log,path/to/request-ip-10-76-97-169.log,path/to/request-ip-10-84-146-61.log,path/to/request-ip-10-90-59-251.log,path/to/request-ip-10-98-203-214.log"
+
+# DESCRIPTION: size of threadpool used by driver. the driver executes requests asynchronously, to minimize the chance of blocking
+# DEFAULT: "number of CPU cores" - 2
+#    1 thread for the main driver thread
+#    1 thread for the measurements logging thread
+# KNOWN PROBLEM: does not leave any threads for DB
+# TODO: set this explicitly if to control the amount of threads (i.e., to free some up for Neo4j)
+# threads=???

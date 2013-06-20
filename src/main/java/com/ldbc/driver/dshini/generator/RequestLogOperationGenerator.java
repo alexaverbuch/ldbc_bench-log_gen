@@ -100,7 +100,7 @@ public class RequestLogOperationGenerator extends Generator<Operation<?>>
             {
                 String errMsg = String.format( "Error matching operation to log entry\n%s", entry.toString() );
                 logger.error( errMsg );
-                throw new GeneratorException( errMsg, e.getCause() );
+                // throw new GeneratorException( errMsg, e.getCause() );
             }
         }
         return null;

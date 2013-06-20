@@ -59,13 +59,18 @@ public class DshiniWorkload extends Workload
     public Generator<Operation<?>> getTransactionalOperations( GeneratorBuilder generatorBuilder )
             throws WorkloadException
     {
-        // Predicate<Operation<?>> filter = new
-        // IncludeOnlyClassesPredicate<Operation<?>>( GetNodeOperation.class,
-        // GetNodeOutRelationshipsOperation.class,
-        // GetNodeRelationshipsOperation.class,
-        // GetNodeTypedInRelationshipsOperation.class,
-        // GetNodeTypedOutRelationshipsOperation.class,
-        // GetRelationshipOperation.class, IndexQueryGetNodeOperation.class );
+        // There are the read-only DShini operations
+        // Test with these to avoid mutating the database (it's BIG)
+        //
+        // GetNodeOperation.class
+        // GetNodeOutRelationshipsOperation.class
+        // GetNodeRelationshipsOperation.class
+        // GetNodeTypedInRelationshipsOperation.class
+        // GetNodeTypedOutRelationshipsOperation.class
+        // GetRelationshipOperation.class
+        // IndexQueryGetNodeOperation.class
+
+        // TODO: Will only execute operations specifies in here
         Predicate<Operation<?>> filter = new IncludeOnlyClassesPredicate<Operation<?>>( GetNodeOperation.class );
 
         RequestLogOperationGenerator[] requestLogReaderGenerators = new RequestLogOperationGenerator[logFiles.length];
@@ -75,6 +80,9 @@ public class DshiniWorkload extends Workload
         }
         Generator<Operation<?>> generator = OrderedMultiGeneratorWrapper.operationsByScheduledStartTime( 1,
                 requestLogReaderGenerators );
+
+        // TODO: remove wrapper to execute all operation types, e.g.:
+        // return generator;
         return new FilterGeneratorWrapper<Operation<?>>( generator, filter );
     }
 

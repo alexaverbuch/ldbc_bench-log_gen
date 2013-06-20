@@ -111,8 +111,7 @@ public class RequestLogGeneratorTest
         assertEquals( new Long( 13049989 ), distribution.sumOfAllBucketValues() );
     }
 
-    // TODO
-    // @Ignore
+    @Ignore
     @Test
     public void shouldReturnAllDshiniOperationsOrderedByScheduledStartTime()
     {
