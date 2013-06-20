@@ -6,7 +6,6 @@
 # --------------------------------------
 
 workload=com.ldbc.driver.dshini.workloads.DshiniWorkload
-operationcount=-1
 neo4j.url=http://localhost:7474/db/data
 neo4j.clear=false
 neo4j.dbtype=embedded
@@ -14,6 +13,11 @@ neo4j.dbtype=embedded
 # ------------------------------------
 # -------- SET THESE VALUES ----------
 # ------------------------------------
+
+# DESCRIPTION: number of operations to generate
+#     if -1, will run until Iterator has no more things to give (i.e. all log entries)
+#     otherwise, allows you to limit the amount of operations
+operationcount=-1
 
 # TODO: point this to embedded neo4j instance after unpacking it
 neo4j.path=path/to/dshiniNeo4jInstance
