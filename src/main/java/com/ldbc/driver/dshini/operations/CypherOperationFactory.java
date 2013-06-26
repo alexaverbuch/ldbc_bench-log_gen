@@ -8,6 +8,7 @@ import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchable;
 import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchableException;
 import com.ldbc.driver.dshini.log.RequestLogEntry;
 import com.ldbc.driver.dshini.log.RequestLogEntryException;
+import com.ldbc.driver.util.Time;
 
 /*
 httpMethod=POST, 
@@ -52,7 +53,7 @@ public class CypherOperationFactory implements DshiniLogEntryMatchable
         private CypherOperation( long time, String queryString, Map<String, Object> params )
         {
             super();
-            setScheduledStartTimeNanoSeconds( time );
+            setScheduledStartTime( Time.fromNano( time ) );
             this.queryString = queryString;
             this.params = params;
         }
@@ -70,8 +71,8 @@ public class CypherOperationFactory implements DshiniLogEntryMatchable
         @Override
         public String toString()
         {
-            return "CypherOperation [time=" + getScheduledStartTimeNanoSeconds() + ", queryString=" + queryString
-                   + ", params=" + params + "]";
+            return "CypherOperation [time=" + getScheduledStartTime() + ", queryString=" + queryString + ", params="
+                   + params + "]";
         }
 
         @Override

@@ -8,6 +8,7 @@ import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchableException;
 import com.ldbc.driver.dshini.log.RequestLogEntry;
 import com.ldbc.driver.dshini.log.RequestLogEntryException;
 import com.ldbc.driver.dshini.log.UrlParsingUtils;
+import com.ldbc.driver.util.Time;
 
 public class GetRelationshipOperationFactory implements DshiniLogEntryMatchable
 {
@@ -40,7 +41,7 @@ public class GetRelationshipOperationFactory implements DshiniLogEntryMatchable
         private GetRelationshipOperation( long time, long relationshipId )
         {
             super();
-            setScheduledStartTimeNanoSeconds( time );
+            setScheduledStartTime( Time.fromNano( time ) );
             this.relationshipId = relationshipId;
         }
 
@@ -52,8 +53,8 @@ public class GetRelationshipOperationFactory implements DshiniLogEntryMatchable
         @Override
         public String toString()
         {
-            return "GetRelationshipOperation [time=" + getScheduledStartTimeNanoSeconds() + ", relationshipId="
-                   + relationshipId + "]";
+            return "GetRelationshipOperation [time=" + getScheduledStartTime() + ", relationshipId=" + relationshipId
+                   + "]";
         }
 
         @Override

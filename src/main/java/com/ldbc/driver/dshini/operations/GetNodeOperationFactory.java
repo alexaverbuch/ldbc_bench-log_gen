@@ -8,6 +8,7 @@ import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchableException;
 import com.ldbc.driver.dshini.log.RequestLogEntry;
 import com.ldbc.driver.dshini.log.RequestLogEntryException;
 import com.ldbc.driver.dshini.log.UrlParsingUtils;
+import com.ldbc.driver.util.Time;
 
 /*
 httpMethod=GET, 
@@ -46,7 +47,7 @@ public class GetNodeOperationFactory implements DshiniLogEntryMatchable
         private GetNodeOperation( long time, long nodeId )
         {
             super();
-            setScheduledStartTimeNanoSeconds( time );
+            setScheduledStartTime( Time.fromNano( time ) );
             this.nodeId = nodeId;
         }
 
@@ -58,7 +59,7 @@ public class GetNodeOperationFactory implements DshiniLogEntryMatchable
         @Override
         public String toString()
         {
-            return "GetNodeOperation [time=" + getScheduledStartTimeNanoSeconds() + ", nodeId=" + nodeId + "]";
+            return "GetNodeOperation [time=" + getScheduledStartTime() + ", nodeId=" + nodeId + "]";
         }
 
         @Override

@@ -9,6 +9,7 @@ import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchableException;
 import com.ldbc.driver.dshini.log.RequestLogEntry;
 import com.ldbc.driver.dshini.log.RequestLogEntryException;
 import com.ldbc.driver.dshini.log.UrlParsingUtils;
+import com.ldbc.driver.util.Time;
 
 /*
 httpMethod=POST, 
@@ -54,7 +55,7 @@ public class AddNodeToIndexOperationFactory implements DshiniLogEntryMatchable
         private AddNodeToIndexOperation( long time, String indexName, String key, Object value, long nodeId )
         {
             super();
-            setScheduledStartTimeNanoSeconds( time );
+            setScheduledStartTime( Time.fromNano( time ) );
             this.indexName = indexName;
             this.key = key;
             this.value = value;
@@ -84,8 +85,8 @@ public class AddNodeToIndexOperationFactory implements DshiniLogEntryMatchable
         @Override
         public String toString()
         {
-            return "AddNodeToIndexOperation [time=" + getScheduledStartTimeNanoSeconds() + ", indexName=" + indexName
-                   + ", key=" + key + ", value=" + value + ", nodeId=" + nodeId + "]";
+            return "AddNodeToIndexOperation [time=" + getScheduledStartTime() + ", indexName=" + indexName + ", key="
+                   + key + ", value=" + value + ", nodeId=" + nodeId + "]";
         }
 
         @Override

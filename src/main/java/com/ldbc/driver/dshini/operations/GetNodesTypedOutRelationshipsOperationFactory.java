@@ -8,6 +8,7 @@ import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchableException;
 import com.ldbc.driver.dshini.log.RequestLogEntry;
 import com.ldbc.driver.dshini.log.RequestLogEntryException;
 import com.ldbc.driver.dshini.log.UrlParsingUtils;
+import com.ldbc.driver.util.Time;
 
 /*
 httpMethod=GET, 
@@ -49,7 +50,7 @@ public class GetNodesTypedOutRelationshipsOperationFactory implements DshiniLogE
         private GetNodeTypedOutRelationshipsOperation( long time, long nodeId, String relationshipType )
         {
             super();
-            setScheduledStartTimeNanoSeconds( time );
+            setScheduledStartTime( Time.fromNano( time ) );
             this.nodeId = nodeId;
             this.relationshipType = relationshipType;
         }
@@ -67,8 +68,8 @@ public class GetNodesTypedOutRelationshipsOperationFactory implements DshiniLogE
         @Override
         public String toString()
         {
-            return "GetNodeTypedOutRelationshipsOperation [time=" + getScheduledStartTimeNanoSeconds() + ", nodeId="
-                   + nodeId + ", relationshipType=" + relationshipType + "]";
+            return "GetNodeTypedOutRelationshipsOperation [time=" + getScheduledStartTime() + ", nodeId=" + nodeId
+                   + ", relationshipType=" + relationshipType + "]";
         }
 
         @Override

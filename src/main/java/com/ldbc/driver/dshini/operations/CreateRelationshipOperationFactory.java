@@ -9,6 +9,7 @@ import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchableException;
 import com.ldbc.driver.dshini.log.RequestLogEntry;
 import com.ldbc.driver.dshini.log.RequestLogEntryException;
 import com.ldbc.driver.dshini.log.UrlParsingUtils;
+import com.ldbc.driver.util.Time;
 
 /*
 httpMethod=POST, 
@@ -57,7 +58,7 @@ public class CreateRelationshipOperationFactory implements DshiniLogEntryMatchab
                 String relationshipType, Map<String, Object> properties )
         {
             super();
-            setScheduledStartTimeNanoSeconds( timeNanoSeconds );
+            setScheduledStartTime( Time.fromNano( timeNanoSeconds ) );
             this.startNodeId = startNodeId;
             this.endNodeId = endNodeId;
             this.relationshipType = relationshipType;
@@ -87,9 +88,9 @@ public class CreateRelationshipOperationFactory implements DshiniLogEntryMatchab
         @Override
         public String toString()
         {
-            return "CreateRelationshipOperation [time=" + getScheduledStartTimeNanoSeconds() + ", startNodeId="
-                   + startNodeId + ", endNodeId=" + endNodeId + ", relationshipType=" + relationshipType
-                   + ", properties=" + properties + "]";
+            return "CreateRelationshipOperation [time=" + getScheduledStartTime() + ", startNodeId=" + startNodeId
+                   + ", endNodeId=" + endNodeId + ", relationshipType=" + relationshipType + ", properties="
+                   + properties + "]";
         }
 
         @Override

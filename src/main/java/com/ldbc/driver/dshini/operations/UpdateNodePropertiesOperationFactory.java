@@ -9,6 +9,7 @@ import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchableException;
 import com.ldbc.driver.dshini.log.RequestLogEntry;
 import com.ldbc.driver.dshini.log.RequestLogEntryException;
 import com.ldbc.driver.dshini.log.UrlParsingUtils;
+import com.ldbc.driver.util.Time;
 
 /*
 httpMethod=PUT, 
@@ -49,7 +50,7 @@ public class UpdateNodePropertiesOperationFactory implements DshiniLogEntryMatch
         private UpdateNodePropertiesOperation( long time, long nodeId, Map<String, Object> properties )
         {
             super();
-            setScheduledStartTimeNanoSeconds( time );
+            setScheduledStartTime( Time.fromNano( time ) );
             this.nodeId = nodeId;
             this.properties = properties;
         }
@@ -67,7 +68,7 @@ public class UpdateNodePropertiesOperationFactory implements DshiniLogEntryMatch
         @Override
         public String toString()
         {
-            return "UpdateNodePropertiesOperation [time=" + getScheduledStartTimeNanoSeconds() + ", nodeId=" + nodeId
+            return "UpdateNodePropertiesOperation [time=" + getScheduledStartTime() + ", nodeId=" + nodeId
                    + ", properties=" + properties + "]";
         }
 

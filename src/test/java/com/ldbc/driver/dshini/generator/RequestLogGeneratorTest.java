@@ -28,6 +28,7 @@ import com.ldbc.driver.generator.GeneratorException;
 import com.ldbc.driver.generator.wrapper.OrderedMultiGeneratorWrapper;
 import com.ldbc.driver.util.Bucket.DiscreteBucket;
 import com.ldbc.driver.util.Histogram;
+import com.ldbc.driver.util.Time;
 
 import static org.junit.Assert.assertEquals;
 
@@ -135,32 +136,19 @@ public class RequestLogGeneratorTest
                 3, g1, g2, g3, g4, g5, g6 );
 
         // Then
-        // TODO temp
         int badTimeOrderingCount = 0;
         long operations = 0;
-        long lastScheduledStartTime = Long.MIN_VALUE;
+        Time lastScheduledStartTime = Time.fromNano( 0 );
         while ( requestLogGenerator.hasNext() )
         {
             Operation<?> operation = requestLogGenerator.next();
-            // TODO remove
-            if ( -1 == operation.getScheduledStartTimeNanoSeconds() )
-            {
-                System.out.println( operation.getClass().getName() );
-                assertEquals( true, false );
-            }
 
-            if ( false == lastScheduledStartTime <= operation.getScheduledStartTimeNanoSeconds() )
+            if ( false == lastScheduledStartTime.asNano() <= operation.getScheduledStartTime().asNano() )
             {
-                // System.out.println( operation.getClass().getName() );
-                // System.out.println( String.format( "%s\n%s\n--",
-                // lastScheduledStartTime,
-                // operation.getScheduledStartTimeNanoSeconds() ) );
                 badTimeOrderingCount++;
             }
-            // TODO uncomment
-            // assertEquals( true, lastScheduledStartTime <=
-            // operation.getScheduledStartTimeNanoSeconds() );
-            lastScheduledStartTime = operation.getScheduledStartTimeNanoSeconds();
+            assertEquals( true, lastScheduledStartTime.asNano() <= operation.getScheduledStartTime().asNano() );
+            lastScheduledStartTime = operation.getScheduledStartTime();
             operations++;
         }
 

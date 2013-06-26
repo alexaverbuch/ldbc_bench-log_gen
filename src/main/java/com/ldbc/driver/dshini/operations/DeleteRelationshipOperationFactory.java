@@ -8,6 +8,7 @@ import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchableException;
 import com.ldbc.driver.dshini.log.RequestLogEntry;
 import com.ldbc.driver.dshini.log.RequestLogEntryException;
 import com.ldbc.driver.dshini.log.UrlParsingUtils;
+import com.ldbc.driver.util.Time;
 
 /*
 httpMethod=DELETE, 
@@ -47,7 +48,7 @@ public class DeleteRelationshipOperationFactory implements DshiniLogEntryMatchab
         private DeleteRelationshipOperation( long time, long relationshipId )
         {
             super();
-            setScheduledStartTimeNanoSeconds( time );
+            setScheduledStartTime( Time.fromNano( time ) );
             this.relationshipId = relationshipId;
         }
 
@@ -59,7 +60,7 @@ public class DeleteRelationshipOperationFactory implements DshiniLogEntryMatchab
         @Override
         public String toString()
         {
-            return "DeleteRelationshipOperation [time=" + getScheduledStartTimeNanoSeconds() + ", relationshipId="
+            return "DeleteRelationshipOperation [time=" + getScheduledStartTime() + ", relationshipId="
                    + relationshipId + "]";
         }
 

@@ -14,6 +14,7 @@ import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchableException;
 import com.ldbc.driver.dshini.generator.OperationMatcher;
 import com.ldbc.driver.dshini.log.RequestLogEntry;
 import com.ldbc.driver.dshini.log.RequestLogEntryException;
+import com.ldbc.driver.util.Time;
 
 /*
 POST;
@@ -131,7 +132,7 @@ public class BatchOperationFactory implements DshiniLogEntryMatchable
         private BatchOperation( long time, List<RequestLogEntry> operationBatch )
         {
             super();
-            setScheduledStartTimeNanoSeconds( time );
+            setScheduledStartTime( Time.fromNano( time ) );
             this.operationBatch = operationBatch;
         }
 
@@ -143,8 +144,7 @@ public class BatchOperationFactory implements DshiniLogEntryMatchable
         @Override
         public String toString()
         {
-            return "BatchOperation [time=" + getScheduledStartTimeNanoSeconds() + ", operationBatch=" + operationBatch
-                   + "]";
+            return "BatchOperation [time=" + getScheduledStartTime() + ", operationBatch=" + operationBatch + "]";
         }
 
         @Override
