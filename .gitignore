@@ -7,3 +7,5 @@
 target/
 src/main/resources/*.log
 logs/
+lib/
+ldbc_driver/
