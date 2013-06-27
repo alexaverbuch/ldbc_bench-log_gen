@@ -10,7 +10,7 @@ Generate benchmark workload from request logs
     ./build.sh
 
 
-### Build
+### Run
 
 Short:
 
