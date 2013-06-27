@@ -9,3 +9,4 @@ src/main/resources/*.log
 logs/
 lib/
 build.sh~
+README.md~
