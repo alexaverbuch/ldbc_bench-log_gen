@@ -5,7 +5,6 @@
 .gitignore~
 *.class
 target/
-src/main/resources/*.log
 logs/
 lib/
 build.sh~
