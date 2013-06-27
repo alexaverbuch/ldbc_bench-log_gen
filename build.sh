@@ -4,7 +4,7 @@ LDBC_CORE_JAR="ldbc_driver/core/target/core-0.1-SNAPSHOT.jar"
 LDBC_CORE_VER="0.1-SNAPSHOT"
 IN_PROJECT_MVN_REPO="lib"
 
-git submodule update
+git submodule update --init
 rm -rf $IN_PROJECT_MVN_REPO
 cd $LDBC_CORE
 ./build.sh
