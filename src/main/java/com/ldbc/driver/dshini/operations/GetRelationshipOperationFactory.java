@@ -8,7 +8,7 @@ import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchableException;
 import com.ldbc.driver.dshini.log.RequestLogEntry;
 import com.ldbc.driver.dshini.log.RequestLogEntryException;
 import com.ldbc.driver.dshini.log.UrlParsingUtils;
-import com.ldbc.driver.util.Time;
+import com.ldbc.driver.util.temporal.Time;
 
 public class GetRelationshipOperationFactory implements DshiniLogEntryMatchable
 {

@@ -26,7 +26,10 @@ import com.ldbc.driver.dshini.operations.IndexQueryGetNodeOperationFactory.Index
 import com.ldbc.driver.generator.Generator;
 import com.ldbc.driver.generator.GeneratorBuilder;
 import com.ldbc.driver.generator.wrapper.FilterGeneratorWrapper;
+import com.ldbc.driver.generator.wrapper.FutureTimeShiftGeneratorWrapper;
 import com.ldbc.driver.generator.wrapper.OrderedMultiGeneratorWrapper;
+import com.ldbc.driver.util.temporal.Duration;
+import com.ldbc.driver.util.temporal.Time;
 
 public class DshiniWorkload extends Workload
 {
@@ -71,7 +74,12 @@ public class DshiniWorkload extends Workload
         // IndexQueryGetNodeOperation.class
 
         // TODO: Will only execute operations specifies in here
-        Predicate<Operation<?>> filter = new IncludeOnlyClassesPredicate<Operation<?>>( GetNodeOperation.class );
+        // Predicate<Operation<?>> filter = new
+        // IncludeOnlyClassesPredicate<Operation<?>>( GetNodeOperation.class );
+        Predicate<Operation<?>> filter = new IncludeOnlyClassesPredicate<Operation<?>>( GetNodeOperation.class,
+                GetNodeOutRelationshipsOperation.class, GetNodeRelationshipsOperation.class,
+                GetNodeTypedInRelationshipsOperation.class, GetNodeTypedOutRelationshipsOperation.class,
+                GetRelationshipOperation.class, IndexQueryGetNodeOperation.class );
 
         RequestLogOperationGenerator[] requestLogReaderGenerators = new RequestLogOperationGenerator[logFiles.length];
         for ( int i = 0; i < logFiles.length; i++ )
@@ -82,8 +90,11 @@ public class DshiniWorkload extends Workload
                 requestLogReaderGenerators );
 
         // TODO: remove wrapper to execute all operation types, e.g.:
-        // return generator;
-        return new FilterGeneratorWrapper<Operation<?>>( generator, filter );
+        Generator<Operation<?>> filteredGenerator = new FilterGeneratorWrapper<Operation<?>>( generator, filter );
+
+        Generator<Operation<?>> futureShiftedGenerator = new FutureTimeShiftGeneratorWrapper( filteredGenerator,
+                Time.now().plus( Duration.fromSeconds( 2 ) ) );
+        return futureShiftedGenerator;
     }
 
     @Override

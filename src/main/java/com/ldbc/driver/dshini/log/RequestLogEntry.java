@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
+import com.ldbc.driver.util.temporal.TimeUnitConvertor;
 
 public class RequestLogEntry
 {
@@ -34,7 +35,7 @@ public class RequestLogEntry
     {
         super();
         this.mapper = mapper;
-        this.timeNanoSeconds = parseTimeToNanoSeconds( time );
+        this.timeNanoSeconds = TimeUnitConvertor.nanoFromMilli( parseTimeToMilliSeconds( time ) );
         this.httpMethod = httpMethod;
         this.url = url;
         this.descriptionString = description;
@@ -48,7 +49,7 @@ public class RequestLogEntry
     {
         super();
         this.mapper = mapper;
-        this.timeNanoSeconds = parseTimeToNanoSeconds( time );
+        this.timeNanoSeconds = parseTimeToMilliSeconds( time );
         this.httpMethod = httpMethod;
         this.url = url;
         this.descriptionString = null;
@@ -62,7 +63,7 @@ public class RequestLogEntry
     {
         super();
         this.mapper = mapper;
-        this.timeNanoSeconds = parseTimeToNanoSeconds( time );
+        this.timeNanoSeconds = parseTimeToMilliSeconds( time );
         this.httpMethod = httpMethod;
         this.url = url;
         this.descriptionString = null;
@@ -196,19 +197,19 @@ public class RequestLogEntry
     }
 
     // "2013-04-29 15:32:53.661274"
-    public long parseTimeToNanoSeconds( String timeString ) throws RequestLogEntryException
+    public long parseTimeToMilliSeconds( String timeString ) throws RequestLogEntryException
     {
         String timeStringWithoutQuote = stripSurroundingCharacters( timeString );
         assertTimeStampFormat( EXPECTED_DSHINI_TIME_STAMP_PATTERN, timeStringWithoutQuote );
         String timeStringMilli = timeStringWithoutQuote.substring( 0, timeStringWithoutQuote.length() - 3 );
-        return convertTimeStringToNanoSeconds( timeStringMilli );
+        return convertTimeStringToMilliSeconds( timeStringMilli );
     }
 
-    private long convertTimeStringToNanoSeconds( String timeStampString ) throws RequestLogEntryException
+    private long convertTimeStringToMilliSeconds( String timeStampString ) throws RequestLogEntryException
     {
         try
         {
-            return DESIRED_DATE_FORMAT.parse( timeStampString ).getTime() * 1000;
+            return DESIRED_DATE_FORMAT.parse( timeStampString ).getTime();
         }
         catch ( ParseException e )
         {

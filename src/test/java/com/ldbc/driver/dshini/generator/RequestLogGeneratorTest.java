@@ -1,9 +1,16 @@
 package com.ldbc.driver.dshini.generator;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.junit.Ignore;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.matchers.JUnitMatchers.*;
 
 import com.ldbc.driver.Operation;
 import com.ldbc.driver.dshini.generator.RequestLogOperationGenerator;
@@ -25,12 +32,12 @@ import com.ldbc.driver.dshini.operations.IndexQueryGetNodeOperationFactory.Index
 import com.ldbc.driver.dshini.operations.UpdateNodePropertiesOperationFactory.UpdateNodePropertiesOperation;
 import com.ldbc.driver.generator.Generator;
 import com.ldbc.driver.generator.GeneratorException;
+import com.ldbc.driver.generator.wrapper.FutureTimeShiftGeneratorWrapper;
 import com.ldbc.driver.generator.wrapper.OrderedMultiGeneratorWrapper;
 import com.ldbc.driver.util.Bucket.DiscreteBucket;
+import com.ldbc.driver.util.temporal.Duration;
+import com.ldbc.driver.util.temporal.Time;
 import com.ldbc.driver.util.Histogram;
-import com.ldbc.driver.util.Time;
-
-import static org.junit.Assert.assertEquals;
 
 import static com.ldbc.driver.util.TestUtils.*;
 
@@ -51,6 +58,38 @@ public class RequestLogGeneratorTest
 
         // Then
         assertEquals( new Long( 11 ), distribution.sumOfAllBucketValues() );
+    }
+
+    // TODO implement AbstractTemporal
+    @Test
+    public void shouldAssignNewStartTimeToAllOperations()
+    {
+        // Given
+        File requestLogFile = getResource( "/test_request_log.log" );
+
+        // When
+        RequestLogOperationGenerator requestLogGenerator = new RequestLogOperationGenerator( requestLogFile );
+        Generator<Operation<?>> operationGenerator = new FutureTimeShiftGeneratorWrapper(
+                new RequestLogOperationGenerator( requestLogFile ), Time.now().plus( Duration.fromSeconds( 1 ) ) );
+
+        // Then
+        DateFormat dateFormat = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS" );
+        Operation<?> originalOperation = requestLogGenerator.next();
+        Operation<?> shiftedOperation = operationGenerator.next();
+        Duration difference = Duration.durationBetween( originalOperation.getScheduledStartTime(),
+                shiftedOperation.getScheduledStartTime() );
+        int count = 1;
+        while ( operationGenerator.hasNext() )
+        {
+            originalOperation = requestLogGenerator.next();
+            shiftedOperation = operationGenerator.next();
+            count++;
+            assertThat(
+                    Duration.durationBetween( originalOperation.getScheduledStartTime(),
+                            shiftedOperation.getScheduledStartTime() ), is( difference ) );
+        }
+        assertThat( count, is( 11 ) );
+        assertThat( requestLogGenerator.hasNext(), is( false ) );
     }
 
     @Test
