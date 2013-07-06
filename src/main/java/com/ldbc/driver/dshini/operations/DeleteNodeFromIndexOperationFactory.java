@@ -34,7 +34,7 @@ public class DeleteNodeFromIndexOperationFactory implements DshiniLogEntryMatcha
         {
             long nodeId = UrlParsingUtils.parseNodeIdFromNodeIndexUrl( entry.getUrl() );
             String indexName = UrlParsingUtils.parseIndexNameFromNodeIndexUrl( entry.getUrl() );
-            return new DeleteNodeFromIndexOperation( entry.getTimeNanoSeconds(), nodeId, indexName );
+            return new DeleteNodeFromIndexOperation( entry.getTime(), nodeId, indexName );
         }
         catch ( RequestLogEntryException e )
         {
@@ -47,10 +47,10 @@ public class DeleteNodeFromIndexOperationFactory implements DshiniLogEntryMatcha
         private final long nodeId;
         private final String indexName;
 
-        private DeleteNodeFromIndexOperation( long time, long nodeId, String indexName )
+        private DeleteNodeFromIndexOperation( Time time, long nodeId, String indexName )
         {
             super();
-            setScheduledStartTime( Time.fromNano( time ) );
+            setScheduledStartTime( time );
             this.nodeId = nodeId;
             this.indexName = indexName;
         }

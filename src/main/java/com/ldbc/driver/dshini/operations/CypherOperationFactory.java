@@ -37,7 +37,7 @@ public class CypherOperationFactory implements DshiniLogEntryMatchable
             Map<String, Object> cypherMap = entry.getDescriptionAsMap();
             String cypherQueryString = (String) cypherMap.get( "query" );
             Map<String, Object> cypherParams = (Map<String, Object>) cypherMap.get( "params" );
-            return new CypherOperation( entry.getTimeNanoSeconds(), cypherQueryString, cypherParams );
+            return new CypherOperation( entry.getTime(), cypherQueryString, cypherParams );
         }
         catch ( RequestLogEntryException e )
         {
@@ -50,10 +50,10 @@ public class CypherOperationFactory implements DshiniLogEntryMatchable
         private final String queryString;
         private final Map<String, Object> params;
 
-        private CypherOperation( long time, String queryString, Map<String, Object> params )
+        private CypherOperation( Time time, String queryString, Map<String, Object> params )
         {
             super();
-            setScheduledStartTime( Time.fromNano( time ) );
+            setScheduledStartTime( time );
             this.queryString = queryString;
             this.params = params;
         }

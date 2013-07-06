@@ -33,7 +33,7 @@ public class DeleteRelationshipOperationFactory implements DshiniLogEntryMatchab
         try
         {
             long relationshipId = UrlParsingUtils.parseRelationshipIdFromRelationshipUrl( entry.getUrl() );
-            return new DeleteRelationshipOperation( entry.getTimeNanoSeconds(), relationshipId );
+            return new DeleteRelationshipOperation( entry.getTime(), relationshipId );
         }
         catch ( RequestLogEntryException e )
         {
@@ -45,10 +45,10 @@ public class DeleteRelationshipOperationFactory implements DshiniLogEntryMatchab
     {
         private final long relationshipId;
 
-        private DeleteRelationshipOperation( long time, long relationshipId )
+        private DeleteRelationshipOperation( Time time, long relationshipId )
         {
             super();
-            setScheduledStartTime( Time.fromNano( time ) );
+            setScheduledStartTime( time );
             this.relationshipId = relationshipId;
         }
 

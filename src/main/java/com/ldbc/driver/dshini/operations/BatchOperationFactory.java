@@ -96,7 +96,7 @@ public class BatchOperationFactory implements DshiniLogEntryMatchable
                 String url = "db/data" + (String) map.get( "to" );
                 Map<String, Object> description = (Map<String, Object>) map.get( "body" );
                 String httpHeaders = "";
-                RequestLogEntry innerEntry = new RequestLogEntry( mapper, entry.getTimeNanoSeconds(), httpMethod, url,
+                RequestLogEntry innerEntry = new RequestLogEntry( mapper, entry.getTime(), httpMethod, url,
                         description, httpHeaders );
                 entries.add( innerEntry );
                 // try
@@ -117,7 +117,7 @@ public class BatchOperationFactory implements DshiniLogEntryMatchable
                 // throw new RequestLogEntryException( errMsg, e.getCause() );
                 // }
             }
-            return new BatchOperation( entry.getTimeNanoSeconds(), entries );
+            return new BatchOperation( entry.getTime(), entries );
         }
         catch ( RequestLogEntryException e )
         {
@@ -129,10 +129,10 @@ public class BatchOperationFactory implements DshiniLogEntryMatchable
     {
         private final List<RequestLogEntry> operationBatch;
 
-        private BatchOperation( long time, List<RequestLogEntry> operationBatch )
+        private BatchOperation( Time time, List<RequestLogEntry> operationBatch )
         {
             super();
-            setScheduledStartTime( Time.fromNano( time ) );
+            setScheduledStartTime( time );
             this.operationBatch = operationBatch;
         }
 

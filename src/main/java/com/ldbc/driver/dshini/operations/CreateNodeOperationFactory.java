@@ -31,7 +31,7 @@ public class CreateNodeOperationFactory implements DshiniLogEntryMatchable
     {
         try
         {
-            return new CreateNodeOperation( entry.getTimeNanoSeconds(), entry.getDescriptionAsMap() );
+            return new CreateNodeOperation( entry.getTime(), entry.getDescriptionAsMap() );
         }
         catch ( RequestLogEntryException e )
         {
@@ -43,10 +43,10 @@ public class CreateNodeOperationFactory implements DshiniLogEntryMatchable
     {
         private final Map<String, Object> properties;
 
-        private CreateNodeOperation( long time, Map<String, Object> properties )
+        private CreateNodeOperation( Time time, Map<String, Object> properties )
         {
             super();
-            setScheduledStartTime( Time.fromNano( time ) );
+            setScheduledStartTime( time );
             this.properties = properties;
         }
 

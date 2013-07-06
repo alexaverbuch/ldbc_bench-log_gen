@@ -33,7 +33,7 @@ public class GetNodesRelationshipsOperationFactory implements DshiniLogEntryMatc
         try
         {
             long nodeId = UrlParsingUtils.parseNodeIdFromNodeRelationshipsUrl( entry.getUrl() );
-            return new GetNodeRelationshipsOperation( entry.getTimeNanoSeconds(), nodeId );
+            return new GetNodeRelationshipsOperation( entry.getTime(), nodeId );
         }
         catch ( RequestLogEntryException e )
         {
@@ -45,10 +45,10 @@ public class GetNodesRelationshipsOperationFactory implements DshiniLogEntryMatc
     {
         private final long nodeId;
 
-        private GetNodeRelationshipsOperation( long time, long nodeId )
+        private GetNodeRelationshipsOperation( Time time, long nodeId )
         {
             super();
-            setScheduledStartTime( Time.fromNano( time ) );
+            setScheduledStartTime( time );
             this.nodeId = nodeId;
         }
 

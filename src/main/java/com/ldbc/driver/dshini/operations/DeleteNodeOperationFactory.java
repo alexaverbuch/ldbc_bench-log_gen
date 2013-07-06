@@ -32,7 +32,7 @@ public class DeleteNodeOperationFactory implements DshiniLogEntryMatchable
         try
         {
             long nodeId = UrlParsingUtils.parseNodeIdFromNodeUrl( entry.getUrl() );
-            return new DeleteNodeOperation( entry.getTimeNanoSeconds(), nodeId );
+            return new DeleteNodeOperation( entry.getTime(), nodeId );
         }
         catch ( RequestLogEntryException e )
         {
@@ -44,10 +44,10 @@ public class DeleteNodeOperationFactory implements DshiniLogEntryMatchable
     {
         private final long nodeId;
 
-        private DeleteNodeOperation( long time, long nodeId )
+        private DeleteNodeOperation( Time time, long nodeId )
         {
             super();
-            setScheduledStartTime( Time.fromNano( time ) );
+            setScheduledStartTime( time );
             this.nodeId = nodeId;
         }
 

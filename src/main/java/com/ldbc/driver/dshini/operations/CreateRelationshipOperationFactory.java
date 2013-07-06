@@ -38,8 +38,8 @@ public class CreateRelationshipOperationFactory implements DshiniLogEntryMatchab
             long endNodeId = UrlParsingUtils.parseNodeIdFromNodeUrl( (String) map.get( "to" ) );
             String relationshipType = (String) map.get( "type" );
             Map<String, Object> properties = (Map<String, Object>) map.get( "data" );
-            return new CreateRelationshipOperation( entry.getTimeNanoSeconds(), startNodeId, endNodeId,
-                    relationshipType, properties );
+            return new CreateRelationshipOperation( entry.getTime(), startNodeId, endNodeId, relationshipType,
+                    properties );
         }
         catch ( RequestLogEntryException e )
         {
@@ -54,11 +54,11 @@ public class CreateRelationshipOperationFactory implements DshiniLogEntryMatchab
         private final String relationshipType;
         private final Map<String, Object> properties;
 
-        private CreateRelationshipOperation( long timeNanoSeconds, long startNodeId, long endNodeId,
-                String relationshipType, Map<String, Object> properties )
+        private CreateRelationshipOperation( Time time, long startNodeId, long endNodeId, String relationshipType,
+                Map<String, Object> properties )
         {
             super();
-            setScheduledStartTime( Time.fromNano( timeNanoSeconds ) );
+            setScheduledStartTime( time );
             this.startNodeId = startNodeId;
             this.endNodeId = endNodeId;
             this.relationshipType = relationshipType;

@@ -37,7 +37,7 @@ public class AddNodeToIndexOperationFactory implements DshiniLogEntryMatchable
             String key = (String) operationMap.get( "key" );
             Object value = operationMap.get( "value" );
             long nodeId = UrlParsingUtils.parseNodeIdFromNodeUrl( (String) operationMap.get( "uri" ) );
-            return new AddNodeToIndexOperation( entry.getTimeNanoSeconds(), indexName, key, value, nodeId );
+            return new AddNodeToIndexOperation( entry.getTime(), indexName, key, value, nodeId );
         }
         catch ( RequestLogEntryException e )
         {
@@ -52,10 +52,10 @@ public class AddNodeToIndexOperationFactory implements DshiniLogEntryMatchable
         private final Object value;
         private final long nodeId;
 
-        private AddNodeToIndexOperation( long time, String indexName, String key, Object value, long nodeId )
+        private AddNodeToIndexOperation( Time time, String indexName, String key, Object value, long nodeId )
         {
             super();
-            setScheduledStartTime( Time.fromNano( time ) );
+            setScheduledStartTime( time );
             this.indexName = indexName;
             this.key = key;
             this.value = value;

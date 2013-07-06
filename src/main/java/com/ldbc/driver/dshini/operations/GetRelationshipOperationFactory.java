@@ -26,7 +26,7 @@ public class GetRelationshipOperationFactory implements DshiniLogEntryMatchable
         try
         {
             long relationshipId = UrlParsingUtils.parseRelationshipIdFromRelationshipUrl( entry.getUrl() );
-            return new GetRelationshipOperation( entry.getTimeNanoSeconds(), relationshipId );
+            return new GetRelationshipOperation( entry.getTime(), relationshipId );
         }
         catch ( RequestLogEntryException e )
         {
@@ -38,10 +38,10 @@ public class GetRelationshipOperationFactory implements DshiniLogEntryMatchable
     {
         private final long relationshipId;
 
-        private GetRelationshipOperation( long time, long relationshipId )
+        private GetRelationshipOperation( Time time, long relationshipId )
         {
             super();
-            setScheduledStartTime( Time.fromNano( time ) );
+            setScheduledStartTime( time );
             this.relationshipId = relationshipId;
         }
 

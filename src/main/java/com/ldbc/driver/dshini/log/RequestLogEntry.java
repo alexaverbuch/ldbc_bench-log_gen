@@ -9,18 +9,18 @@ import java.util.regex.Pattern;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
-import com.ldbc.driver.util.temporal.TimeUnitConvertor;
+import com.ldbc.driver.util.temporal.Time;
 
 public class RequestLogEntry
 {
-    private final Pattern EXPECTED_DSHINI_TIME_STAMP_PATTERN = Pattern.compile( "^\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}:\\d{2}.\\d{6}" );
-    private final SimpleDateFormat DESIRED_DATE_FORMAT = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS" );
+    private static final Pattern EXPECTED_DSHINI_TIME_STAMP_PATTERN = Pattern.compile( "^\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}:\\d{2}.\\d{6}" );
+    private static final SimpleDateFormat DESIRED_DATE_FORMAT = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS" );
     private static final String SINGLE_QUOTE_STRING = "\"";
     private static final Pattern DOUBLE_QUOTE_PATTERN = Pattern.compile( "\"\"" );
 
     private final ObjectMapper mapper;
 
-    private final long timeNanoSeconds;
+    private final Time time;
     private final String httpMethod;
     private final String url;
 
@@ -33,90 +33,60 @@ public class RequestLogEntry
     public RequestLogEntry( ObjectMapper mapper, String time, String httpMethod, String url, String description,
             String httpHeaders ) throws RequestLogEntryException
     {
-        super();
-        this.mapper = mapper;
-        this.timeNanoSeconds = TimeUnitConvertor.nanoFromMilli( parseTimeToMilliSeconds( time ) );
-        this.httpMethod = httpMethod;
-        this.url = url;
-        this.descriptionString = description;
-        this.descriptionMap = null;
-        this.descriptionMapList = null;
-        this.httpHeaders = httpHeaders;
+        this( mapper, Time.fromMilli( parseTimeToMilliSeconds( time ) ), httpMethod, url, description, null, null,
+                httpHeaders );
     }
 
     public RequestLogEntry( ObjectMapper mapper, String time, String httpMethod, String url,
             Map<String, Object> description, String httpHeaders ) throws RequestLogEntryException
     {
-        super();
-        this.mapper = mapper;
-        this.timeNanoSeconds = parseTimeToMilliSeconds( time );
-        this.httpMethod = httpMethod;
-        this.url = url;
-        this.descriptionString = null;
-        this.descriptionMap = description;
-        this.descriptionMapList = null;
-        this.httpHeaders = httpHeaders;
+        this( mapper, Time.fromMilli( parseTimeToMilliSeconds( time ) ), httpMethod, url, null, description, null,
+                httpHeaders );
     }
 
     public RequestLogEntry( ObjectMapper mapper, String time, String httpMethod, String url,
             List<Map<String, Object>> description, String httpHeaders ) throws RequestLogEntryException
     {
-        super();
-        this.mapper = mapper;
-        this.timeNanoSeconds = parseTimeToMilliSeconds( time );
-        this.httpMethod = httpMethod;
-        this.url = url;
-        this.descriptionString = null;
-        this.descriptionMap = null;
-        this.descriptionMapList = description;
-        this.httpHeaders = httpHeaders;
+        this( mapper, Time.fromMilli( parseTimeToMilliSeconds( time ) ), httpMethod, url, null, null, description,
+                httpHeaders );
     }
 
-    public RequestLogEntry( ObjectMapper mapper, long time, String httpMethod, String url, String description,
+    public RequestLogEntry( ObjectMapper mapper, Time time, String httpMethod, String url, String description,
             String httpHeaders ) throws RequestLogEntryException
     {
-        super();
-        this.mapper = mapper;
-        this.timeNanoSeconds = time;
-        this.httpMethod = httpMethod;
-        this.url = url;
-        this.descriptionString = description;
-        this.descriptionMap = null;
-        this.descriptionMapList = null;
-        this.httpHeaders = httpHeaders;
+        this( mapper, time, httpMethod, url, description, null, null, httpHeaders );
     }
 
-    public RequestLogEntry( ObjectMapper mapper, long time, String httpMethod, String url,
+    public RequestLogEntry( ObjectMapper mapper, Time time, String httpMethod, String url,
             Map<String, Object> description, String httpHeaders ) throws RequestLogEntryException
     {
-        super();
-        this.mapper = mapper;
-        this.timeNanoSeconds = time;
-        this.httpMethod = httpMethod;
-        this.url = url;
-        this.descriptionString = null;
-        this.descriptionMap = description;
-        this.descriptionMapList = null;
-        this.httpHeaders = httpHeaders;
+        this( mapper, time, httpMethod, url, null, description, null, httpHeaders );
     }
 
-    public RequestLogEntry( ObjectMapper mapper, long time, String httpMethod, String url,
+    public RequestLogEntry( ObjectMapper mapper, Time time, String httpMethod, String url,
             List<Map<String, Object>> description, String httpHeaders ) throws RequestLogEntryException
     {
+        this( mapper, time, httpMethod, url, null, null, description, httpHeaders );
+    }
+
+    private RequestLogEntry( ObjectMapper mapper, Time time, String httpMethod, String url, String descriptionString,
+            Map<String, Object> descriptionMap, List<Map<String, Object>> descriptionMapList, String httpHeaders )
+                                                                                                                  throws RequestLogEntryException
+    {
         super();
         this.mapper = mapper;
-        this.timeNanoSeconds = time;
+        this.time = time;
         this.httpMethod = httpMethod;
         this.url = url;
-        this.descriptionString = null;
-        this.descriptionMap = null;
-        this.descriptionMapList = description;
+        this.descriptionString = descriptionString;
+        this.descriptionMap = descriptionMap;
+        this.descriptionMapList = descriptionMapList;
         this.httpHeaders = httpHeaders;
     }
 
-    public long getTimeNanoSeconds()
+    public Time getTime()
     {
-        return timeNanoSeconds;
+        return time;
     }
 
     public String getHttpMethod()
@@ -160,7 +130,7 @@ public class RequestLogEntry
     @Override
     public String toString()
     {
-        return "RequestLogEntry [mapper=" + mapper + ", time=" + timeNanoSeconds + ", httpMethod=" + httpMethod
+        return "RequestLogEntry [mapper=" + mapper + ", time=" + time.asMilli() + ", httpMethod=" + httpMethod
                + ", url=" + url + ", descriptionString=" + descriptionString + ", descriptionMap=" + descriptionMap
                + ", descriptionMapList=" + descriptionMapList + ", httpHeaders=" + httpHeaders + "]";
     }
@@ -197,7 +167,7 @@ public class RequestLogEntry
     }
 
     // "2013-04-29 15:32:53.661274"
-    public long parseTimeToMilliSeconds( String timeString ) throws RequestLogEntryException
+    private static long parseTimeToMilliSeconds( String timeString ) throws RequestLogEntryException
     {
         String timeStringWithoutQuote = stripSurroundingCharacters( timeString );
         assertTimeStampFormat( EXPECTED_DSHINI_TIME_STAMP_PATTERN, timeStringWithoutQuote );
@@ -205,7 +175,7 @@ public class RequestLogEntry
         return convertTimeStringToMilliSeconds( timeStringMilli );
     }
 
-    private long convertTimeStringToMilliSeconds( String timeStampString ) throws RequestLogEntryException
+    private static long convertTimeStringToMilliSeconds( String timeStampString ) throws RequestLogEntryException
     {
         try
         {
@@ -218,7 +188,8 @@ public class RequestLogEntry
         }
     }
 
-    private void assertTimeStampFormat( Pattern pattern, String timeStampString ) throws RequestLogEntryException
+    private static void assertTimeStampFormat( Pattern pattern, String timeStampString )
+            throws RequestLogEntryException
     {
         if ( false == pattern.matcher( timeStampString ).matches() )
         {
@@ -228,19 +199,19 @@ public class RequestLogEntry
         }
     }
 
-    private String cleanString( String dirtyString )
+    private static String cleanString( String dirtyString )
     {
         String stringWithoutSurroundQuotes = stripSurroundingCharacters( dirtyString );
         String singleQuotedString = convertDoubleQuotesToSingleQuote( stringWithoutSurroundQuotes );
         return singleQuotedString;
     }
 
-    private String stripSurroundingCharacters( String input )
+    private static String stripSurroundingCharacters( String input )
     {
         return input.substring( 1, input.length() - 1 );
     }
 
-    private String convertDoubleQuotesToSingleQuote( String stringWithDoubleQuotes )
+    private static String convertDoubleQuotesToSingleQuote( String stringWithDoubleQuotes )
     {
         return DOUBLE_QUOTE_PATTERN.matcher( stringWithDoubleQuotes ).replaceAll( SINGLE_QUOTE_STRING );
     }

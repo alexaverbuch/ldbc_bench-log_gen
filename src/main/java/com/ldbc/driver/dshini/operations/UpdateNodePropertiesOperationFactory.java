@@ -34,7 +34,7 @@ public class UpdateNodePropertiesOperationFactory implements DshiniLogEntryMatch
         {
             long nodeId = UrlParsingUtils.parseNodeIdFromNodeUrl( entry.getUrl() );
             Map<String, Object> properties = entry.getDescriptionAsMap();
-            return new UpdateNodePropertiesOperation( entry.getTimeNanoSeconds(), nodeId, properties );
+            return new UpdateNodePropertiesOperation( entry.getTime(), nodeId, properties );
         }
         catch ( RequestLogEntryException e )
         {
@@ -47,10 +47,10 @@ public class UpdateNodePropertiesOperationFactory implements DshiniLogEntryMatch
         private final long nodeId;
         private final Map<String, Object> properties;
 
-        private UpdateNodePropertiesOperation( long time, long nodeId, Map<String, Object> properties )
+        private UpdateNodePropertiesOperation( Time time, long nodeId, Map<String, Object> properties )
         {
             super();
-            setScheduledStartTime( Time.fromNano( time ) );
+            setScheduledStartTime( time );
             this.nodeId = nodeId;
             this.properties = properties;
         }

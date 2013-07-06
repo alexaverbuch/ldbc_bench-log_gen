@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import com.ldbc.driver.dshini.log.RequestLogEntry;
 import com.ldbc.driver.dshini.log.RequestLogEntryException;
+import com.ldbc.driver.util.temporal.Time;
 
 public class RequestLogEntryTest
 {
@@ -31,8 +32,8 @@ public class RequestLogEntryTest
         RequestLogEntry entry = new RequestLogEntry( mapper, dshiniLogTimeString, httpMethod, url, description,
                 httpHeaders );
 
-        long timeMilliSeconds = entry.getTimeNanoSeconds() / 1000;
-        Date entryDate = new Date( timeMilliSeconds );
+        Time time = entry.getTime();
+        Date entryDate = new Date( time.asMilli() );
 
         SimpleDateFormat strippedDateFormat = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS" );
         String expectedStrippedDshiniLogTimeString = "2013-04-29 15:28:19.128";

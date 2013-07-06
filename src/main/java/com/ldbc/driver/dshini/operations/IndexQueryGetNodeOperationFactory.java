@@ -33,7 +33,7 @@ public class IndexQueryGetNodeOperationFactory implements DshiniLogEntryMatchabl
         {
             String indexName = UrlParsingUtils.parseIndexNameForNodeIndexQueryUrl( entry.getUrl() );
             String indexQuery = UrlParsingUtils.parseIndexQueryFromNodeIndexQueryUrl( entry.getUrl() );
-            return new IndexQueryGetNodeOperation( entry.getTimeNanoSeconds(), indexName, indexQuery );
+            return new IndexQueryGetNodeOperation( entry.getTime(), indexName, indexQuery );
         }
         catch ( RequestLogEntryException e )
         {
@@ -46,10 +46,10 @@ public class IndexQueryGetNodeOperationFactory implements DshiniLogEntryMatchabl
         private final String indexName;
         private final String indexQuery;
 
-        private IndexQueryGetNodeOperation( long time, String indexName, String indexQuery )
+        private IndexQueryGetNodeOperation( Time time, String indexName, String indexQuery )
         {
             super();
-            setScheduledStartTime( Time.fromNano( time ) );
+            setScheduledStartTime( time );
             this.indexName = indexName;
             this.indexQuery = indexQuery;
         }

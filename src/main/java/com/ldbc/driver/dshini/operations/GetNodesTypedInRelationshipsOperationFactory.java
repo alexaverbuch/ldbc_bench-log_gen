@@ -34,7 +34,7 @@ public class GetNodesTypedInRelationshipsOperationFactory implements DshiniLogEn
         {
             long nodeId = UrlParsingUtils.parseNodeIdFromNodeRelationshipsUrl( entry.getUrl() );
             String relationshipType = UrlParsingUtils.parseRelationshipTypeFromNodeRelationshipsUrl( entry.getUrl() );
-            return new GetNodeTypedInRelationshipsOperation( entry.getTimeNanoSeconds(), nodeId, relationshipType );
+            return new GetNodeTypedInRelationshipsOperation( entry.getTime(), nodeId, relationshipType );
         }
         catch ( RequestLogEntryException e )
         {
@@ -47,10 +47,10 @@ public class GetNodesTypedInRelationshipsOperationFactory implements DshiniLogEn
         private final long nodeId;
         private final String relationshipType;
 
-        private GetNodeTypedInRelationshipsOperation( long time, long nodeId, String relationshipType )
+        private GetNodeTypedInRelationshipsOperation( Time time, long nodeId, String relationshipType )
         {
             super();
-            setScheduledStartTime( Time.fromNano( time ) );
+            setScheduledStartTime( time );
             this.nodeId = nodeId;
             this.relationshipType = relationshipType;
         }
