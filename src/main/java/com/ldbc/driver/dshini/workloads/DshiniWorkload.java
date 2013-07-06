@@ -53,13 +53,13 @@ public class DshiniWorkload extends Workload
     }
 
     @Override
-    public Generator<Operation<?>> getLoadOperations( GeneratorBuilder generatorBuilder ) throws WorkloadException
+    public Generator<Operation<?>> createLoadOperations( GeneratorBuilder generatorBuilder ) throws WorkloadException
     {
         throw new UnsupportedOperationException( "Load phase not implemented for DShini workload" );
     }
 
     @Override
-    public Generator<Operation<?>> getTransactionalOperations( GeneratorBuilder generatorBuilder )
+    public Generator<Operation<?>> createTransactionalOperations( GeneratorBuilder generatorBuilder )
             throws WorkloadException
     {
         // There are the read-only DShini operations
