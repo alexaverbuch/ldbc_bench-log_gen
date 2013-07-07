@@ -42,10 +42,10 @@ public class Example
 
         // (TODO update as necessary) Number of operations to generate
         long operationCount = 100;
-        // Number of records (sometimes useful for knowing max key)
-        long recordCount = 100;
         // First operation (ignore unless using multiple loadgen machines)
         long operationStart = 0;
+        // Number of records (sometimes useful for knowing max key)
+        long recordCount = 100;
 
         Workload workload = new SimpleWorkload();
         workload.init( operationCount, operationStart, recordCount, new HashMap<String, String>() );
