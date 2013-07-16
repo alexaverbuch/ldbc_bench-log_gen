@@ -6,7 +6,6 @@ import com.ldbc.driver.dshini.operations.AddNodeToIndexOperationFactory.AddNodeT
 import com.ldbc.driver.dshini.operations.BatchOperationFactory.BatchOperation;
 import com.ldbc.driver.dshini.operations.CreateNodeOperationFactory.CreateNodeOperation;
 import com.ldbc.driver.dshini.operations.CreateRelationshipOperationFactory.CreateRelationshipOperation;
-import com.ldbc.driver.dshini.operations.CypherOperationFactory.CypherOperation;
 import com.ldbc.driver.dshini.operations.DeleteNodeFromIndexOperationFactory.DeleteNodeFromIndexOperation;
 import com.ldbc.driver.dshini.operations.DeleteNodeOperationFactory.DeleteNodeOperation;
 import com.ldbc.driver.dshini.operations.DeleteRelationshipOperationFactory.DeleteRelationshipOperation;
@@ -29,7 +28,7 @@ public interface Neo4jDshiniCommands
 
     public DbConnectionState getDbConnectionState();
 
-    public Class<? extends OperationHandler<CypherOperation>> getCypherOperationHandler();
+    // TODO add ALL new cypher operations
 
     public Class<? extends OperationHandler<BatchOperation>> getBatchOperationHandler();
 

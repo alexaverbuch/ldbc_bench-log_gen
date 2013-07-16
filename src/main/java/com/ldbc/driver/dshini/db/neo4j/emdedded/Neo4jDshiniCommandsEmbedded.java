@@ -10,13 +10,11 @@ import com.ldbc.driver.OperationHandler;
 
 import com.ldbc.driver.dshini.db.neo4j.Neo4jDshiniCommands;
 import com.ldbc.driver.dshini.db.neo4j.emdedded.unimplemented.EmbeddedBatchOperationHandler;
-import com.ldbc.driver.dshini.db.neo4j.emdedded.unimplemented.EmbeddedCypherOperationHandler;
 
 import com.ldbc.driver.dshini.operations.AddNodeToIndexOperationFactory.AddNodeToIndexOperation;
 import com.ldbc.driver.dshini.operations.BatchOperationFactory.BatchOperation;
 import com.ldbc.driver.dshini.operations.CreateNodeOperationFactory.CreateNodeOperation;
 import com.ldbc.driver.dshini.operations.CreateRelationshipOperationFactory.CreateRelationshipOperation;
-import com.ldbc.driver.dshini.operations.CypherOperationFactory.CypherOperation;
 import com.ldbc.driver.dshini.operations.DeleteNodeFromIndexOperationFactory.DeleteNodeFromIndexOperation;
 import com.ldbc.driver.dshini.operations.DeleteNodeOperationFactory.DeleteNodeOperation;
 import com.ldbc.driver.dshini.operations.DeleteRelationshipOperationFactory.DeleteRelationshipOperation;
@@ -31,6 +29,8 @@ import com.ldbc.driver.dshini.operations.UpdateNodePropertiesOperationFactory.Up
 
 public class Neo4jDshiniCommandsEmbedded implements Neo4jDshiniCommands
 {
+    // TODO add all new cypher operations
+
     private final String path;
 
     private ExecutionEngine queryEngine;
@@ -77,12 +77,6 @@ public class Neo4jDshiniCommandsEmbedded implements Neo4jDshiniCommands
                 graphDb.shutdown();
             }
         } );
-    }
-
-    @Override
-    public Class<? extends OperationHandler<CypherOperation>> getCypherOperationHandler()
-    {
-        return EmbeddedCypherOperationHandler.class;
     }
 
     @Override

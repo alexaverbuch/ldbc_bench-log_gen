@@ -15,7 +15,6 @@ import com.ldbc.driver.Operation;
 import com.ldbc.driver.Workload;
 import com.ldbc.driver.WorkloadException;
 import com.ldbc.driver.dshini.generator.RequestLogOperationGenerator;
-import com.ldbc.driver.dshini.operations.CypherOperationFactory.CypherOperation;
 import com.ldbc.driver.dshini.operations.GetNodeOperationFactory.GetNodeOperation;
 import com.ldbc.driver.dshini.operations.GetNodesOutRelationshipsOperationFactory.GetNodeOutRelationshipsOperation;
 import com.ldbc.driver.dshini.operations.GetNodesRelationshipsOperationFactory.GetNodeRelationshipsOperation;

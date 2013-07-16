@@ -3,11 +3,11 @@ package com.ldbc.driver.dshini.operations;
 import java.util.regex.Pattern;
 
 import com.ldbc.driver.Operation;
-import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchable;
-import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchableException;
+import com.ldbc.driver.dshini.generator.Matchable;
+import com.ldbc.driver.dshini.generator.MatchableException;
 import com.ldbc.driver.dshini.log.RequestLogEntry;
 import com.ldbc.driver.dshini.log.RequestLogEntryException;
-import com.ldbc.driver.dshini.log.UrlParsingUtils;
+import com.ldbc.driver.dshini.utils.UrlParsingUtils;
 import com.ldbc.driver.util.temporal.Time;
 
 /*
@@ -16,19 +16,19 @@ url=http://graph.internal.dshini.net:7474/db/data/node/11251602/relationships/in
 operationDescription=null,
 */
 
-public class GetNodesTypedInRelationshipsOperationFactory implements DshiniLogEntryMatchable
+public class GetNodesTypedInRelationshipsOperationFactory implements Matchable<RequestLogEntry>
 {
     private final Pattern GET_NODE_TYPED_IN_RELATIONSHIPS_PATTERN = Pattern.compile( ".*db/data/node/\\d*/relationships/in/[&\\w]*$" );
 
     @Override
-    public boolean matches( RequestLogEntry entry ) throws DshiniLogEntryMatchableException
+    public boolean matches( RequestLogEntry entry )
     {
         return entry.getHttpMethod().equals( "GET" )
                && GET_NODE_TYPED_IN_RELATIONSHIPS_PATTERN.matcher( entry.getUrl() ).matches();
     }
 
     @Override
-    public Operation<?> createFromEntry( RequestLogEntry entry ) throws DshiniLogEntryMatchableException
+    public Operation<?> createOperationFrom( RequestLogEntry entry ) throws MatchableException
     {
         try
         {
@@ -38,8 +38,14 @@ public class GetNodesTypedInRelationshipsOperationFactory implements DshiniLogEn
         }
         catch ( RequestLogEntryException e )
         {
-            throw new DshiniLogEntryMatchableException( "Error creating operation from log entry", e.getCause() );
+            throw new MatchableException( "Error creating operation from log entry", e.getCause() );
         }
+    }
+
+    @Override
+    public Class<? extends Operation<?>> operationType()
+    {
+        return GetNodeTypedInRelationshipsOperation.class;
     }
 
     public static class GetNodeTypedInRelationshipsOperation extends Operation<Integer>

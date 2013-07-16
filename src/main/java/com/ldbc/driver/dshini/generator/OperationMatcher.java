@@ -9,45 +9,45 @@ import com.ldbc.driver.dshini.log.RequestLogEntryException;
 
 public class OperationMatcher
 {
-    private DshiniLogEntryMatchable[] operations;
+    private Iterable<Matchable<RequestLogEntry>> matchables;
 
     public OperationMatcher()
     {
     }
 
-    public void setOperations( DshiniLogEntryMatchable[] operations )
+    public void setMatchables( Iterable<Matchable<RequestLogEntry>> operations )
     {
-        this.operations = operations;
+        this.matchables = operations;
     }
 
-    public DshiniLogEntryMatchable[] getOperations()
+    public Iterable<Matchable<RequestLogEntry>> getMatchables()
     {
-        return operations;
+        return matchables;
     }
 
-    public Operation<?> getSingleMatchingOperation( RequestLogEntry entry ) throws DshiniLogEntryMatchableException,
-            RequestLogEntryException
+    public Operation<?> getSingleMatchingOperation( RequestLogEntry entry ) throws RequestLogEntryException,
+            MatchableException
     {
-        for ( DshiniLogEntryMatchable operation : operations )
+        for ( Matchable<RequestLogEntry> operation : matchables )
         {
             if ( operation.matches( entry ) )
             {
-                return operation.createFromEntry( entry );
+                return operation.createOperationFrom( entry );
             }
         }
         String errMsg = String.format( "No matching operation for entry\nEntry: %s", entry );
-        throw new DshiniLogEntryMatchableException( errMsg );
+        throw new MatchableException( errMsg );
     }
 
-    public List<Operation<?>> getAllMatchingOperations( RequestLogEntry entry ) throws DshiniLogEntryMatchableException,
-            RequestLogEntryException
+    public List<Operation<?>> getAllMatchingOperations( RequestLogEntry entry ) throws RequestLogEntryException,
+            MatchableException
     {
         List<Operation<?>> matchingOperations = new ArrayList<Operation<?>>();
-        for ( DshiniLogEntryMatchable operation : operations )
+        for ( Matchable<RequestLogEntry> operation : matchables )
         {
             if ( operation.matches( entry ) )
             {
-                matchingOperations.add( operation.createFromEntry( entry ) );
+                matchingOperations.add( operation.createOperationFrom( entry ) );
             }
         }
         return matchingOperations;

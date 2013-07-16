@@ -9,8 +9,8 @@ import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.ldbc.driver.Operation;
-import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchable;
-import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchableException;
+import com.ldbc.driver.dshini.generator.Matchable;
+import com.ldbc.driver.dshini.generator.MatchableException;
 import com.ldbc.driver.dshini.generator.OperationMatcher;
 import com.ldbc.driver.dshini.log.RequestLogEntry;
 import com.ldbc.driver.dshini.log.RequestLogEntryException;
@@ -47,7 +47,7 @@ http://graph-master.dshini.net:7474/db/data/batch;
 "[""Accept: application\/json"",""X-Stream:true"",""Content-Length: 1371"",""Content-Type: application\/json""]"
 */
 
-public class BatchOperationFactory implements DshiniLogEntryMatchable
+public class BatchOperationFactory implements Matchable<RequestLogEntry>
 {
     private static final Logger logger = Logger.getLogger( BatchOperationFactory.class );
 
@@ -55,13 +55,19 @@ public class BatchOperationFactory implements DshiniLogEntryMatchable
     private final ObjectMapper mapper = new ObjectMapper();
     private final OperationMatcher operationMatcher;
 
-    public BatchOperationFactory( OperationMatcher operationMatcher )
+    // TODO
+    // public BatchOperationFactory( OperationMatcher operationMatcher )
+    // {
+    // this.operationMatcher = operationMatcher;
+    // }
+
+    public BatchOperationFactory()
     {
-        this.operationMatcher = operationMatcher;
+        this.operationMatcher = null;
     }
 
     @Override
-    public boolean matches( RequestLogEntry entry ) throws DshiniLogEntryMatchableException
+    public boolean matches( RequestLogEntry entry )
     {
         return entry.getHttpMethod().equals( "POST" ) && BATCH_PATTERN.matcher( entry.getUrl() ).matches();
     }
@@ -85,7 +91,7 @@ public class BatchOperationFactory implements DshiniLogEntryMatchable
      */
 
     @Override
-    public Operation<?> createFromEntry( RequestLogEntry entry ) throws DshiniLogEntryMatchableException
+    public Operation<?> createOperationFrom( RequestLogEntry entry ) throws MatchableException
     {
         try
         {
@@ -121,8 +127,14 @@ public class BatchOperationFactory implements DshiniLogEntryMatchable
         }
         catch ( RequestLogEntryException e )
         {
-            throw new DshiniLogEntryMatchableException( "Error creating operation from log entry", e.getCause() );
+            throw new MatchableException( "Error creating operation from log entry", e.getCause() );
         }
+    }
+
+    @Override
+    public Class<? extends Operation<?>> operationType()
+    {
+        return BatchOperation.class;
     }
 
     public static class BatchOperation extends Operation<Object>

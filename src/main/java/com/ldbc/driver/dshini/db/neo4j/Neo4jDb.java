@@ -12,7 +12,6 @@ import com.ldbc.driver.dshini.operations.AddNodeToIndexOperationFactory.AddNodeT
 import com.ldbc.driver.dshini.operations.BatchOperationFactory.BatchOperation;
 import com.ldbc.driver.dshini.operations.CreateNodeOperationFactory.CreateNodeOperation;
 import com.ldbc.driver.dshini.operations.CreateRelationshipOperationFactory.CreateRelationshipOperation;
-import com.ldbc.driver.dshini.operations.CypherOperationFactory.CypherOperation;
 import com.ldbc.driver.dshini.operations.DeleteNodeFromIndexOperationFactory.DeleteNodeFromIndexOperation;
 import com.ldbc.driver.dshini.operations.DeleteNodeOperationFactory.DeleteNodeOperation;
 import com.ldbc.driver.dshini.operations.DeleteRelationshipOperationFactory.DeleteRelationshipOperation;
@@ -25,6 +24,8 @@ import com.ldbc.driver.dshini.operations.GetRelationshipOperationFactory.GetRela
 import com.ldbc.driver.dshini.operations.IndexQueryGetNodeOperationFactory.IndexQueryGetNodeOperation;
 import com.ldbc.driver.dshini.operations.UpdateNodePropertiesOperationFactory.UpdateNodePropertiesOperation;
 import com.ldbc.driver.util.MapUtils;
+
+// TODO add ALL new cypher operations
 
 /**
  * Neo4j client for LDBC DShini workload
@@ -96,7 +97,6 @@ public class Neo4jDb extends Db
 
     private void registerHandlers() throws DbException
     {
-        registerOperationHandler( CypherOperation.class, commands.getCypherOperationHandler() );
         registerOperationHandler( BatchOperation.class, commands.getBatchOperationHandler() );
         registerOperationHandler( IndexQueryGetNodeOperation.class, commands.getIndexQueryGetNodeOperationHandler() );
         registerOperationHandler( AddNodeToIndexOperation.class, commands.getAddNodeToIndexOperationHandler() );

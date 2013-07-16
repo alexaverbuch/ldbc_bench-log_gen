@@ -3,11 +3,11 @@ package com.ldbc.driver.dshini.operations;
 import java.util.regex.Pattern;
 
 import com.ldbc.driver.Operation;
-import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchable;
-import com.ldbc.driver.dshini.generator.DshiniLogEntryMatchableException;
+import com.ldbc.driver.dshini.generator.Matchable;
+import com.ldbc.driver.dshini.generator.MatchableException;
 import com.ldbc.driver.dshini.log.RequestLogEntry;
 import com.ldbc.driver.dshini.log.RequestLogEntryException;
-import com.ldbc.driver.dshini.log.UrlParsingUtils;
+import com.ldbc.driver.dshini.utils.UrlParsingUtils;
 import com.ldbc.driver.util.temporal.Time;
 
 /*
@@ -16,19 +16,19 @@ url=http://graph.internal.dshini.net:7474/db/data/index/node/neo_pin/8027060,
 operationDescription=,
 */
 
-public class DeleteNodeFromIndexOperationFactory implements DshiniLogEntryMatchable
+public class DeleteNodeFromIndexOperationFactory implements Matchable<RequestLogEntry>
 {
     private final Pattern DELETE_NODE_FROM_INDEX_PATTERN = Pattern.compile( ".*db/data/index/node/[[^/]\\w]*/\\d*$" );
 
     @Override
-    public boolean matches( RequestLogEntry entry ) throws DshiniLogEntryMatchableException
+    public boolean matches( RequestLogEntry entry )
     {
         return entry.getHttpMethod().equals( "DELETE" )
                && DELETE_NODE_FROM_INDEX_PATTERN.matcher( entry.getUrl() ).matches();
     }
 
     @Override
-    public Operation<?> createFromEntry( RequestLogEntry entry ) throws DshiniLogEntryMatchableException
+    public Operation<?> createOperationFrom( RequestLogEntry entry ) throws MatchableException
     {
         try
         {
@@ -38,8 +38,14 @@ public class DeleteNodeFromIndexOperationFactory implements DshiniLogEntryMatcha
         }
         catch ( RequestLogEntryException e )
         {
-            throw new DshiniLogEntryMatchableException( "Error creating operation from log entry", e.getCause() );
+            throw new MatchableException( "Error creating operation from log entry", e.getCause() );
         }
+    }
+
+    @Override
+    public Class<? extends Operation<?>> operationType()
+    {
+        return DeleteNodeFromIndexOperation.class;
     }
 
     public static class DeleteNodeFromIndexOperation extends Operation<Integer>
