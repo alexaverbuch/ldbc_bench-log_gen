@@ -8,7 +8,8 @@ import com.ldbc.driver.Operation;
 import com.ldbc.driver.dshini.log.RequestLogEntry;
 import com.ldbc.driver.dshini.log.RequestLogEntryException;
 import com.ldbc.driver.dshini.log.RequestLogEntryReader;
-import com.ldbc.driver.dshini.utils.DshiniLogs;
+import com.ldbc.driver.dshini.operations.Dshini;
+import com.ldbc.driver.dshini.operations.Dshini.ReadWrite;
 import com.ldbc.driver.generator.Generator;
 import com.ldbc.driver.generator.GeneratorException;
 
@@ -21,68 +22,70 @@ public class RequestLogOperationGenerator extends Generator<Operation<?>>
 
     public static Iterable<Matchable<RequestLogEntry>> operations()
     {
-        return DshiniLogs.allDshiniOperationFactories();
+        return Dshini.factories().all( ReadWrite.READWRITE );
         /*
         Histogram
-        bucketCount=111
+        defaultBucketValue=0
+        bucketCount=113
         sumOfAllBucketValues=13049993
         DiscreteBucket [thing=IndexQueryGetNodeOperation] = 1210487
-        DiscreteBucket [thing=CheckUserLikedEntityOperation] = 986645
-        DiscreteBucket [thing=GetAuthorsOperation] = 856334
+        DiscreteBucket [thing=CheckEntitiesLikedByUsersOperation] = 986645
+        DiscreteBucket [thing=GetAuthorsOfPinsOperation] = 856334
         DiscreteBucket [thing=GetSiteOwnersOperation] = 639811
-        DiscreteBucket [thing=GetCommentsAndAuthorsOnPinOfGivenUserWhoIsNotTrollOperation] = 575661
-        DiscreteBucket [thing=CountPinsOnBoardsOperation] = 562994
+        DiscreteBucket [thing=GetCommentsAndAuthorsOnPins2Operation] = 575661
         DiscreteBucket [thing=GetPinAssetsOperation] = 552031
+        DiscreteBucket [thing=CountPinsOnBoards1Operation] = 530796
         DiscreteBucket [thing=GetUrlsReferencedByPinsOperation] = 516540
         DiscreteBucket [thing=AddNodeToIndexOperation] = 509851
-        DiscreteBucket [thing=GetUsersSubscribedToSiteOperation] = 498684
-        DiscreteBucket [thing=GetSitesBoardsShownOnOperation] = 456663
-        DiscreteBucket [thing=GetPinnedByOperation] = 442957
-        DiscreteBucket [thing=GetRepinnedOperation] = 390024
-        DiscreteBucket [thing=GetNumberOfUsersSubscribedToSiteBoardIsShownOnOperation] = 353675
+        DiscreteBucket [thing=CheckUsersSubscribedToSiteOperation] = 498684
+        DiscreteBucket [thing=GetSitesShowingBoardsOperation] = 456663
+        DiscreteBucket [thing=GetBoardsPinnedByPinsOperation] = 442957
+        DiscreteBucket [thing=GetPinsRepinnedByUserOperation] = 390024
+        DiscreteBucket [thing=CountUsersSubscribedToSitesShowingBoardsOperation] = 353675
         DiscreteBucket [thing=CheckUserSubscribedToBoardOperation] = 327736
-        DiscreteBucket [thing=CountLikesOperation] = 298273
-        DiscreteBucket [thing=GetSitesOfGivenTypeOwnedByUserOperation] = 297338
+        DiscreteBucket [thing=CountUsersWhoLikedThingsOperation] = 298273
+        DiscreteBucket [thing=GetSitesOwnedByUsers2Operation] = 297338
         DiscreteBucket [thing=CountRepinsOperation] = 290747
-        DiscreteBucket [thing=GetHostUrlsOperation] = 252037
-        DiscreteBucket [thing=GetPinsAndAssetsOnBoardsOperation] = 229362
+        DiscreteBucket [thing=GetUrlsOfHostsOperation] = 252037
+        DiscreteBucket [thing=GetPinsAndTheirAssetsOnBoardsOperation] = 229362
         DiscreteBucket [thing=GetNodeOperation] = 198873
         DiscreteBucket [thing=GetOriginalPinOperation] = 183527
         DiscreteBucket [thing=CreateRelationshipOperation] = 170743
-        DiscreteBucket [thing=GetCategoriesOperation] = 162068
+        DiscreteBucket [thing=GetCategoriesOfProducts1Operation] = 162068
         DiscreteBucket [thing=GetSiteModeratorsOperation] = 154668
-        DiscreteBucket [thing=GetRepinsOperation] = 114905
+        DiscreteBucket [thing=GetUsersThatRepinnedPinOperation] = 114905
         DiscreteBucket [thing=BatchOperation] = 107418
-        DiscreteBucket [thing=GetBoardsShownOnSitesOwnedByUsersSortedOperation] = 101426
-        DiscreteBucket [thing=GetPinsAndAuthorsOnBoardsShownOnSitesSubscribedToByUserOperation] = 97172
-        DiscreteBucket [thing=CountPinsOnBoardsOnGivenSitesByGivenUsersOperation] = 95157
-        DiscreteBucket [thing=GetSubCategoriesThenCategoriesOperation] = 89973
+        DiscreteBucket [thing=GetBoardsOnSitesOwnedByUsersOperation] = 101426
+        DiscreteBucket [thing=GetPinsAndTheirAuthorsAndAssetsAndBoardsOnSitesSubscribedToByUsersOperation] = 97172
+        DiscreteBucket [thing=CountPinsByAuthorsOnBoardsShownOnSitesOperation] = 95157
+        DiscreteBucket [thing=GetCategoriesOfProducts2Operation] = 89973
         DiscreteBucket [thing=DeleteNodeFromIndexOperation] = 89537
         DiscreteBucket [thing=UpdateNodePropertiesOperation] = 89464
         DiscreteBucket [thing=GetUsersThatLikedEntitiesOperation] = 85298
-        DiscreteBucket [thing=CountDistinctOwnersOfSitesShowingBoardsUserIsSubscribedToOperation] = 82367
-        DiscreteBucket [thing=CountUsersSubscribedToBoardsShownOnSiteOperation] = 82315
-        DiscreteBucket [thing=GetPinAssetAuthorAndBoardOperation] = 79339
+        DiscreteBucket [thing=CountOwnersOfSitesShowingBoardsSubscribedToByUserOperation] = 82367
+        DiscreteBucket [thing=CountUsersSubscribedToBoardsOnSitesOperation] = 82315
+        DiscreteBucket [thing=GetPinsAndTheirAuthorsAndAssetsOnBoardsOperation] = 79339
         DiscreteBucket [thing=GetNodeOutRelationshipsOperation] = 71586
-        DiscreteBucket [thing=GetDistinctOwnersOfSitesShowingBoardsUserIsSubscribedToOperation] = 71052
+        DiscreteBucket [thing=GetOwnersOfSitesShowingBoardsSubscribedToByUsers1Operation] = 71052
         DiscreteBucket [thing=GetBoardsShownOnSitesOperation] = 69887
         DiscreteBucket [thing=GetUsersWhoClaimedOperation] = 67701
-        DiscreteBucket [thing=CountLikesByGivenUsersOperation] = 52174
+        DiscreteBucket [thing=CountThingsLikedByUsersOperation] = 52174
         DiscreteBucket [thing=GetNodeTypedOutRelationshipsOperation] = 51400
         DiscreteBucket [thing=GetUsersWhoLikedEntityOperation] = 50999
-        DiscreteBucket [thing=GetAuthorsOfCommentsOnPinThatHaveNotBeenTrolledByGivenUserOperation] = 33654
-        DiscreteBucket [thing=CountAuthorsOfCommentsOnPinThatHaveNotBeenTrolledByGivenUserOperation] = 33654
+        DiscreteBucket [thing=CountAuthorsOfCommentsOnPinThatHaveNotBeenTrolledByUserOperation] = 33654
+        DiscreteBucket [thing=GetCommentsAndAuthorsOnPins1Operation] = 33654
         DiscreteBucket [thing=CountRecentPinsOperation] = 32198
-        DiscreteBucket [thing=GetCommentsAuthorsByOperation] = 27215
+        DiscreteBucket [thing=CountPinsOnBoards2Operation] = 32198
+        DiscreteBucket [thing=GetAuthorsOfCommentsOperation] = 27215
         DiscreteBucket [thing=GetUsersSubscribedToBoardsOnSitesOwnedByGivenUserOperation] = 23845
-        DiscreteBucket [thing=CountUsersSubscribedToBoardsOnSitesOwnedByGivenUserOperation] = 23845
+        DiscreteBucket [thing=CountUsersSubscribedToBoardsOnSitesOwnedByAuthorsOperation] = 23845
         DiscreteBucket [thing=GetCommentedOnPinsOperation] = 21333
-        DiscreteBucket [thing=GetPinsCommentsAuthorsOperation] = 21260
+        DiscreteBucket [thing=GetAuthorsOfCommentsOnPinsOperation] = 21260
         DiscreteBucket [thing=CountCommentsOnPinsOperation] = 19126
         DiscreteBucket [thing=GetBoardsShownOnSitesOwnedByUsersOperation] = 16722
-        DiscreteBucket [thing=GetUsersSubscriptionToEntityOperation] = 12732
-        DiscreteBucket [thing=GetOwnersOfSitesShowingBoardsUserIsSubscribedToParameterizedOperation] = 12190
-        DiscreteBucket [thing=CountOwnersOfSitesShowingBoardsUserIsSubscribedToParameterizedOperation] = 12190
+        DiscreteBucket [thing=GetSubscriptionsOfUsersToEntitiesOperation] = 12732
+        DiscreteBucket [thing=CountOwnersOfSitesShowingBoardsSubscribedToByUsersOperation] = 12190
+        DiscreteBucket [thing=GetOwnersOfSitesShowingBoardsSubscribedToByUsers2Operation] = 12190
         DiscreteBucket [thing=GetCategoriesOfProductsOfferedByUserOperation] = 11517
         DiscreteBucket [thing=GetParentCategoriesOfSubCategoriesOperation] = 10594
         DiscreteBucket [thing=CreateNodeOperation] = 8222
@@ -97,22 +100,22 @@ public class RequestLogOperationGenerator extends Generator<Operation<?>>
         DiscreteBucket [thing=GetNodeRelationshipsOperation] = 2195
         DiscreteBucket [thing=GetPinsOnAssetsOperation] = 1966
         DiscreteBucket [thing=GetSubCategoriesOfParentCategories1Operation] = 1917
-        DiscreteBucket [thing=CountOffersForProductsInSubCategoryOfCategoryOperation] = 1908
+        DiscreteBucket [thing=CountProductsInCategoriesUnderOffer2Operation] = 1908
         DiscreteBucket [thing=GetPinnedViaOperation] = 1483
         DiscreteBucket [thing=CountProductsUnderOfferOperation] = 1432
         DiscreteBucket [thing=GetClaimedByUsersOperation] = 1368
-        DiscreteBucket [thing=GetOffersOfferedByUserOperation] = 1359
+        DiscreteBucket [thing=GetOffersByUserOperation] = 1359
         DiscreteBucket [thing=GetClaimsByUsersOperation] = 1358
         DiscreteBucket [thing=GetProductsUnderOfferOperation] = 1322
         DiscreteBucket [thing=GetOffersInCategoryOfferedByUser2Operation] = 1114
-        DiscreteBucket [thing=GetSitesOwnedByUserOperation] = 1103
+        DiscreteBucket [thing=GetSitesOwnedByUsers1Operation] = 1103
         DiscreteBucket [thing=GetParentBoardsOfBoardsOperation] = 1080
         DiscreteBucket [thing=GetRelationshipOperation] = 1063
         DiscreteBucket [thing=GetUsersSubscribedToSitesShowingBoardsOperation] = 906
-        DiscreteBucket [thing=GetSubscribedToOperation] = 830
+        DiscreteBucket [thing=GetUserSubscriptionsOperation] = 830
         DiscreteBucket [thing=GetRootOperation] = 487
         DiscreteBucket [thing=GetUsersLikesOnEntityOperation] = 465
-        DiscreteBucket [thing=GetCategoriesProductsAreInOperation] = 437
+        DiscreteBucket [thing=GetCategoriesOfProductsUnderOfferOperation] = 437
         DiscreteBucket [thing=GetSubCategoriesOfParentCategories3Operation] = 358
         DiscreteBucket [thing=GetPinsLikedByOwnersOfSitesOperation] = 332
         DiscreteBucket [thing=GetSpotlightPinsOperation] = 183
@@ -120,7 +123,7 @@ public class RequestLogOperationGenerator extends Generator<Operation<?>>
         DiscreteBucket [thing=GetAuthorsAndAssetsOfPinsOnBoardsShownOnSitesUserSubscribesToOperation] = 114
         DiscreteBucket [thing=GetPinsAndTheirAuthorsAndAssetsOnSubBoardsOfBoards2Operation] = 102
         DiscreteBucket [thing=GetCommentsOnPin2Operation] = 99
-        DiscreteBucket [thing=CountProductsInCategoriesUnderOfferOperation] = 95
+        DiscreteBucket [thing=CountProductsInCategoriesUnderOffer1Operation] = 95
         DiscreteBucket [thing=DeleteNodeOperation] = 73
         DiscreteBucket [thing=GetOffersInCategoryOfferedByUser3Operation] = 60
         DiscreteBucket [thing=GetProductsInCategoriesUnderOffer1Operation] = 54
@@ -135,8 +138,9 @@ public class RequestLogOperationGenerator extends Generator<Operation<?>>
         DiscreteBucket [thing=GetProductsInCategoriesUnderOfferInCountryOperation] = 4
         DiscreteBucket [thing=CountProductsUnderOfferInCountryOperation] = 3
         DiscreteBucket [thing=GetProductsUnderOfferInCountryOperation] = 3
-        DiscreteBucket [thing=CountPinsOnBoardsOnSitesByAuthorWithNoUserIdOperation] = 2
+        DiscreteBucket [thing=CountPinsByAuthorsOnBoardsOnSitesOperation] = 2
         DiscreteBucket [thing=GetPinsInBoardsOperation] = 1
+        DiscreteBucket [thing=CheckUserLikedEntityOperation] = 0
          */
     }
 

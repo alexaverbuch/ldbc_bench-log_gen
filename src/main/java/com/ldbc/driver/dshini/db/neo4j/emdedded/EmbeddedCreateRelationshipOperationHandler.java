@@ -4,12 +4,12 @@ import org.neo4j.helpers.collection.MapUtil;
 
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.OperationResult;
-import com.ldbc.driver.dshini.operations.CreateRelationshipOperationFactory.CreateRelationshipOperation;
+import com.ldbc.driver.dshini.operations.core.CreateRelationshipAuthoredByOperationFactory.CreateRelationshipAuthoredByOperation;
 
-public class EmbeddedCreateRelationshipOperationHandler extends OperationHandler<CreateRelationshipOperation>
+public class EmbeddedCreateRelationshipOperationHandler extends OperationHandler<CreateRelationshipAuthoredByOperation>
 {
     @Override
-    protected OperationResult executeOperation( CreateRelationshipOperation operation )
+    protected OperationResult executeOperation( CreateRelationshipAuthoredByOperation operation )
     {
         Neo4jConnectionStateEmbedded connection = (Neo4jConnectionStateEmbedded) getDbConnectionState();
 

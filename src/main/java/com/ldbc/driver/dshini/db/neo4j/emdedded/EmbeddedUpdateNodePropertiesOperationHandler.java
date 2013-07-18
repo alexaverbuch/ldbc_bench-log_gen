@@ -4,12 +4,12 @@ import org.neo4j.helpers.collection.MapUtil;
 
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.OperationResult;
-import com.ldbc.driver.dshini.operations.UpdateNodePropertiesOperationFactory.UpdateNodePropertiesOperation;
+import com.ldbc.driver.dshini.operations.core.UpdateNodeNeoPinOperationFactory.UpdateNodeNeoPinOperation;
 
-public class EmbeddedUpdateNodePropertiesOperationHandler extends OperationHandler<UpdateNodePropertiesOperation>
+public class EmbeddedUpdateNodePropertiesOperationHandler extends OperationHandler<UpdateNodeNeoPinOperation>
 {
     @Override
-    protected OperationResult executeOperation( UpdateNodePropertiesOperation operation )
+    protected OperationResult executeOperation( UpdateNodeNeoPinOperation operation )
     {
         Neo4jConnectionStateEmbedded connection = (Neo4jConnectionStateEmbedded) getDbConnectionState();
         final String queryString = "START n=node({nodeId}) SET n={properties}";

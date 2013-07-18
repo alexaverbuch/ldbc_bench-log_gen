@@ -8,6 +8,7 @@ import com.ldbc.driver.Operation;
 import com.ldbc.driver.dshini.generator.MatchableException;
 import com.ldbc.driver.dshini.log.RequestLogEntry;
 import com.ldbc.driver.dshini.log.RequestLogEntryException;
+import com.ldbc.driver.dshini.operations.AbstractCypherOperationFactory;
 import com.ldbc.driver.util.temporal.Time;
 
 /*
@@ -98,8 +99,8 @@ public class GetPinsAndTheirAuthorsAndAssetsOnSubBoardsOfBoards1OperationFactory
         @Override
         public String toString()
         {
-            return "CypherOperation [time=" + getScheduledStartTime() + ", queryString=" + queryString + ", params="
-                   + params + "]";
+            return getClass().getSimpleName() + " [time=" + getScheduledStartTime() + ", queryString=" + queryString
+                   + ", params=" + params + "]";
         }
 
         @Override

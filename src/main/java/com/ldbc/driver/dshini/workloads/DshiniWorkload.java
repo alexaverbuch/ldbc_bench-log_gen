@@ -15,13 +15,8 @@ import com.ldbc.driver.Operation;
 import com.ldbc.driver.Workload;
 import com.ldbc.driver.WorkloadException;
 import com.ldbc.driver.dshini.generator.RequestLogOperationGenerator;
-import com.ldbc.driver.dshini.operations.GetNodeOperationFactory.GetNodeOperation;
-import com.ldbc.driver.dshini.operations.GetNodesOutRelationshipsOperationFactory.GetNodeOutRelationshipsOperation;
-import com.ldbc.driver.dshini.operations.GetNodesRelationshipsOperationFactory.GetNodeRelationshipsOperation;
-import com.ldbc.driver.dshini.operations.GetNodesTypedInRelationshipsOperationFactory.GetNodeTypedInRelationshipsOperation;
-import com.ldbc.driver.dshini.operations.GetNodesTypedOutRelationshipsOperationFactory.GetNodeTypedOutRelationshipsOperation;
-import com.ldbc.driver.dshini.operations.GetRelationshipOperationFactory.GetRelationshipOperation;
-import com.ldbc.driver.dshini.operations.IndexQueryGetNodeOperationFactory.IndexQueryGetNodeOperation;
+import com.ldbc.driver.dshini.operations.Dshini;
+import com.ldbc.driver.dshini.operations.Dshini.ReadWrite;
 import com.ldbc.driver.generator.Generator;
 import com.ldbc.driver.generator.GeneratorBuilder;
 import com.ldbc.driver.generator.wrapper.FilterGeneratorWrapper;
@@ -61,24 +56,14 @@ public class DshiniWorkload extends Workload
     public Generator<Operation<?>> createTransactionalOperations( GeneratorBuilder generatorBuilder )
             throws WorkloadException
     {
-        // There are the read-only DShini operations
-        // Test with these to avoid mutating the database (it's BIG)
-        //
-        // GetNodeOperation.class
-        // GetNodeOutRelationshipsOperation.class
-        // GetNodeRelationshipsOperation.class
-        // GetNodeTypedInRelationshipsOperation.class
-        // GetNodeTypedOutRelationshipsOperation.class
-        // GetRelationshipOperation.class
-        // IndexQueryGetNodeOperation.class
+        // NOTE test with READ operations to avoid mutating database (it's BIG)
+        List<Class<? extends Operation<?>>> operations = new ArrayList<Class<? extends Operation<?>>>();
+        operations.addAll( Dshini.operations().core( ReadWrite.READ ) );
+        operations.addAll( Dshini.operations().index( ReadWrite.READ ) );
+        operations.addAll( Dshini.operations().cypher( ReadWrite.READ ) );
+        // operations.addAll( Dshini.operations().batch( ReadWrite.READ ) );
 
-        // TODO: Will only execute operations specifies in here
-        // Predicate<Operation<?>> filter = new
-        // IncludeOnlyClassesPredicate<Operation<?>>( GetNodeOperation.class );
-        Predicate<Operation<?>> filter = new IncludeOnlyClassesPredicate<Operation<?>>( GetNodeOperation.class,
-                GetNodeOutRelationshipsOperation.class, GetNodeRelationshipsOperation.class,
-                GetNodeTypedInRelationshipsOperation.class, GetNodeTypedOutRelationshipsOperation.class,
-                GetRelationshipOperation.class, IndexQueryGetNodeOperation.class );
+        Predicate<Operation<?>> filter = new IncludeOnlyClassesPredicate<Operation<?>>( operations );
 
         RequestLogOperationGenerator[] requestLogReaderGenerators = new RequestLogOperationGenerator[logFiles.length];
         for ( int i = 0; i < logFiles.length; i++ )
@@ -88,7 +73,8 @@ public class DshiniWorkload extends Workload
         Generator<Operation<?>> generator = OrderedMultiGeneratorWrapper.operationsByScheduledStartTime( 1,
                 requestLogReaderGenerators );
 
-        // TODO: remove wrapper to execute all operation types, e.g.:
+        // NOTE remove wrapper to execute all operation types, e.g.:
+        // Generator<Operation<?>> filteredGenerator = generator;
         Generator<Operation<?>> filteredGenerator = new FilterGeneratorWrapper<Operation<?>>( generator, filter );
 
         Generator<Operation<?>> futureShiftedGenerator = new FutureTimeShiftGeneratorWrapper( filteredGenerator,
@@ -124,11 +110,16 @@ public class DshiniWorkload extends Workload
 
 class IncludeOnlyClassesPredicate<T> implements Predicate<T>
 {
-    private final Set<Class<?>> includedItems;
+    private final Set<Class<? extends Operation<?>>> includedItems;
 
-    public IncludeOnlyClassesPredicate( Class<?>... includedItems )
+    public IncludeOnlyClassesPredicate( Class<? extends Operation<?>>... includedItems )
     {
-        this.includedItems = new HashSet<Class<?>>( Arrays.asList( includedItems ) );
+        this( Arrays.asList( includedItems ) );
+    }
+
+    public IncludeOnlyClassesPredicate( List<Class<? extends Operation<?>>> includedItems )
+    {
+        this.includedItems = new HashSet<Class<? extends Operation<?>>>( includedItems );
     }
 
     @Override

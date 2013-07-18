@@ -14,7 +14,7 @@ import com.ldbc.driver.dshini.generator.RequestLogOperationGenerator;
 import com.ldbc.driver.dshini.log.RequestLogEntry;
 import com.ldbc.driver.dshini.log.RequestLogEntryException;
 import com.ldbc.driver.dshini.log.RequestLogEntryReader;
-import com.ldbc.driver.dshini.utils.DshiniLogs;
+import com.ldbc.driver.dshini.operations.Dshini;
 
 import static com.ldbc.driver.util.TestUtils.getResource;
 import static org.junit.Assert.*;
@@ -77,7 +77,7 @@ public class RequestLogReaderTest
     public void everyEntryShouldMapToOnlyOneOperation() throws MatchableException, RequestLogEntryException
     {
         // Given
-        RequestLogEntryReader[] readers = DshiniLogs.allLogReaders();
+        RequestLogEntryReader[] readers = TestUtils.allLogReaders();
 
         OperationMatcher matcher = new OperationMatcher();
         Iterable<Matchable<RequestLogEntry>> operations = RequestLogOperationGenerator.operations();
@@ -94,8 +94,9 @@ public class RequestLogReaderTest
                     List<Operation<?>> matchedOperations = matcher.getAllMatchingOperations( entry );
 
                     // Then
-                    assertEquals( String.format( "Incorrect number of matched operations, expected one, got: %s\n%s",
-                            matchedOperations.toString(), entry.toString() ), 1, matchedOperations.size() );
+                    assertEquals( String.format( "Incorrect number of matched operations, expected 1, got %s: %s\n%s",
+                            matchedOperations.size(), matchedOperations.toString(), entry.toString() ), 1,
+                            matchedOperations.size() );
                 }
                 catch ( RequestLogEntryException e )
                 {

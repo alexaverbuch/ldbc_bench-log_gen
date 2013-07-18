@@ -5,13 +5,13 @@ import org.neo4j.graphdb.Transaction;
 
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.OperationResult;
-import com.ldbc.driver.dshini.operations.DeleteNodeFromIndexOperationFactory.DeleteNodeFromIndexOperation;
+import com.ldbc.driver.dshini.operations.index.DeleteNodeFromNeoPinBoardIndexOperationFactory.DeleteNodeFromNeoPinBoardIndexOperation;
 
-public class EmbeddedDeleteNodeFromIndexOperationHandler extends OperationHandler<DeleteNodeFromIndexOperation>
+public class EmbeddedDeleteNodeFromIndexOperationHandler extends OperationHandler<DeleteNodeFromNeoPinBoardIndexOperation>
 {
 
     @Override
-    protected OperationResult executeOperation( DeleteNodeFromIndexOperation operation )
+    protected OperationResult executeOperation( DeleteNodeFromNeoPinBoardIndexOperation operation )
     {
         int resultCode;
         int result;

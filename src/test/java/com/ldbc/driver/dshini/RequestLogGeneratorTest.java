@@ -11,7 +11,8 @@ import static org.junit.matchers.JUnitMatchers.*;
 
 import com.ldbc.driver.Operation;
 import com.ldbc.driver.dshini.generator.RequestLogOperationGenerator;
-import com.ldbc.driver.dshini.utils.DshiniLogs;
+import com.ldbc.driver.dshini.operations.Dshini;
+import com.ldbc.driver.dshini.operations.Dshini.ReadWrite;
 import com.ldbc.driver.generator.Generator;
 import com.ldbc.driver.generator.GeneratorException;
 import com.ldbc.driver.generator.wrapper.FutureTimeShiftGeneratorWrapper;
@@ -105,7 +106,7 @@ public class RequestLogGeneratorTest
     {
         // Given
         OrderedMultiGeneratorWrapper<Operation<?>> requestLogGenerator = OrderedMultiGeneratorWrapper.operationsByScheduledStartTime(
-                1, DshiniLogs.allLogGenerators() );
+                1, TestUtils.allLogGenerators() );
 
         // When
         Histogram<String, Long> distribution = initDistribution();
@@ -125,12 +126,11 @@ public class RequestLogGeneratorTest
     {
         // Given
         OrderedMultiGeneratorWrapper<Operation<?>> requestLogGenerator = OrderedMultiGeneratorWrapper.operationsByScheduledStartTime(
-                3, DshiniLogs.allLogGenerators() );
+                3, TestUtils.allLogGenerators() );
 
         // When
 
         int badTimeOrderingCount = 0;
-        int operations = 0;
         Time lastScheduledStartTime = Time.fromNano( 0 );
         while ( requestLogGenerator.hasNext() )
         {
@@ -142,87 +142,42 @@ public class RequestLogGeneratorTest
             }
             assertEquals( true, lastScheduledStartTime.asNano() <= operation.getScheduledStartTime().asNano() );
             lastScheduledStartTime = operation.getScheduledStartTime();
-            operations++;
         }
 
         // Then
-        assertThat( operations, is( 13049989 ) );
         assertThat( badTimeOrderingCount, is( 0 ) );
-        System.out.println( String.format( "---\nbadTimeOrderingCount = %s\n---", badTimeOrderingCount ) );
-        // badTimeOrderingCount = 89
     }
 
     /*
      * The following are not tests, they are development aids
      */
 
-    @Ignore
-    @Test
-    public void performanceTestNoLookahead()
-    {
-        doPerformanceTest( 1 );
-    }
-
-    @Ignore
-    @Test
-    public void performanceTestLookahead()
-    {
-        doPerformanceTest( 3 );
-    }
-
-    public void doPerformanceTest( int lookaheadDistance )
-    {
-        System.out.println( "Lookahead = " + lookaheadDistance );
-
-        // Given
-        OrderedMultiGeneratorWrapper<Operation<?>> requestLogGenerator = OrderedMultiGeneratorWrapper.operationsByScheduledStartTime(
-                lookaheadDistance, DshiniLogs.allLogGenerators() );
-
-        // When
-        long operations = 0;
-        long startTime = System.nanoTime();
-        while ( requestLogGenerator.hasNext() )
-        {
-            requestLogGenerator.next();
-            operations++;
-        }
-        long endTime = System.nanoTime();
-
-        long runtime = ( endTime - startTime ) / 1000000000;
-        System.out.println( String.format( "Runtime: %s seconds", runtime ) );
-        System.out.println( String.format( "Operations: %s ", operations ) );
-        System.out.println( String.format( "Throughput: %s (operations/second)", operations / runtime ) );
-
-        // Then
-        assertEquals( 13049989, operations );
-    }
-
     private Histogram<String, Long> initDistribution()
     {
         Histogram<String, Long> distribution = new Histogram<String, Long>( 0l );
-        for ( Class<? extends Operation<?>> operationType : DshiniLogs.allDshiniOperationTypes() )
+        for ( Class<? extends Operation<?>> operationType : Dshini.operations().all( ReadWrite.READWRITE ) )
         {
             distribution.addBucket( DiscreteBucket.create( operationType.getSimpleName() ) );
         }
         return distribution;
     }
 
+    static class ClassNameGeneratorWrapper extends Generator<String>
+    {
+        final Generator<?> operationsGenerator;
+
+        public ClassNameGeneratorWrapper( Generator<?> operationsGenerator )
+        {
+            super( null );
+            this.operationsGenerator = operationsGenerator;
+        }
+
+        @Override
+        protected String doNext() throws GeneratorException
+        {
+            if ( false == operationsGenerator.hasNext() ) return null;
+            return operationsGenerator.next().getClass().getSimpleName();
+        }
+    };
+
 }
-
-class ClassNameGeneratorWrapper extends Generator<String>
-{
-    final Generator<?> operationsGenerator;
-
-    public ClassNameGeneratorWrapper( Generator<?> operationsGenerator )
-    {
-        super( null );
-        this.operationsGenerator = operationsGenerator;
-    }
-
-    @Override
-    protected String doNext() throws GeneratorException
-    {
-        if ( false == operationsGenerator.hasNext() ) return null;
-        return operationsGenerator.next().getClass().getSimpleName();
-    }
-};

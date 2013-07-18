@@ -4,12 +4,12 @@ import org.neo4j.helpers.collection.MapUtil;
 
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.OperationResult;
-import com.ldbc.driver.dshini.operations.CreateNodeOperationFactory.CreateNodeOperation;
+import com.ldbc.driver.dshini.operations.core.CreateNodeNeoProductOperationFactory.CreateNodeNeoProductOperation;
 
-public class EmbeddedCreateNodeOperationHandler extends OperationHandler<CreateNodeOperation>
+public class EmbeddedCreateNodeOperationHandler extends OperationHandler<CreateNodeNeoProductOperation>
 {
     @Override
-    protected OperationResult executeOperation( CreateNodeOperation operation )
+    protected OperationResult executeOperation( CreateNodeNeoProductOperation operation )
     {
         Neo4jConnectionStateEmbedded connection = (Neo4jConnectionStateEmbedded) getDbConnectionState();
         final String queryString = "CREATE n = {properties}";

@@ -5,12 +5,12 @@ import org.neo4j.graphdb.Transaction;
 
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.OperationResult;
-import com.ldbc.driver.dshini.operations.AddNodeToIndexOperationFactory.AddNodeToIndexOperation;
+import com.ldbc.driver.dshini.operations.index.AddNodeToNeoPinBoardIndexOperationFactory.AddNodeToNeoPinBoardIndexOperation;
 
-public class EmbeddedAddNodeToIndexOperationHandler extends OperationHandler<AddNodeToIndexOperation>
+public class EmbeddedAddNodeToIndexOperationHandler extends OperationHandler<AddNodeToNeoPinBoardIndexOperation>
 {
     @Override
-    protected OperationResult executeOperation( AddNodeToIndexOperation operation )
+    protected OperationResult executeOperation( AddNodeToNeoPinBoardIndexOperation operation )
     {
         int resultCode;
         int result;

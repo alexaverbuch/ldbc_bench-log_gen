@@ -8,13 +8,13 @@ import org.neo4j.helpers.collection.IteratorUtil;
 
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.OperationResult;
-import com.ldbc.driver.dshini.operations.IndexQueryGetNodeOperationFactory.IndexQueryGetNodeOperation;
+import com.ldbc.driver.dshini.operations.index.IndexQueryNodeOnNeoPinEntertainmentVideoIndexOperationFactory.IndexQueryNodeOnNeoPinEntertainmentVideoIndexOperation;
 
-public class EmbeddedIndexQueryGetNodeOperationHandler extends OperationHandler<IndexQueryGetNodeOperation>
+public class EmbeddedIndexQueryGetNodeOperationHandler extends OperationHandler<IndexQueryNodeOnNeoPinEntertainmentVideoIndexOperation>
 {
 
     @Override
-    protected OperationResult executeOperation( IndexQueryGetNodeOperation operation )
+    protected OperationResult executeOperation( IndexQueryNodeOnNeoPinEntertainmentVideoIndexOperation operation )
     {
         int resultCode;
         int result;

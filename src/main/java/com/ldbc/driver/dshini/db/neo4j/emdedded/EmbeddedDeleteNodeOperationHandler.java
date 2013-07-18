@@ -4,7 +4,7 @@ import org.neo4j.helpers.collection.MapUtil;
 
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.OperationResult;
-import com.ldbc.driver.dshini.operations.DeleteNodeOperationFactory.DeleteNodeOperation;
+import com.ldbc.driver.dshini.operations.core.DeleteNodeOperationFactory.DeleteNodeOperation;
 
 public class EmbeddedDeleteNodeOperationHandler extends OperationHandler<DeleteNodeOperation>
 {

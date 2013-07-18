@@ -97,7 +97,7 @@ public class UrlParsingUtilsTest
     }
 
     @Test
-    public void shouldParseIndexNameFromNodeIndexUrl() throws RequestLogEntryException
+    public void shouldParseIndexNameFromNodeIndexUrlWithoutIdSuffix() throws RequestLogEntryException
     {
         // Given
         String urlString = "http://graph-master.dshini.net:7474/db/data/index/node/neo_pin_url";
@@ -110,6 +110,19 @@ public class UrlParsingUtilsTest
     }
 
     @Test
+    public void shouldParseIndexNameFromNodeIndexUrlWithIdSuffix() throws RequestLogEntryException
+    {
+        // Given
+        String urlString = "http://graph.internal.dshini.net:7474/db/data/index/node/neo_pin/8027060";
+
+        // When
+        String indexName = UrlParsingUtils.parseIndexNameFromNodeIndexUrl( urlString );
+
+        // Then
+        assertEquals( "neo_pin", indexName );
+    }
+
+    @Test
     public void shouldParseIndexNameForNodeIndexQueryUrl() throws RequestLogEntryException
     {
         // Given
@@ -117,8 +130,8 @@ public class UrlParsingUtilsTest
         String urlString2 = "http://localhost:7474/db/data/index/node/bobTheIndex?query=Name:Build~0.1%20AND%20Gender:Male";
 
         // When
-        String indexName1 = UrlParsingUtils.parseIndexNameForNodeIndexQueryUrl( urlString1 );
-        String indexName2 = UrlParsingUtils.parseIndexNameForNodeIndexQueryUrl( urlString2 );
+        String indexName1 = UrlParsingUtils.parseIndexNameFromNodeIndexUrl( urlString1 );
+        String indexName2 = UrlParsingUtils.parseIndexNameFromNodeIndexUrl( urlString2 );
 
         // Then
         assertEquals( "neo_pin", indexName1 );

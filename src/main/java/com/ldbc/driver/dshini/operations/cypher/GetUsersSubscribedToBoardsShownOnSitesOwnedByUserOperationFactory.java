@@ -8,6 +8,7 @@ import com.ldbc.driver.Operation;
 import com.ldbc.driver.dshini.generator.MatchableException;
 import com.ldbc.driver.dshini.log.RequestLogEntry;
 import com.ldbc.driver.dshini.log.RequestLogEntryException;
+import com.ldbc.driver.dshini.operations.AbstractCypherOperationFactory;
 import com.ldbc.driver.util.temporal.Time;
 
 /*
@@ -70,8 +71,7 @@ public class GetUsersSubscribedToBoardsShownOnSitesOwnedByUserOperationFactory e
     @Override
     public Class<? extends Operation<?>> operationType()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return GetUsersSubscribedToBoardsOnSitesOwnedByGivenUserOperation.class;
     }
 
     public static class GetUsersSubscribedToBoardsOnSitesOwnedByGivenUserOperation extends Operation<Object>
@@ -101,8 +101,8 @@ public class GetUsersSubscribedToBoardsShownOnSitesOwnedByUserOperationFactory e
         @Override
         public String toString()
         {
-            return "CypherOperation [time=" + getScheduledStartTime() + ", queryString=" + queryString + ", params="
-                   + params + "]";
+            return getClass().getSimpleName() + " [time=" + getScheduledStartTime() + ", queryString=" + queryString
+                   + ", params=" + params + "]";
         }
 
         @Override

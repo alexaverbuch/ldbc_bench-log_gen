@@ -8,7 +8,7 @@ import org.neo4j.helpers.collection.MapUtil;
 
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.OperationResult;
-import com.ldbc.driver.dshini.operations.GetNodesRelationshipsOperationFactory.GetNodeRelationshipsOperation;
+import com.ldbc.driver.dshini.operations.core.GetNodesRelationshipsOperationFactory.GetNodeRelationshipsOperation;
 
 public class EmbeddedGetNodeRelationshipsOperationHandler extends OperationHandler<GetNodeRelationshipsOperation>
 {
