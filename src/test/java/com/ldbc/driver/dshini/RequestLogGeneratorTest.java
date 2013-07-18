@@ -2,7 +2,6 @@ package com.ldbc.driver.dshini;
 
 import java.io.File;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -97,55 +96,6 @@ public class RequestLogGeneratorTest
             assertEquals( originalOrderOperationsGenerator.next(), reorderedOperationsGenerator.next() );
         }
         assertThat( reorderedOperationsGenerator.hasNext(), is( false ) );
-    }
-
-    // TODO
-    // @Ignore
-    @Test
-    public void shouldRecognizeAllOperations()
-    {
-        // Given
-        OrderedMultiGeneratorWrapper<Operation<?>> requestLogGenerator = OrderedMultiGeneratorWrapper.operationsByScheduledStartTime(
-                1, TestUtils.allLogGenerators() );
-
-        // When
-        Histogram<String, Long> distribution = initDistribution();
-
-        // Will error if Operation encountered that is not in initDistribution
-        distribution.importValueSequence( new ClassNameGeneratorWrapper( requestLogGenerator ) );
-
-        System.out.println( distribution.toPrettyString() );
-
-        // Then
-    }
-
-    // TODO
-    // @Ignore
-    @Test
-    public void shouldReturnAllDshiniOperationsOrderedByScheduledStartTime()
-    {
-        // Given
-        OrderedMultiGeneratorWrapper<Operation<?>> requestLogGenerator = OrderedMultiGeneratorWrapper.operationsByScheduledStartTime(
-                3, TestUtils.allLogGenerators() );
-
-        // When
-
-        int badTimeOrderingCount = 0;
-        Time lastScheduledStartTime = Time.fromNano( 0 );
-        while ( requestLogGenerator.hasNext() )
-        {
-            Operation<?> operation = requestLogGenerator.next();
-
-            if ( false == lastScheduledStartTime.asNano() <= operation.getScheduledStartTime().asNano() )
-            {
-                badTimeOrderingCount++;
-            }
-            assertEquals( true, lastScheduledStartTime.asNano() <= operation.getScheduledStartTime().asNano() );
-            lastScheduledStartTime = operation.getScheduledStartTime();
-        }
-
-        // Then
-        assertThat( badTimeOrderingCount, is( 0 ) );
     }
 
     /*
