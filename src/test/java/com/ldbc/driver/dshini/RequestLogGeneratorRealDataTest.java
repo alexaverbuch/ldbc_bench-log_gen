@@ -17,9 +17,8 @@ import com.ldbc.driver.util.Bucket.DiscreteBucket;
 import com.ldbc.driver.util.temporal.Time;
 import com.ldbc.driver.util.Histogram;
 
-// TODO uncomment to run full tests
-//@Ignore
-public class RequestLogGeneratorSlowTest
+@Ignore
+public class RequestLogGeneratorRealDataTest
 {
     @Test
     public void shouldRecognizeAllOperations()

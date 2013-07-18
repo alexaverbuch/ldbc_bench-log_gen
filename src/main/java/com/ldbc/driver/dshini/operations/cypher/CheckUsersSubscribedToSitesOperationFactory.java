@@ -48,7 +48,7 @@ public class CheckUsersSubscribedToSitesOperationFactory extends AbstractCypherO
             Map<String, Object> cypherMap = entry.getDescriptionAsMap();
             String cypherQueryString = (String) cypherMap.get( "query" );
             Map<String, Object> cypherParams = (Map<String, Object>) cypherMap.get( "params" );
-            return new CheckUsersSubscribedToSiteOperation( entry.getTime(), cypherQueryString, cypherParams );
+            return new CheckUsersSubscribedToSitesOperation( entry.getTime(), cypherQueryString, cypherParams );
         }
         catch ( RequestLogEntryException e )
         {
@@ -59,15 +59,15 @@ public class CheckUsersSubscribedToSitesOperationFactory extends AbstractCypherO
     @Override
     public Class<? extends Operation<?>> operationType()
     {
-        return CheckUsersSubscribedToSiteOperation.class;
+        return CheckUsersSubscribedToSitesOperation.class;
     }
 
-    public static class CheckUsersSubscribedToSiteOperation extends Operation<Object>
+    public static class CheckUsersSubscribedToSitesOperation extends Operation<Object>
     {
         private final String queryString;
         private final Map<String, Object> params;
 
-        private CheckUsersSubscribedToSiteOperation( Time time, String queryString, Map<String, Object> params )
+        private CheckUsersSubscribedToSitesOperation( Time time, String queryString, Map<String, Object> params )
         {
             super();
             setScheduledStartTime( time );
@@ -108,7 +108,7 @@ public class CheckUsersSubscribedToSitesOperationFactory extends AbstractCypherO
             if ( this == obj ) return true;
             if ( obj == null ) return false;
             if ( getClass() != obj.getClass() ) return false;
-            CheckUsersSubscribedToSiteOperation other = (CheckUsersSubscribedToSiteOperation) obj;
+            CheckUsersSubscribedToSitesOperation other = (CheckUsersSubscribedToSitesOperation) obj;
             if ( params == null )
             {
                 if ( other.params != null ) return false;

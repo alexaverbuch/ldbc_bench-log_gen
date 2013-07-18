@@ -11,17 +11,16 @@ import com.ldbc.driver.Operation;
 import com.ldbc.driver.dshini.operations.Dshini;
 import com.ldbc.driver.generator.wrapper.OrderedMultiGeneratorWrapper;
 
+@Ignore
 public class RequestLogGeneratorDebubDevTest
 {
 
-    @Ignore
     @Test
     public void performanceTestNoLookahead()
     {
         doPerformanceTest( 1 );
     }
 
-    @Ignore
     @Test
     public void performanceTestLookahead()
     {

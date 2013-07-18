@@ -8,12 +8,12 @@ import org.neo4j.helpers.collection.MapUtil;
 
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.OperationResult;
-import com.ldbc.driver.dshini.operations.core.GetNodesRelationshipsOperationFactory.GetNodeRelationshipsOperation;
+import com.ldbc.driver.dshini.operations.core.GetNodesRelationshipsOperationFactory.GetNodesRelationshipsOperation;
 
-public class EmbeddedGetNodeRelationshipsOperationHandler extends OperationHandler<GetNodeRelationshipsOperation>
+public class EmbeddedGetNodeRelationshipsOperationHandler extends OperationHandler<GetNodesRelationshipsOperation>
 {
     @Override
-    protected OperationResult executeOperation( GetNodeRelationshipsOperation operation )
+    protected OperationResult executeOperation( GetNodesRelationshipsOperation operation )
     {
         Neo4jConnectionStateEmbedded connection = (Neo4jConnectionStateEmbedded) getDbConnectionState();
         final String queryString = "START n=node({nodeId}) " + "MATCH (n)-[r]-() RETURN r";

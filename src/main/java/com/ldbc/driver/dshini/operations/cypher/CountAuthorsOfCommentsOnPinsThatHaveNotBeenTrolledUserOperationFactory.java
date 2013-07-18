@@ -51,7 +51,7 @@ public class CountAuthorsOfCommentsOnPinsThatHaveNotBeenTrolledUserOperationFact
             Map<String, Object> cypherMap = entry.getDescriptionAsMap();
             String cypherQueryString = (String) cypherMap.get( "query" );
             Map<String, Object> cypherParams = (Map<String, Object>) cypherMap.get( "params" );
-            return new CountAuthorsOfCommentsOnPinThatHaveNotBeenTrolledByUserOperation( entry.getTime(),
+            return new CountAuthorsOfCommentsOnPinsThatHaveNotBeenTrolledUserOperation( entry.getTime(),
                     cypherQueryString, cypherParams );
         }
         catch ( RequestLogEntryException e )
@@ -63,15 +63,15 @@ public class CountAuthorsOfCommentsOnPinsThatHaveNotBeenTrolledUserOperationFact
     @Override
     public Class<? extends Operation<?>> operationType()
     {
-        return CountAuthorsOfCommentsOnPinThatHaveNotBeenTrolledByUserOperation.class;
+        return CountAuthorsOfCommentsOnPinsThatHaveNotBeenTrolledUserOperation.class;
     }
 
-    public static class CountAuthorsOfCommentsOnPinThatHaveNotBeenTrolledByUserOperation extends Operation<Object>
+    public static class CountAuthorsOfCommentsOnPinsThatHaveNotBeenTrolledUserOperation extends Operation<Object>
     {
         private final String queryString;
         private final Map<String, Object> params;
 
-        private CountAuthorsOfCommentsOnPinThatHaveNotBeenTrolledByUserOperation( Time time, String queryString,
+        private CountAuthorsOfCommentsOnPinsThatHaveNotBeenTrolledUserOperation( Time time, String queryString,
                 Map<String, Object> params )
         {
             super();
@@ -113,7 +113,7 @@ public class CountAuthorsOfCommentsOnPinsThatHaveNotBeenTrolledUserOperationFact
             if ( this == obj ) return true;
             if ( obj == null ) return false;
             if ( getClass() != obj.getClass() ) return false;
-            CountAuthorsOfCommentsOnPinThatHaveNotBeenTrolledByUserOperation other = (CountAuthorsOfCommentsOnPinThatHaveNotBeenTrolledByUserOperation) obj;
+            CountAuthorsOfCommentsOnPinsThatHaveNotBeenTrolledUserOperation other = (CountAuthorsOfCommentsOnPinsThatHaveNotBeenTrolledUserOperation) obj;
             if ( params == null )
             {
                 if ( other.params != null ) return false;

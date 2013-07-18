@@ -14,12 +14,12 @@ import com.ldbc.driver.dshini.log.RequestLogEntryReader;
 import com.ldbc.driver.dshini.utils.UrlParsingUtils;
 import com.ldbc.driver.dshini.utils.UrlPatterns;
 import com.ldbc.driver.util.Pair;
-import com.ldbc.driver.util.Triple;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.matchers.JUnitMatchers.*;
 
+@Ignore
 public class RequestLogReaderDebubDevTest
 {
     @Ignore

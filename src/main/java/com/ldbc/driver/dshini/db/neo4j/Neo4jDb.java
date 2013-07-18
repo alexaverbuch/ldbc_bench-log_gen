@@ -15,14 +15,15 @@ import com.ldbc.driver.dshini.operations.core.DeleteNodeOperationFactory.DeleteN
 import com.ldbc.driver.dshini.operations.core.DeleteRelationshipOperationFactory.DeleteRelationshipOperation;
 import com.ldbc.driver.dshini.operations.core.GetNodeOperationFactory.GetNodeOperation;
 import com.ldbc.driver.dshini.operations.core.GetNodesIncomingClaimsRelationshipsOperationFactory.GetNodesIncomingClaimsRelationshipsOperation;
-import com.ldbc.driver.dshini.operations.core.GetNodesOutRelationshipsOperationFactory.GetNodeOutRelationshipsOperation;
+import com.ldbc.driver.dshini.operations.core.GetNodesOutRelationshipsOperationFactory.GetNodesOutRelationshipsOperation;
 import com.ldbc.driver.dshini.operations.core.GetNodesOutgoingIsSpotlightRelationshipsOperationFactory.GetNodesOutgoingIsSpotlightRelationshipsOperation;
-import com.ldbc.driver.dshini.operations.core.GetNodesRelationshipsOperationFactory.GetNodeRelationshipsOperation;
+import com.ldbc.driver.dshini.operations.core.GetNodesRelationshipsOperationFactory.GetNodesRelationshipsOperation;
 import com.ldbc.driver.dshini.operations.core.GetRelationshipOperationFactory.GetRelationshipOperation;
 import com.ldbc.driver.dshini.operations.core.UpdateNodeNeoPinOperationFactory.UpdateNodeNeoPinOperation;
 import com.ldbc.driver.dshini.operations.index.AddNodeToNeoPinBoardIndexOperationFactory.AddNodeToNeoPinBoardIndexOperation;
 import com.ldbc.driver.dshini.operations.index.DeleteNodeFromNeoPinBoardIndexOperationFactory.DeleteNodeFromNeoPinBoardIndexOperation;
 import com.ldbc.driver.dshini.operations.index.IndexQueryNodeOnNeoPinEntertainmentVideoIndexOperationFactory.IndexQueryNodeOnNeoPinEntertainmentVideoIndexOperation;
+import com.ldbc.driver.dshini.workloads.DshiniCommands;
 import com.ldbc.driver.util.MapUtils;
 
 // TODO add ALL new cypher operations
@@ -48,7 +49,7 @@ public class Neo4jDb extends Db
     private boolean clear;
     private String dbType;
     private String path;
-    private Neo4jDshiniCommands commands;
+    private DshiniCommands commands;
 
     @Override
     protected void onInit( Map<String, String> properties ) throws DbException
@@ -75,7 +76,9 @@ public class Neo4jDb extends Db
         else if ( dbType.equals( "embedded" ) )
         {
             logger.info( "Connecting to database: " + path );
-            commands = new Neo4jDshiniCommandsEmbedded( path );
+
+            // TODO
+            // commands = new Neo4jDshiniCommandsEmbedded( path );
         }
         else
         {
@@ -98,28 +101,7 @@ public class Neo4jDb extends Db
     private void registerHandlers() throws DbException
     {
         registerOperationHandler( BatchOperation.class, commands.getBatchOperationHandler() );
-        registerOperationHandler( IndexQueryNodeOnNeoPinEntertainmentVideoIndexOperation.class,
-                commands.getIndexQueryGetNodeOperationHandler() );
-        registerOperationHandler( AddNodeToNeoPinBoardIndexOperation.class,
-                commands.getAddNodeToIndexOperationHandler() );
-        registerOperationHandler( DeleteNodeFromNeoPinBoardIndexOperation.class,
-                commands.getDeleteNodeFromIndexOperationHandler() );
-        registerOperationHandler( GetNodeOperation.class, commands.getGetNodeOperationHandler() );
-        registerOperationHandler( CreateNodeNeoProductOperation.class, commands.getCreateNodeOperationHandler() );
-        registerOperationHandler( UpdateNodeNeoPinOperation.class, commands.getUpdateNodePropertiesOperationHandler() );
-        registerOperationHandler( DeleteNodeOperation.class, commands.getDeleteNodeOperationHandler() );
-        registerOperationHandler( GetRelationshipOperation.class, commands.getGetRelationshipOperationHandler() );
-        registerOperationHandler( DeleteRelationshipOperation.class, commands.getDeleteRelationshipOperationHandler() );
-        registerOperationHandler( GetNodeOutRelationshipsOperation.class,
-                commands.getGetNodeOutRelationshipsOperationHandler() );
-        registerOperationHandler( CreateRelationshipAuthoredByOperation.class,
-                commands.getCreateRelationshipOperationHandler() );
-        registerOperationHandler( GetNodesIncomingClaimsRelationshipsOperation.class,
-                commands.getGetNodeTypedOutRelationshipsOperationHandler() );
-        registerOperationHandler( GetNodeRelationshipsOperation.class,
-                commands.getGetNodeRelationshipsOperationHandler() );
-        registerOperationHandler( GetNodesIncomingClaimsRelationshipsOperation.class,
-                commands.getGetNodeTypedInRelationshipsOperationHandler() );
+        // TODO register the rest
     }
 
     @Override

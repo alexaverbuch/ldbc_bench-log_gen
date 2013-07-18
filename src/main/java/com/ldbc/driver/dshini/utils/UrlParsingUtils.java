@@ -180,39 +180,6 @@ public class UrlParsingUtils
         }
     }
 
-    // TODO possibly uncomment
-    // http://graph.internal.dshini.net:7474/db/data/index/node/user_profile?query=UserId:2149
-    // public static String parseIndexNameForNodeIndexQueryUrl( String urlString
-    // ) throws RequestLogEntryException
-    // {
-    // try
-    // {
-    // // "db/data/index/node/"
-    // Matcher startMatcher = INDEX_NODE_PATTERN.matcher( urlString );
-    // // "\\?query="
-    // Matcher endMatcher = QUERY_PARAM_PATTERN.matcher( urlString );
-    // if ( startMatcher.find() && endMatcher.find() )
-    // {
-    // return URLDecoder.decode( urlString.substring( startMatcher.end(),
-    // endMatcher.start() ), CHAR_SET );
-    // }
-    //
-    // String errMsg = String.format(
-    // "Patterns [%s,%s] not found while parsing index name from node index query URL\nURL: %s",
-    // INDEX_NODE_PATTERN.toString(), QUERY_PARAM_PATTERN.toString(), urlString
-    // );
-    // logger.error( errMsg );
-    // throw new RequestLogEntryException( errMsg );
-    // }
-    // catch ( UnsupportedEncodingException e )
-    // {
-    // String errMsg = String.format(
-    // "Error parsing index name node index query URL\nURL: %s", urlString );
-    // logger.error( errMsg, e );
-    // throw new RequestLogEntryException( errMsg, e.getCause() );
-    // }
-    // }
-
     // http://graph.internal.dshini.net:7474/db/data/index/node/user_profile?query=UserId:2149
     public static String parseIndexQueryFromNodeIndexQueryUrl( String urlString ) throws RequestLogEntryException
     {

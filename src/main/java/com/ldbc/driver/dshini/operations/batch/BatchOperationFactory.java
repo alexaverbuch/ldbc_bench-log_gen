@@ -14,6 +14,8 @@ import com.ldbc.driver.dshini.generator.MatchableException;
 import com.ldbc.driver.dshini.generator.OperationMatcher;
 import com.ldbc.driver.dshini.log.RequestLogEntry;
 import com.ldbc.driver.dshini.log.RequestLogEntryException;
+import com.ldbc.driver.dshini.operations.AbstractOperationFactory;
+import com.ldbc.driver.dshini.utils.UrlPatterns;
 import com.ldbc.driver.util.temporal.Time;
 
 /*
@@ -47,11 +49,20 @@ http://graph-master.dshini.net:7474/db/data/batch;
 "[""Accept: application\/json"",""X-Stream:true"",""Content-Length: 1371"",""Content-Type: application\/json""]"
 */
 
-public class BatchOperationFactory implements Matchable<RequestLogEntry>
+public class BatchOperationFactory extends AbstractOperationFactory
 {
-    private static final Logger logger = Logger.getLogger( BatchOperationFactory.class );
+    @Override
+    protected String getExpectedHttpMethod()
+    {
+        return "POST";
+    }
 
-    private final Pattern BATCH_PATTERN = Pattern.compile( ".*db/data/batch$" );
+    @Override
+    protected Pattern getExpectedUrlPattern()
+    {
+        return UrlPatterns.BATCH;
+    }
+
     private final ObjectMapper mapper = new ObjectMapper();
     private final OperationMatcher operationMatcher;
 
@@ -64,12 +75,6 @@ public class BatchOperationFactory implements Matchable<RequestLogEntry>
     public BatchOperationFactory()
     {
         this.operationMatcher = null;
-    }
-
-    @Override
-    public boolean matches( RequestLogEntry entry )
-    {
-        return entry.getHttpMethod().equals( "POST" ) && BATCH_PATTERN.matcher( entry.getUrl() ).matches();
     }
 
     /*

@@ -19,5 +19,5 @@ public class UrlPatterns
     public final static Pattern CREATE_NODE = Pattern.compile( ".*db/data/node$" );
     public final static Pattern UPDATE_NODE = Pattern.compile( ".*db/data/node/\\d*/properties$" );
     public final static Pattern CREATE_RELATIONSHIP = Pattern.compile( ".*db/data/node/\\d*/relationships" );
-
+    public final static Pattern BATCH = Pattern.compile( ".*db/data/batch$" );
 }

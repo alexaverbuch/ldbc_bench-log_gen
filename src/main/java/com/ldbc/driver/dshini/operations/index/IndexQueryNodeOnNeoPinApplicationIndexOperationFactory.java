@@ -44,7 +44,7 @@ public class IndexQueryNodeOnNeoPinApplicationIndexOperationFactory extends Abst
         {
             String indexName = UrlParsingUtils.parseIndexNameFromNodeIndexUrl( entry.getUrl() );
             String indexQuery = UrlParsingUtils.parseIndexQueryFromNodeIndexQueryUrl( entry.getUrl() );
-            return new CopyOfIndexQueryNodeOnNeoPinApplicationIndexOperation( entry.getTime(), indexName, indexQuery );
+            return new IndexQueryNodeOnNeoPinApplicationIndexOperation( entry.getTime(), indexName, indexQuery );
         }
         catch ( RequestLogEntryException e )
         {
@@ -55,15 +55,15 @@ public class IndexQueryNodeOnNeoPinApplicationIndexOperationFactory extends Abst
     @Override
     public Class<? extends Operation<?>> operationType()
     {
-        return CopyOfIndexQueryNodeOnNeoPinApplicationIndexOperation.class;
+        return IndexQueryNodeOnNeoPinApplicationIndexOperation.class;
     }
 
-    public static class CopyOfIndexQueryNodeOnNeoPinApplicationIndexOperation extends Operation<Integer>
+    public static class IndexQueryNodeOnNeoPinApplicationIndexOperation extends Operation<Integer>
     {
         private final String indexName;
         private final String indexQuery;
 
-        private CopyOfIndexQueryNodeOnNeoPinApplicationIndexOperation( Time time, String indexName, String indexQuery )
+        private IndexQueryNodeOnNeoPinApplicationIndexOperation( Time time, String indexName, String indexQuery )
         {
             super();
             setScheduledStartTime( time );
@@ -104,7 +104,7 @@ public class IndexQueryNodeOnNeoPinApplicationIndexOperationFactory extends Abst
             if ( this == obj ) return true;
             if ( obj == null ) return false;
             if ( getClass() != obj.getClass() ) return false;
-            CopyOfIndexQueryNodeOnNeoPinApplicationIndexOperation other = (CopyOfIndexQueryNodeOnNeoPinApplicationIndexOperation) obj;
+            IndexQueryNodeOnNeoPinApplicationIndexOperation other = (IndexQueryNodeOnNeoPinApplicationIndexOperation) obj;
             if ( indexName == null )
             {
                 if ( other.indexName != null ) return false;

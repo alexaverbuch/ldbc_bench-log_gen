@@ -59,7 +59,7 @@ public class GetUsersSubscribedToBoardsShownOnSitesOwnedByUserOperationFactory e
             Map<String, Object> cypherMap = entry.getDescriptionAsMap();
             String cypherQueryString = (String) cypherMap.get( "query" );
             Map<String, Object> cypherParams = (Map<String, Object>) cypherMap.get( "params" );
-            return new GetUsersSubscribedToBoardsOnSitesOwnedByGivenUserOperation( entry.getTime(), cypherQueryString,
+            return new GetUsersSubscribedToBoardsShownOnSitesOwnedByUserOperation( entry.getTime(), cypherQueryString,
                     cypherParams );
         }
         catch ( RequestLogEntryException e )
@@ -71,15 +71,15 @@ public class GetUsersSubscribedToBoardsShownOnSitesOwnedByUserOperationFactory e
     @Override
     public Class<? extends Operation<?>> operationType()
     {
-        return GetUsersSubscribedToBoardsOnSitesOwnedByGivenUserOperation.class;
+        return GetUsersSubscribedToBoardsShownOnSitesOwnedByUserOperation.class;
     }
 
-    public static class GetUsersSubscribedToBoardsOnSitesOwnedByGivenUserOperation extends Operation<Object>
+    public static class GetUsersSubscribedToBoardsShownOnSitesOwnedByUserOperation extends Operation<Object>
     {
         private final String queryString;
         private final Map<String, Object> params;
 
-        private GetUsersSubscribedToBoardsOnSitesOwnedByGivenUserOperation( Time time, String queryString,
+        private GetUsersSubscribedToBoardsShownOnSitesOwnedByUserOperation( Time time, String queryString,
                 Map<String, Object> params )
         {
             super();
@@ -121,7 +121,7 @@ public class GetUsersSubscribedToBoardsShownOnSitesOwnedByUserOperationFactory e
             if ( this == obj ) return true;
             if ( obj == null ) return false;
             if ( getClass() != obj.getClass() ) return false;
-            GetUsersSubscribedToBoardsOnSitesOwnedByGivenUserOperation other = (GetUsersSubscribedToBoardsOnSitesOwnedByGivenUserOperation) obj;
+            GetUsersSubscribedToBoardsShownOnSitesOwnedByUserOperation other = (GetUsersSubscribedToBoardsShownOnSitesOwnedByUserOperation) obj;
             if ( params == null )
             {
                 if ( other.params != null ) return false;

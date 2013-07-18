@@ -178,6 +178,181 @@ import com.ldbc.driver.util.Pair;
 
 public class Dshini
 {
+    /*
+    Histogram
+    defaultBucketValue=0
+    bucketCount=168
+    sumOfAllBucketValues=13049993
+    DiscreteBucket [thing=CheckEntitiesLikedByUsersOperation] = 986645
+    DiscreteBucket [thing=GetAuthorsOfPinsOperation] = 856334
+    DiscreteBucket [thing=GetSiteOwnersOperation] = 639811
+    DiscreteBucket [thing=GetCommentsAndAuthorsOnPins2Operation] = 575661
+    DiscreteBucket [thing=GetPinAssetsOperation] = 552031
+    DiscreteBucket [thing=IndexQueryNodeOnUserProfileIndexOperation] = 547934
+    DiscreteBucket [thing=CountPinsOnBoards1Operation] = 530796
+    DiscreteBucket [thing=GetUrlsReferencedByPinsOperation] = 516540
+    DiscreteBucket [thing=IndexQueryNodeOnNeoPinIndexOperation] = 501957
+    DiscreteBucket [thing=CheckUsersSubscribedToSiteOperation] = 498684
+    DiscreteBucket [thing=AddNodeToNeoPinBoardIndexOperation] = 467215
+    DiscreteBucket [thing=GetSitesShowingBoardsOperation] = 456663
+    DiscreteBucket [thing=GetBoardsPinnedByPinsOperation] = 442957
+    DiscreteBucket [thing=GetPinsRepinnedByUserOperation] = 390024
+    DiscreteBucket [thing=CountUsersSubscribedToSitesShowingBoardsOperation] = 353675
+    DiscreteBucket [thing=CheckUserSubscribedToBoardOperation] = 327736
+    DiscreteBucket [thing=CountUsersWhoLikedThingsOperation] = 298273
+    DiscreteBucket [thing=GetSitesOwnedByUsers2Operation] = 297338
+    DiscreteBucket [thing=CountRepinsOperation] = 290747
+    DiscreteBucket [thing=GetUrlsOfHostsOperation] = 252037
+    DiscreteBucket [thing=GetPinsAndTheirAssetsOnBoardsOperation] = 229362
+    DiscreteBucket [thing=GetNodeOperation] = 198873
+    DiscreteBucket [thing=GetOriginalPinOperation] = 183527
+    DiscreteBucket [thing=GetCategoriesOfProducts1Operation] = 162068
+    DiscreteBucket [thing=GetSiteModeratorsOperation] = 154668
+    DiscreteBucket [thing=GetUsersThatRepinnedPinOperation] = 114905
+    DiscreteBucket [thing=BatchOperation] = 107418
+    DiscreteBucket [thing=GetBoardsOnSitesOwnedByUsersOperation] = 101426
+    DiscreteBucket [thing=GetPinsAndTheirAuthorsAndAssetsAndBoardsOnSitesSubscribedToByUsersOperation] = 97172
+    DiscreteBucket [thing=CountPinsByAuthorsOnBoardsShownOnSitesOperation] = 95157
+    DiscreteBucket [thing=GetCategoriesOfProducts2Operation] = 89973
+    DiscreteBucket [thing=UpdateNodeNeoPinBoardOperation] = 87978
+    DiscreteBucket [thing=DeleteNodeFromNeoPinBoardIndexOperation] = 87978
+    DiscreteBucket [thing=GetUsersThatLikedEntitiesOperation] = 85298
+    DiscreteBucket [thing=CountOwnersOfSitesShowingBoardsSubscribedToByUserOperation] = 82367
+    DiscreteBucket [thing=CountUsersSubscribedToBoardsOnSitesOperation] = 82315
+    DiscreteBucket [thing=GetPinsAndTheirAuthorsAndAssetsOnBoardsOperation] = 79339
+    DiscreteBucket [thing=GetNodeOutRelationshipsOperation] = 71586
+    DiscreteBucket [thing=GetOwnersOfSitesShowingBoardsSubscribedToByUsers1Operation] = 71052
+    DiscreteBucket [thing=GetBoardsShownOnSitesOperation] = 69887
+    DiscreteBucket [thing=GetUsersWhoClaimedOperation] = 67701
+    DiscreteBucket [thing=IndexQueryNodeOnNeoProductIndexOperation] = 66629
+    DiscreteBucket [thing=CountThingsLikedByUsersOperation] = 52174
+    DiscreteBucket [thing=GetNodesOutgoingIsSpotlightRelationshipsOperation] = 51011
+    DiscreteBucket [thing=GetUsersWhoLikedEntityOperation] = 50999
+    DiscreteBucket [thing=CountAuthorsOfCommentsOnPinThatHaveNotBeenTrolledByUserOperation] = 33654
+    DiscreteBucket [thing=GetCommentsAndAuthorsOnPins1Operation] = 33654
+    DiscreteBucket [thing=CountRecentPinsOperation] = 32198
+    DiscreteBucket [thing=CountPinsOnBoards2Operation] = 32198
+    DiscreteBucket [thing=IndexQueryNodeOnNeoPinCommentIndexOperation] = 31206
+    DiscreteBucket [thing=CreateRelationshipPinsOperation] = 30338
+    DiscreteBucket [thing=IndexQueryNodeOnNeoPinUrlIndexOperation] = 29945
+    DiscreteBucket [thing=CreateRelationshipAuthoredByOperation] = 29311
+    DiscreteBucket [thing=CreateRelationshipPinnedViaOperation] = 29311
+    DiscreteBucket [thing=CreateRelationshipPinsAssetOperation] = 29311
+    DiscreteBucket [thing=AddNodeToNeoPinUrlIndexOperation] = 28824
+    DiscreteBucket [thing=GetAuthorsOfCommentsOperation] = 27215
+    DiscreteBucket [thing=GetUsersSubscribedToBoardsOnSitesOwnedByGivenUserOperation] = 23845
+    DiscreteBucket [thing=CountUsersSubscribedToBoardsOnSitesOwnedByAuthorsOperation] = 23845
+    DiscreteBucket [thing=GetCommentedOnPinsOperation] = 21333
+    DiscreteBucket [thing=GetAuthorsOfCommentsOnPinsOperation] = 21260
+    DiscreteBucket [thing=CreateRelationshipPinReferencesUrlOperation] = 20927
+    DiscreteBucket [thing=CountCommentsOnPinsOperation] = 19126
+    DiscreteBucket [thing=GetBoardsShownOnSitesOwnedByUsersOperation] = 16722
+    DiscreteBucket [thing=IndexQueryNodeOnNeoPinBoardIndexOperation] = 15130
+    DiscreteBucket [thing=GetSubscriptionsOfUsersToEntitiesOperation] = 12732
+    DiscreteBucket [thing=CountOwnersOfSitesShowingBoardsSubscribedToByUsersOperation] = 12190
+    DiscreteBucket [thing=GetOwnersOfSitesShowingBoardsSubscribedToByUsers2Operation] = 12190
+    DiscreteBucket [thing=GetCategoriesOfProductsOfferedByUserOperation] = 11517
+    DiscreteBucket [thing=GetParentCategoriesOfSubCategoriesOperation] = 10594
+    DiscreteBucket [thing=CreateRelationshipCommentsOnOperation] = 9899
+    DiscreteBucket [thing=CreateRelationshipCommentedByOperation] = 9899
+    DiscreteBucket [thing=AddNodeToNeoPinIndexOperation] = 8003
+    DiscreteBucket [thing=GetOffersInCategoryOfferedByUser1Operation] = 7292
+    DiscreteBucket [thing=CreateNodeNeoPinUrlOperation] = 7206
+    DiscreteBucket [thing=CreateRelationshipUrlHostOfOperation] = 7206
+    DiscreteBucket [thing=GetPinsAndTheirAuthorsAndAssetsOnSubBoardsOfBoards1Operation] = 6557
+    DiscreteBucket [thing=CountPinsReferencingUrlsOperation] = 6553
+    DiscreteBucket [thing=IndexQueryNodeOnNeoSiteIndexOperation] = 4947
+    DiscreteBucket [thing=CopyOfIndexQueryNodeOnNeoPinApplicationIndexOperation] = 4773
+    DiscreteBucket [thing=GetProductsInCategoriesUnderOffer2Operation] = 3900
+    DiscreteBucket [thing=GetCommentsOnPin1Operation] = 3733
+    DiscreteBucket [thing=DeleteRelationshipOperation] = 3415
+    DiscreteBucket [thing=IndexQueryNodeOnNeoPinUrlHostIndexOperation] = 3094
+    DiscreteBucket [thing=GetPinsAndTheirAuthorsAndAssetsOnBoardsShownOnSites1Operation] = 3049
+    DiscreteBucket [thing=AddNodeToNeoSiteIndexOperation] = 3019
+    DiscreteBucket [thing=CheckUserSubscribedToEntityOperation] = 2648
+    DiscreteBucket [thing=CreateRelationshipSubscribesOperation] = 2586
+    DiscreteBucket [thing=GetNodeRelationshipsOperation] = 2195
+    DiscreteBucket [thing=IndexQueryNodeOnNeoCategoryIndexOperation] = 2036
+    DiscreteBucket [thing=GetPinsOnAssetsOperation] = 1966
+    DiscreteBucket [thing=AddNodeToNeoPinUrlHostIndexOperation] = 1932
+    DiscreteBucket [thing=GetSubCategoriesOfParentCategories1Operation] = 1917
+    DiscreteBucket [thing=CountProductsInCategoriesUnderOffer2Operation] = 1908
+    DiscreteBucket [thing=GetPinnedViaOperation] = 1483
+    DiscreteBucket [thing=IndexQueryNodeOnNeoPinImageIndexOperation] = 1479
+    DiscreteBucket [thing=CountProductsUnderOfferOperation] = 1432
+    DiscreteBucket [thing=GetClaimedByUsersOperation] = 1368
+    DiscreteBucket [thing=GetOffersByUserOperation] = 1359
+    DiscreteBucket [thing=GetClaimsByUsersOperation] = 1358
+    DiscreteBucket [thing=GetProductsUnderOfferOperation] = 1322
+    DiscreteBucket [thing=DeleteNodeFromNeoPinIndexOperation] = 1198
+    DiscreteBucket [thing=UpdateNodeNeoPinOperation] = 1198
+    DiscreteBucket [thing=GetOffersInCategoryOfferedByUser2Operation] = 1114
+    DiscreteBucket [thing=GetSitesOwnedByUsers1Operation] = 1103
+    DiscreteBucket [thing=GetParentBoardsOfBoardsOperation] = 1080
+    DiscreteBucket [thing=GetRelationshipOperation] = 1063
+    DiscreteBucket [thing=GetUsersSubscribedToSitesShowingBoardsOperation] = 906
+    DiscreteBucket [thing=AddNodeToNeoProductIndexOperation] = 858
+    DiscreteBucket [thing=GetUserSubscriptionsOperation] = 830
+    DiscreteBucket [thing=IndexQueryNodeOnNeoRootIndexOperation] = 721
+    DiscreteBucket [thing=IndexQueryNodeOnOfferIndexOperation] = 548
+    DiscreteBucket [thing=GetRootOperation] = 487
+    DiscreteBucket [thing=CreateNodeNeoPinUrlHostOperation] = 483
+    DiscreteBucket [thing=GetUsersLikesOnEntityOperation] = 465
+    DiscreteBucket [thing=GetCategoriesOfProductsUnderOfferOperation] = 437
+    DiscreteBucket [thing=CreateRelationshipSubBoardOfOperation] = 370
+    DiscreteBucket [thing=GetSubCategoriesOfParentCategories3Operation] = 358
+    DiscreteBucket [thing=CreateRelationshipBoardShownOnOperation] = 334
+    DiscreteBucket [thing=CreateNodeNeoPinBoardOperation] = 334
+    DiscreteBucket [thing=GetPinsLikedByOwnersOfSitesOperation] = 332
+    DiscreteBucket [thing=CreateRelationshipRepinsOperation] = 301
+    DiscreteBucket [thing=UpdateNodeNeoSiteOperation] = 288
+    DiscreteBucket [thing=DeleteNodeFromNeoSiteIndexOperation] = 288
+    DiscreteBucket [thing=CreateRelationshipRootOperation] = 199
+    DiscreteBucket [thing=GetNodesOutgoingClaimedAndClaimsRelationshipsOperation] = 198
+    DiscreteBucket [thing=GetNodesOutgoingWantedRelationshipsOperation] = 184
+    DiscreteBucket [thing=GetSpotlightPinsOperation] = 183
+    DiscreteBucket [thing=CreateRelationshipShipsToOperation] = 151
+    DiscreteBucket [thing=CreateRelationshipOfferedByOperation] = 151
+    DiscreteBucket [thing=CreateRelationshipOffersOperation] = 151
+    DiscreteBucket [thing=GetSpotlightPinsAndTheirAuthorsAndBoardsAndAssetsOperation] = 151
+    DiscreteBucket [thing=GetAuthorsAndAssetsOfPinsOnBoardsShownOnSitesUserSubscribesToOperation] = 114
+    DiscreteBucket [thing=CreateNodeNeoProductOperation] = 105
+    DiscreteBucket [thing=CreateRelationshipInCategoryOperation] = 105
+    DiscreteBucket [thing=GetPinsAndTheirAuthorsAndAssetsOnSubBoardsOfBoards2Operation] = 102
+    DiscreteBucket [thing=GetCommentsOnPin2Operation] = 99
+    DiscreteBucket [thing=CountProductsInCategoriesUnderOffer1Operation] = 95
+    DiscreteBucket [thing=CreateRelationshipSitesOwnedByOperation] = 94
+    DiscreteBucket [thing=CreateNodeNeoSiteOperation] = 94
+    DiscreteBucket [thing=DeleteNodeFromNeoPinCommentIndexOperation] = 73
+    DiscreteBucket [thing=DeleteNodeOperation] = 73
+    DiscreteBucket [thing=IndexQueryNodeOnNeoShippingCountryIndexOperation] = 72
+    DiscreteBucket [thing=GetOffersInCategoryOfferedByUser3Operation] = 60
+    DiscreteBucket [thing=GetProductsInCategoriesUnderOffer1Operation] = 54
+    DiscreteBucket [thing=GetPinsAndTheirAuthorsAndAssetsOnBoardsShownOnSites2Operation] = 53
+    DiscreteBucket [thing=GetSubBoardsOfBoardWithNeoPins2Operation] = 53
+    DiscreteBucket [thing=GetSubBoardsOfBoardWithNeoPins1Operation] = 50
+    DiscreteBucket [thing=CreateRelationshipSoldOperation] = 39
+    DiscreteBucket [thing=CreateRelationshipBoughtOperation] = 39
+    DiscreteBucket [thing=GetSubCategoriesOfParentCategories2Operation] = 28
+    DiscreteBucket [thing=GetNodesIncomingClaimsRelationshipsOperation] = 15
+    DiscreteBucket [thing=GetUsersWhoClaimsOperation] = 11
+    DiscreteBucket [thing=CreateRelationshipClaimsOperation] = 10
+    DiscreteBucket [thing=IndexQueryNodeOnNeoPinYoutubeVideoIndexOperation] = 9
+    DiscreteBucket [thing=CountProductsInCategoriesUnderOfferInCountryOperation] = 8
+    DiscreteBucket [thing=CreateRelationshipTrollsOperation] = 7
+    DiscreteBucket [thing=GetNodesOutgoingTrollsRelationshipsOperation] = 7
+    DiscreteBucket [thing=GetCategoriesOfProductsUnderOfferInCountryOperation] = 5
+    DiscreteBucket [thing=GetProductsInCategoriesUnderOfferInCountryOperation] = 4
+    DiscreteBucket [thing=CreateRelationshipClaimedOperation] = 4
+    DiscreteBucket [thing=CountProductsUnderOfferInCountryOperation] = 3
+    DiscreteBucket [thing=IndexQueryNodeOnNeoPinEntertainmentVideoIndexOperation] = 3
+    DiscreteBucket [thing=GetProductsUnderOfferInCountryOperation] = 3
+    DiscreteBucket [thing=IndexQueryNodeOnNeoPinProductImageIndexOperation] = 2
+    DiscreteBucket [thing=IndexQueryNodeOnNeoPinGameImageIndexOperation] = 2
+    DiscreteBucket [thing=CountPinsByAuthorsOnBoardsOnSitesOperation] = 2
+    DiscreteBucket [thing=GetPinsInBoardsOperation] = 1
+     */
+
     private static final OperationFactories factories = new OperationFactories();
     private static final OperationTypes operationTypes = new OperationTypes();
 
@@ -227,7 +402,6 @@ public class Dshini
         }
     }
 
-    // TODO doesn't work. Matchable impls don't implement equals or hashcode
     private static <T> List<T> addIfNotExists( List<T> list, T value )
     {
         if ( list.contains( value ) )
@@ -269,7 +443,7 @@ public class Dshini
         private List<Class<? extends Operation<?>>> operationTypes( List<Matchable<RequestLogEntry>> matchables )
         {
             List<Class<? extends Operation<?>>> operationTypes = new ArrayList<Class<? extends Operation<?>>>();
-            for ( Matchable<?> matchable : matchables )
+            for ( Matchable<RequestLogEntry> matchable : matchables )
             {
                 operationTypes.add( matchable.operationType() );
             }

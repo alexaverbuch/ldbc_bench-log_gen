@@ -37,7 +37,7 @@ public class GetNodesRelationshipsOperationFactory extends AbstractOperationFact
         try
         {
             long nodeId = UrlParsingUtils.parseNodeIdFromNodeRelationshipsUrl( entry.getUrl() );
-            return new GetNodeRelationshipsOperation( entry.getTime(), nodeId );
+            return new GetNodesRelationshipsOperation( entry.getTime(), nodeId );
         }
         catch ( RequestLogEntryException e )
         {
@@ -48,14 +48,14 @@ public class GetNodesRelationshipsOperationFactory extends AbstractOperationFact
     @Override
     public Class<? extends Operation<?>> operationType()
     {
-        return GetNodeRelationshipsOperation.class;
+        return GetNodesRelationshipsOperation.class;
     }
 
-    public static class GetNodeRelationshipsOperation extends Operation<Integer>
+    public static class GetNodesRelationshipsOperation extends Operation<Integer>
     {
         private final long nodeId;
 
-        private GetNodeRelationshipsOperation( Time time, long nodeId )
+        private GetNodesRelationshipsOperation( Time time, long nodeId )
         {
             super();
             setScheduledStartTime( time );
@@ -88,7 +88,7 @@ public class GetNodesRelationshipsOperationFactory extends AbstractOperationFact
             if ( this == obj ) return true;
             if ( obj == null ) return false;
             if ( getClass() != obj.getClass() ) return false;
-            GetNodeRelationshipsOperation other = (GetNodeRelationshipsOperation) obj;
+            GetNodesRelationshipsOperation other = (GetNodesRelationshipsOperation) obj;
             if ( nodeId != other.nodeId ) return false;
             return true;
         }
