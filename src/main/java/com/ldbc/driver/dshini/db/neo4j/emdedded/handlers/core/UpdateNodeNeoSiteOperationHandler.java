@@ -1,15 +1,16 @@
-package com.ldbc.driver.dshini.db.neo4j.emdedded;
+package com.ldbc.driver.dshini.db.neo4j.emdedded.handlers.core;
 
 import org.neo4j.helpers.collection.MapUtil;
 
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.OperationResult;
-import com.ldbc.driver.dshini.operations.core.UpdateNodeNeoPinOperationFactory.UpdateNodeNeoPinOperation;
+import com.ldbc.driver.dshini.db.neo4j.emdedded.Neo4jConnectionStateEmbedded;
+import com.ldbc.driver.dshini.operations.core.UpdateNodeNeoSiteOperationFactory.UpdateNodeNeoSiteOperation;
 
-public class EmbeddedUpdateNodePropertiesOperationHandler extends OperationHandler<UpdateNodeNeoPinOperation>
+public class UpdateNodeNeoSiteOperationHandler extends OperationHandler<UpdateNodeNeoSiteOperation>
 {
     @Override
-    protected OperationResult executeOperation( UpdateNodeNeoPinOperation operation )
+    protected OperationResult executeOperation( UpdateNodeNeoSiteOperation operation )
     {
         Neo4jConnectionStateEmbedded connection = (Neo4jConnectionStateEmbedded) getDbConnectionState();
         final String queryString = "START n=node({nodeId}) SET n={properties}";

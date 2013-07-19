@@ -4,20 +4,119 @@ import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.matchers.JUnitMatchers.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.junit.Test;
 
 import com.ldbc.driver.Operation;
 import com.ldbc.driver.dshini.generator.Matchable;
+import com.ldbc.driver.dshini.log.RequestLogEntry;
 import com.ldbc.driver.dshini.operations.Dshini;
 import com.ldbc.driver.dshini.operations.Dshini.ReadWrite;
+import com.ldbc.driver.dshini.operations.core.CreateNodeNeoPinBoardOperationFactory;
+import com.ldbc.driver.dshini.operations.core.CreateRelationshipInCategoryOperationFactory;
+import com.ldbc.driver.dshini.operations.core.GetNodesOutgoingTrollsRelationshipsOperationFactory;
+import com.ldbc.driver.dshini.operations.core.GetRelationshipOperationFactory;
+import com.ldbc.driver.dshini.operations.core.UpdateNodeNeoPinOperationFactory;
+import com.ldbc.driver.dshini.operations.cypher.CheckUsersSubscribedToSitesOperationFactory;
+import com.ldbc.driver.dshini.operations.index.AddNodeToNeoPinBoardIndexOperationFactory;
 import com.ldbc.driver.util.Bucket;
 import com.ldbc.driver.util.Histogram;
 import com.ldbc.driver.util.Bucket.DiscreteBucket;
 
 public class DshiniTest
 {
+
+    @Test
+    public void shouldThrowExceptionIfOperationFactoryAddedMultipleTimes()
+    {
+        List<Matchable<RequestLogEntry>> factories = new ArrayList<Matchable<RequestLogEntry>>();
+
+        /*
+         * Add same factories for a first time
+         * Should not throw exceptions
+         */
+
+        // AbstractNodeWriteOperationFactory
+        assertThat( exceptionWasThrown( factories, new UpdateNodeNeoPinOperationFactory() ), is( false ) );
+        assertThat( factories.size(), is( 1 ) );
+
+        // AbstractRelationshipReadOperationFactory
+        assertThat( exceptionWasThrown( factories, new GetNodesOutgoingTrollsRelationshipsOperationFactory() ),
+                is( false ) );
+        assertThat( factories.size(), is( 2 ) );
+
+        // AbstractRelationshipCreateOperationFactory
+        assertThat( exceptionWasThrown( factories, new CreateRelationshipInCategoryOperationFactory() ), is( false ) );
+        assertThat( factories.size(), is( 3 ) );
+
+        // AbstractNodeWriteOperationFactory
+        assertThat( exceptionWasThrown( factories, new CreateNodeNeoPinBoardOperationFactory() ), is( false ) );
+        assertThat( factories.size(), is( 4 ) );
+
+        // AbstractOperationFactory
+        assertThat( exceptionWasThrown( factories, new GetRelationshipOperationFactory() ), is( false ) );
+        assertThat( factories.size(), is( 5 ) );
+
+        // AbstractCypherOperationFactory
+        assertThat( exceptionWasThrown( factories, new CheckUsersSubscribedToSitesOperationFactory() ), is( false ) );
+        assertThat( factories.size(), is( 6 ) );
+
+        // AbstractIndexOperationFactory
+        assertThat( exceptionWasThrown( factories, new AddNodeToNeoPinBoardIndexOperationFactory() ), is( false ) );
+        assertThat( factories.size(), is( 7 ) );
+
+        /*
+         * Add same factories for a second time
+         * Should throw exceptions
+         */
+
+        // AbstractNodeWriteOperationFactory
+        assertThat( exceptionWasThrown( factories, new UpdateNodeNeoPinOperationFactory() ), is( true ) );
+        assertThat( factories.size(), is( 7 ) );
+
+        // AbstractRelationshipReadOperationFactory
+        assertThat( exceptionWasThrown( factories, new GetNodesOutgoingTrollsRelationshipsOperationFactory() ),
+                is( true ) );
+        assertThat( factories.size(), is( 7 ) );
+
+        // AbstractRelationshipCreateOperationFactory
+        assertThat( exceptionWasThrown( factories, new CreateRelationshipInCategoryOperationFactory() ), is( true ) );
+        assertThat( factories.size(), is( 7 ) );
+
+        // AbstractNodeWriteOperationFactory
+        assertThat( exceptionWasThrown( factories, new CreateNodeNeoPinBoardOperationFactory() ), is( true ) );
+        assertThat( factories.size(), is( 7 ) );
+
+        // AbstractOperationFactory
+        assertThat( exceptionWasThrown( factories, new GetRelationshipOperationFactory() ), is( true ) );
+        assertThat( factories.size(), is( 7 ) );
+
+        // AbstractCypherOperationFactory
+        assertThat( exceptionWasThrown( factories, new CheckUsersSubscribedToSitesOperationFactory() ), is( true ) );
+        assertThat( factories.size(), is( 7 ) );
+
+        // AbstractIndexOperationFactory
+        assertThat( exceptionWasThrown( factories, new AddNodeToNeoPinBoardIndexOperationFactory() ), is( true ) );
+        assertThat( factories.size(), is( 7 ) );
+    }
+
+    private boolean exceptionWasThrown( List<Matchable<RequestLogEntry>> matchables,
+            Matchable<RequestLogEntry> matchable )
+    {
+        boolean exceptionThrown = false;
+        try
+        {
+            matchables = Dshini.addIfNotExists( matchables, matchable );
+        }
+        catch ( Exception e )
+        {
+            exceptionThrown = true;
+        }
+        return exceptionThrown;
+    }
 
     @Test
     public void shouldBeSameNumberOfUniqueOperationFactoriesAsUniqueOperations()

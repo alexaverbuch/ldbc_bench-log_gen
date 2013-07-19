@@ -373,7 +373,8 @@ public class Dshini
         return factories;
     }
 
-    private static List<Matchable<RequestLogEntry>> filterReadWrite(
+    // TODO implement as GeneratorWrapper is ReadWrite is moved to Operation
+    public static List<Matchable<RequestLogEntry>> filterReadWrite(
             List<Pair<ReadWrite, ? extends Matchable<RequestLogEntry>>> readWriteFactories, ReadWrite readWrite )
     {
         List<Matchable<RequestLogEntry>> factories = new ArrayList<Matchable<RequestLogEntry>>();
@@ -387,7 +388,8 @@ public class Dshini
         return factories;
     }
 
-    private static boolean compareReadWrites( ReadWrite base, ReadWrite compare )
+    // TODO make ldbc_driver class
+    public static boolean compareReadWrites( ReadWrite base, ReadWrite compare )
     {
         switch ( base )
         {
@@ -402,7 +404,8 @@ public class Dshini
         }
     }
 
-    private static <T> List<T> addIfNotExists( List<T> list, T value )
+    // TODO use map and add this to MapUtils?
+    public static <T> List<T> addIfNotExists( List<T> list, T value )
     {
         if ( list.contains( value ) )
         {

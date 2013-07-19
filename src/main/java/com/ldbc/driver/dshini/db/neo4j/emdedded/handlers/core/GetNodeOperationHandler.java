@@ -1,4 +1,4 @@
-package com.ldbc.driver.dshini.db.neo4j.emdedded;
+package com.ldbc.driver.dshini.db.neo4j.emdedded.handlers.core;
 
 import java.util.NoSuchElementException;
 
@@ -8,9 +8,10 @@ import org.neo4j.helpers.collection.MapUtil;
 import com.ldbc.driver.DbException;
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.OperationResult;
+import com.ldbc.driver.dshini.db.neo4j.emdedded.Neo4jConnectionStateEmbedded;
 import com.ldbc.driver.dshini.operations.core.GetNodeOperationFactory.GetNodeOperation;
 
-public class EmbeddedGetNodeOperationHandler extends OperationHandler<GetNodeOperation>
+public class GetNodeOperationHandler extends OperationHandler<GetNodeOperation>
 {
 
     @Override

@@ -1,4 +1,4 @@
-package com.ldbc.driver.dshini.db.neo4j.emdedded;
+package com.ldbc.driver.dshini.db.neo4j.emdedded.handlers.core;
 
 import java.util.Iterator;
 
@@ -8,16 +8,18 @@ import org.neo4j.helpers.collection.MapUtil;
 
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.OperationResult;
-import com.ldbc.driver.dshini.operations.core.GetNodesIncomingClaimsRelationshipsOperationFactory.GetNodesIncomingClaimsRelationshipsOperation;
+import com.ldbc.driver.dshini.db.neo4j.emdedded.Neo4jConnectionStateEmbedded;
+import com.ldbc.driver.dshini.operations.core.GetNodesOutgoingClaimedAndClaimsRelationshipsOperationFactory.GetNodesOutgoingClaimedAndClaimsRelationshipsOperation;
 
-public class EmbeddedGetNodesIncomingClaimsRelationshipsOperationHandler extends
-        OperationHandler<GetNodesIncomingClaimsRelationshipsOperation>
+public class GetNodesOutgoingClaimedAndClaimsRelationshipsOperationHandler extends
+        OperationHandler<GetNodesOutgoingClaimedAndClaimsRelationshipsOperation>
 {
+
     @Override
-    protected OperationResult executeOperation( GetNodesIncomingClaimsRelationshipsOperation operation )
+    protected OperationResult executeOperation( GetNodesOutgoingClaimedAndClaimsRelationshipsOperation operation )
     {
         Neo4jConnectionStateEmbedded connection = (Neo4jConnectionStateEmbedded) getDbConnectionState();
-        final String queryString = String.format( "START n=node({nodeId}) " + "MATCH (n)<-[r:%s]-() RETURN r",
+        final String queryString = String.format( "START n=node({nodeId}) " + "MATCH (n)-[r:%s]->() RETURN r",
                 operation.getRelationshipType() );
         Iterator<Relationship> relationships = connection.getExecutionEngine().execute( queryString,
                 MapUtil.map( "nodeId", operation.getNodeId() ) ).columnAs( "r" );
@@ -26,4 +28,5 @@ public class EmbeddedGetNodesIncomingClaimsRelationshipsOperationHandler extends
         int result = IteratorUtil.count( relationships );
         return operation.buildResult( resultCode, result );
     }
+
 }

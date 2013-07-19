@@ -1,12 +1,13 @@
-package com.ldbc.driver.dshini.db.neo4j.emdedded;
+package com.ldbc.driver.dshini.db.neo4j.emdedded.handlers.core;
 
 import org.neo4j.helpers.collection.MapUtil;
 
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.OperationResult;
+import com.ldbc.driver.dshini.db.neo4j.emdedded.Neo4jConnectionStateEmbedded;
 import com.ldbc.driver.dshini.operations.core.DeleteRelationshipOperationFactory.DeleteRelationshipOperation;
 
-public class EmbeddedDeleteRelationshipOperationHandler extends OperationHandler<DeleteRelationshipOperation>
+public class DeleteRelationshipOperationHandler extends OperationHandler<DeleteRelationshipOperation>
 {
     @Override
     protected OperationResult executeOperation( DeleteRelationshipOperation operation )

@@ -1,4 +1,4 @@
-package com.ldbc.driver.dshini.db.neo4j.emdedded;
+package com.ldbc.driver.dshini.db.neo4j.emdedded.handlers.core;
 
 import java.util.Iterator;
 
@@ -8,9 +8,10 @@ import org.neo4j.helpers.collection.MapUtil;
 
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.OperationResult;
+import com.ldbc.driver.dshini.db.neo4j.emdedded.Neo4jConnectionStateEmbedded;
 import com.ldbc.driver.dshini.operations.core.GetNodesOutRelationshipsOperationFactory.GetNodesOutRelationshipsOperation;
 
-public class EmbeddedGetNodeOutRelationshipsOperationHandler extends OperationHandler<GetNodesOutRelationshipsOperation>
+public class GetNodesOutRelationshipsOperationHandler extends OperationHandler<GetNodesOutRelationshipsOperation>
 {
 
     @Override

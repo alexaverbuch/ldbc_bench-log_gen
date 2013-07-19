@@ -1,4 +1,4 @@
-package com.ldbc.driver.dshini.db.neo4j.emdedded;
+package com.ldbc.driver.dshini.db.neo4j.emdedded.handlers.core;
 
 import java.util.Iterator;
 
@@ -8,14 +8,15 @@ import org.neo4j.helpers.collection.MapUtil;
 
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.OperationResult;
-import com.ldbc.driver.dshini.operations.core.GetNodesOutgoingIsSpotlightRelationshipsOperationFactory.GetNodesOutgoingIsSpotlightRelationshipsOperation;
+import com.ldbc.driver.dshini.db.neo4j.emdedded.Neo4jConnectionStateEmbedded;
+import com.ldbc.driver.dshini.operations.core.GetNodesOutgoingWantedRelationshipsOperationFactory.GetNodesOutgoingWantedRelationshipsOperation;
 
-public class EmbeddedGetNodesOutgoingIsSpotlightRelationshipsOperationHandler extends
-        OperationHandler<GetNodesOutgoingIsSpotlightRelationshipsOperation>
+public class GetNodesOutgoingWantedRelationshipsOperationHandler extends
+        OperationHandler<GetNodesOutgoingWantedRelationshipsOperation>
 {
 
     @Override
-    protected OperationResult executeOperation( GetNodesOutgoingIsSpotlightRelationshipsOperation operation )
+    protected OperationResult executeOperation( GetNodesOutgoingWantedRelationshipsOperation operation )
     {
         Neo4jConnectionStateEmbedded connection = (Neo4jConnectionStateEmbedded) getDbConnectionState();
         final String queryString = String.format( "START n=node({nodeId}) " + "MATCH (n)-[r:%s]->() RETURN r",

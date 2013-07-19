@@ -58,8 +58,9 @@ public class Neo4jDshiniCommandsEmbedded
 
     public void clearDb()
     {
-        queryEngine.execute( "START r=rel(*) DELETE r", MapUtil.map() );
-        queryEngine.execute( "START n=node(*) DELETE n", MapUtil.map() );
+        // TODO never want to delete this database!
+        // queryEngine.execute( "START r=rel(*) DELETE r", MapUtil.map() );
+        // queryEngine.execute( "START n=node(*) DELETE n", MapUtil.map() );
     }
 
     // TODO

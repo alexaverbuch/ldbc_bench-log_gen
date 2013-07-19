@@ -1,15 +1,16 @@
-package com.ldbc.driver.dshini.db.neo4j.emdedded;
+package com.ldbc.driver.dshini.db.neo4j.emdedded.handlers.core;
 
 import org.neo4j.helpers.collection.MapUtil;
 
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.OperationResult;
-import com.ldbc.driver.dshini.operations.core.CreateRelationshipAuthoredByOperationFactory.CreateRelationshipAuthoredByOperation;
+import com.ldbc.driver.dshini.db.neo4j.emdedded.Neo4jConnectionStateEmbedded;
+import com.ldbc.driver.dshini.operations.core.CreateRelationshipSoldOperationFactory.CreateRelationshipSoldOperation;
 
-public class EmbeddedCreateRelationshipOperationHandler extends OperationHandler<CreateRelationshipAuthoredByOperation>
+public class CreateRelationshipSoldOperationHandler extends OperationHandler<CreateRelationshipSoldOperation>
 {
     @Override
-    protected OperationResult executeOperation( CreateRelationshipAuthoredByOperation operation )
+    protected OperationResult executeOperation( CreateRelationshipSoldOperation operation )
     {
         Neo4jConnectionStateEmbedded connection = (Neo4jConnectionStateEmbedded) getDbConnectionState();
 

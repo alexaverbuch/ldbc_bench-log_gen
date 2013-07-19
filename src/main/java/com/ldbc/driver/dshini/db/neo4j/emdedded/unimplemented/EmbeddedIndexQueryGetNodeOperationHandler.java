@@ -1,4 +1,4 @@
-package com.ldbc.driver.dshini.db.neo4j.emdedded;
+package com.ldbc.driver.dshini.db.neo4j.emdedded.unimplemented;
 
 import java.util.Iterator;
 
@@ -8,6 +8,7 @@ import org.neo4j.helpers.collection.IteratorUtil;
 
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.OperationResult;
+import com.ldbc.driver.dshini.db.neo4j.emdedded.Neo4jConnectionStateEmbedded;
 import com.ldbc.driver.dshini.operations.index.IndexQueryNodeOnNeoPinEntertainmentVideoIndexOperationFactory.IndexQueryNodeOnNeoPinEntertainmentVideoIndexOperation;
 
 public class EmbeddedIndexQueryGetNodeOperationHandler extends OperationHandler<IndexQueryNodeOnNeoPinEntertainmentVideoIndexOperation>

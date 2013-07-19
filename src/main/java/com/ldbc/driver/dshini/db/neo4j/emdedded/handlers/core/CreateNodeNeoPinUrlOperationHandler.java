@@ -1,15 +1,16 @@
-package com.ldbc.driver.dshini.db.neo4j.emdedded;
+package com.ldbc.driver.dshini.db.neo4j.emdedded.handlers.core;
 
 import org.neo4j.helpers.collection.MapUtil;
 
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.OperationResult;
-import com.ldbc.driver.dshini.operations.core.CreateNodeNeoProductOperationFactory.CreateNodeNeoProductOperation;
+import com.ldbc.driver.dshini.db.neo4j.emdedded.Neo4jConnectionStateEmbedded;
+import com.ldbc.driver.dshini.operations.core.CreateNodeNeoPinUrlOperationFactory.CreateNodeNeoPinUrlOperation;
 
-public class EmbeddedCreateNodeOperationHandler extends OperationHandler<CreateNodeNeoProductOperation>
+public class CreateNodeNeoPinUrlOperationHandler extends OperationHandler<CreateNodeNeoPinUrlOperation>
 {
     @Override
-    protected OperationResult executeOperation( CreateNodeNeoProductOperation operation )
+    protected OperationResult executeOperation( CreateNodeNeoPinUrlOperation operation )
     {
         Neo4jConnectionStateEmbedded connection = (Neo4jConnectionStateEmbedded) getDbConnectionState();
         final String queryString = "CREATE n = {properties}";
