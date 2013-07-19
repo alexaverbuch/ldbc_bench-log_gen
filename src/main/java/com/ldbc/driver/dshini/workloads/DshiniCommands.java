@@ -32,7 +32,7 @@ public abstract class DshiniCommands implements AllOperationHandlersProvider
         handlers.addAll( coreCommands.allOperationHandlers() );
         handlers.addAll( cypherCommands.allOperationHandlers() );
         handlers.addAll( indexCommands.allOperationHandlers() );
-        return null;
+        return handlers;
     }
 
     public final DshiniBatchCommands batch()
