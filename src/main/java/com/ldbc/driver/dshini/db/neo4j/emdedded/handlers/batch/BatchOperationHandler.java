@@ -1,11 +1,11 @@
-package com.ldbc.driver.dshini.db.neo4j.emdedded.unimplemented;
+package com.ldbc.driver.dshini.db.neo4j.emdedded.handlers.batch;
 
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.OperationResult;
 import com.ldbc.driver.dshini.db.neo4j.emdedded.Neo4jConnectionStateEmbedded;
 import com.ldbc.driver.dshini.operations.batch.BatchOperationFactory.BatchOperation;
 
-public class EmbeddedBatchOperationHandler extends OperationHandler<BatchOperation>
+public class BatchOperationHandler extends OperationHandler<BatchOperation>
 {
 
     @Override

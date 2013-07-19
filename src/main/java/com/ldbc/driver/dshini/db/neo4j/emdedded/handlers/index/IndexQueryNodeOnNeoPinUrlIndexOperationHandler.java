@@ -1,17 +1,22 @@
-package com.ldbc.driver.dshini.db.neo4j.emdedded.unimplemented;
+package com.ldbc.driver.dshini.db.neo4j.emdedded.handlers.index;
+
+import java.util.Iterator;
 
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
+import org.neo4j.helpers.collection.IteratorUtil;
 
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.OperationResult;
 import com.ldbc.driver.dshini.db.neo4j.emdedded.Neo4jConnectionStateEmbedded;
-import com.ldbc.driver.dshini.operations.index.AddNodeToNeoPinBoardIndexOperationFactory.AddNodeToNeoPinBoardIndexOperation;
+import com.ldbc.driver.dshini.operations.index.IndexQueryNodeOnNeoPinUrlIndexOperationFactory.IndexQueryNodeOnNeoPinUrlIndexOperation;
 
-public class EmbeddedAddNodeToIndexOperationHandler extends OperationHandler<AddNodeToNeoPinBoardIndexOperation>
+public class IndexQueryNodeOnNeoPinUrlIndexOperationHandler extends
+        OperationHandler<IndexQueryNodeOnNeoPinUrlIndexOperation>
 {
+
     @Override
-    protected OperationResult executeOperation( AddNodeToNeoPinBoardIndexOperation operation )
+    protected OperationResult executeOperation( IndexQueryNodeOnNeoPinUrlIndexOperation operation )
     {
         int resultCode;
         int result;
@@ -20,12 +25,11 @@ public class EmbeddedAddNodeToIndexOperationHandler extends OperationHandler<Add
         Transaction tx = connection.getDb().beginTx();
         try
         {
-            Node node = connection.getDb().getNodeById( operation.getNodeId() );
-            connection.getDb().index().forNodes( operation.getIndexName() ).add( node, operation.getKey(),
-                    operation.getValue() );
+            Iterator<Node> nodes = connection.getDb().index().forNodes( operation.getIndexName() ).query(
+                    operation.getIndexQuery() );
 
             resultCode = 0;
-            result = 1;
+            result = IteratorUtil.count( nodes );
         }
         catch ( Exception e )
         {
@@ -39,4 +43,5 @@ public class EmbeddedAddNodeToIndexOperationHandler extends OperationHandler<Add
 
         return operation.buildResult( resultCode, result );
     }
+
 }

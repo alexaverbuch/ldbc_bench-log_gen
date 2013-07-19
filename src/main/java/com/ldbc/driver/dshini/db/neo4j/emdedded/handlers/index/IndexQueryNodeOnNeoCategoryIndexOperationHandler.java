@@ -1,18 +1,22 @@
-package com.ldbc.driver.dshini.db.neo4j.emdedded.unimplemented;
+package com.ldbc.driver.dshini.db.neo4j.emdedded.handlers.index;
+
+import java.util.Iterator;
 
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
+import org.neo4j.helpers.collection.IteratorUtil;
 
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.OperationResult;
 import com.ldbc.driver.dshini.db.neo4j.emdedded.Neo4jConnectionStateEmbedded;
-import com.ldbc.driver.dshini.operations.index.DeleteNodeFromNeoPinBoardIndexOperationFactory.DeleteNodeFromNeoPinBoardIndexOperation;
+import com.ldbc.driver.dshini.operations.index.IndexQueryNodeOnNeoCategoryIndexOperationFactory.IndexQueryNodeOnNeoCategoryIndexOperation;
 
-public class EmbeddedDeleteNodeFromIndexOperationHandler extends OperationHandler<DeleteNodeFromNeoPinBoardIndexOperation>
+public class IndexQueryNodeOnNeoCategoryIndexOperationHandler extends
+        OperationHandler<IndexQueryNodeOnNeoCategoryIndexOperation>
 {
 
     @Override
-    protected OperationResult executeOperation( DeleteNodeFromNeoPinBoardIndexOperation operation )
+    protected OperationResult executeOperation( IndexQueryNodeOnNeoCategoryIndexOperation operation )
     {
         int resultCode;
         int result;
@@ -21,11 +25,11 @@ public class EmbeddedDeleteNodeFromIndexOperationHandler extends OperationHandle
         Transaction tx = connection.getDb().beginTx();
         try
         {
-            Node node = connection.getDb().getNodeById( operation.getNodeId() );
-            connection.getDb().index().forNodes( operation.getIndexName() ).remove( node );
+            Iterator<Node> nodes = connection.getDb().index().forNodes( operation.getIndexName() ).query(
+                    operation.getIndexQuery() );
 
             resultCode = 0;
-            result = 1;
+            result = IteratorUtil.count( nodes );
         }
         catch ( Exception e )
         {

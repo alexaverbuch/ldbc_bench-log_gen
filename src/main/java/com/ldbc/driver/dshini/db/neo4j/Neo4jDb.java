@@ -100,7 +100,8 @@ public class Neo4jDb extends Db
 
     private void registerHandlers() throws DbException
     {
-        registerOperationHandler( BatchOperation.class, commands.getBatchOperationHandler() );
+        // registerOperationHandler( BatchOperation.class,
+        // commands.getBatchOperationHandler() );
         // TODO register the rest
     }
 

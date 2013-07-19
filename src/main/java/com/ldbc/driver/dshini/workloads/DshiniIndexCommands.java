@@ -1,5 +1,9 @@
 package com.ldbc.driver.dshini.workloads;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.ldbc.driver.Operation;
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.dshini.operations.index.AddNodeToNeoPinBoardIndexOperationFactory.AddNodeToNeoPinBoardIndexOperation;
 import com.ldbc.driver.dshini.operations.index.AddNodeToNeoPinIndexOperationFactory.AddNodeToNeoPinIndexOperation;
@@ -29,74 +33,134 @@ import com.ldbc.driver.dshini.operations.index.IndexQueryNodeOnNeoShippingCountr
 import com.ldbc.driver.dshini.operations.index.IndexQueryNodeOnNeoSiteIndexOperationFactory.IndexQueryNodeOnNeoSiteIndexOperation;
 import com.ldbc.driver.dshini.operations.index.IndexQueryNodeOnOfferIndexOperationFactory.IndexQueryNodeOnOfferIndexOperation;
 import com.ldbc.driver.dshini.operations.index.IndexQueryNodeOnUserProfileIndexOperationFactory.IndexQueryNodeOnUserProfileIndexOperation;
+import com.ldbc.driver.util.Pair;
 
-public interface DshiniIndexCommands
+public abstract class DshiniIndexCommands implements AllOperationHandlersProvider
 {
+    @Override
+    public final List<Pair<Class<? extends Operation<?>>, Class<? extends OperationHandler<?>>>> allOperationHandlers()
+    {
+        List<Pair<Class<? extends Operation<?>>, Class<? extends OperationHandler<?>>>> handlers = new ArrayList<Pair<Class<? extends Operation<?>>, Class<? extends OperationHandler<?>>>>();
+        handlers.add( new Pair( IndexQueryNodeOnNeoCategoryIndexOperation.class,
+                getIndexQueryNodeOnNeoCategoryIndexOperationHandler() ) );
+        handlers.add( new Pair( IndexQueryNodeOnNeoPinApplicationIndexOperation.class,
+                getIndexQueryNodeOnNeoPinApplicationIndexOperationHandler() ) );
+        handlers.add( new Pair( IndexQueryNodeOnNeoPinBoardIndexOperation.class,
+                getIndexQueryNodeOnNeoPinBoardIndexOperationHandler() ) );
+        handlers.add( new Pair( IndexQueryNodeOnNeoPinCommentIndexOperation.class,
+                getIndexQueryNodeOnNeoPinCommentIndexOperationHandler() ) );
+        handlers.add( new Pair( IndexQueryNodeOnNeoPinEntertainmentVideoIndexOperation.class,
+                getIndexQueryNodeOnNeoPinEntertainmentVideoIndexOperationHandler() ) );
+        handlers.add( new Pair( IndexQueryNodeOnNeoPinGameImageIndexOperation.class,
+                getIndexQueryNodeOnNeoPinGameImageIndexOperationHandler() ) );
+        handlers.add( new Pair( IndexQueryNodeOnNeoPinImageIndexOperation.class,
+                getIndexQueryNodeOnNeoPinImageIndexOperationHandler() ) );
+        handlers.add( new Pair( IndexQueryNodeOnNeoPinIndexOperation.class,
+                getIndexQueryNodeOnNeoPinIndexOperationHandler() ) );
+        handlers.add( new Pair( IndexQueryNodeOnNeoPinProductImageIndexOperation.class,
+                getIndexQueryNodeOnNeoPinProductImageIndexOperationHandler() ) );
+        handlers.add( new Pair( IndexQueryNodeOnNeoPinUrlIndexOperation.class,
+                getIndexQueryNodeOnNeoPinUrlIndexOperationHandler() ) );
+        handlers.add( new Pair( IndexQueryNodeOnNeoPinUrlHostIndexOperation.class,
+                getIndexQueryNodeOnNeoPinUrlHostIndexOperationHandler() ) );
+        handlers.add( new Pair( IndexQueryNodeOnNeoPinYoutubeVideoIndexOperation.class,
+                getIndexQueryNodeOnNeoPinYoutubeVideoIndexOperationHandler() ) );
+        handlers.add( new Pair( IndexQueryNodeOnNeoProductIndexOperation.class,
+                getIndexQueryNodeOnNeoProductIndexOperationHandler() ) );
+        handlers.add( new Pair( IndexQueryNodeOnNeoRootIndexOperation.class,
+                getIndexQueryNodeOnNeoRootIndexOperationHandler() ) );
+        handlers.add( new Pair( IndexQueryNodeOnNeoShippingCountryIndexOperation.class,
+                getIndexQueryNodeOnNeoShippingCountryIndexOperationHandler() ) );
+        handlers.add( new Pair( IndexQueryNodeOnNeoSiteIndexOperation.class,
+                getIndexQueryNodeOnNeoSiteIndexOperationHandler() ) );
+        handlers.add( new Pair( IndexQueryNodeOnOfferIndexOperation.class,
+                getIndexQueryNodeOnOfferIndexOperationHandler() ) );
+        handlers.add( new Pair( IndexQueryNodeOnUserProfileIndexOperation.class,
+                getIndexQueryNodeOnUserProfileIndexOperationHandler() ) );
+        handlers.add( new Pair( AddNodeToNeoPinBoardIndexOperation.class,
+                getAddNodeToNeoPinBoardIndexOperationHandler() ) );
+        handlers.add( new Pair( AddNodeToNeoPinIndexOperation.class, getAddNodeToNeoPinIndexOperationHandler() ) );
+        handlers.add( new Pair( AddNodeToNeoPinUrlHostIndexOperation.class,
+                getAddNodeToNeoPinUrlHostIndexOperationHandler() ) );
+        handlers.add( new Pair( AddNodeToNeoPinUrlIndexOperation.class, getAddNodeToNeoPinUrlIndexOperationHandler() ) );
+        handlers.add( new Pair( AddNodeToNeoProductIndexOperation.class, getAddNodeToNeoProductIndexOperationHandler() ) );
+        handlers.add( new Pair( AddNodeToNeoSiteIndexOperation.class, getAddNodeToNeoSiteIndexOperationHandler() ) );
+        handlers.add( new Pair( DeleteNodeFromNeoPinBoardIndexOperation.class,
+                getDeleteNodeFromNeoPinBoardIndexOperationHandler() ) );
+        handlers.add( new Pair( DeleteNodeFromNeoPinCommentIndexOperation.class,
+                getDeleteNodeFromNeoPinCommentIndexOperationHandler() ) );
+        handlers.add( new Pair( DeleteNodeFromNeoPinIndexOperation.class,
+                getDeleteNodeFromNeoPinIndexOperationHandler() ) );
+        handlers.add( new Pair( DeleteNodeFromNeoSiteIndexOperation.class,
+                getDeleteNodeFromNeoSiteIndexOperationHandler() ) );
+        return handlers;
+    }
+
     /*
      * Index Queries
      */
 
-    public Class<? extends OperationHandler<IndexQueryNodeOnNeoCategoryIndexOperation>> getIndexQueryNodeOnNeoCategoryIndexOperationHandler();
+    public abstract Class<? extends OperationHandler<IndexQueryNodeOnNeoCategoryIndexOperation>> getIndexQueryNodeOnNeoCategoryIndexOperationHandler();
 
-    public Class<? extends OperationHandler<IndexQueryNodeOnNeoPinApplicationIndexOperation>> getIndexQueryNodeOnNeoPinApplicationIndexOperationHandler();
+    public abstract Class<? extends OperationHandler<IndexQueryNodeOnNeoPinApplicationIndexOperation>> getIndexQueryNodeOnNeoPinApplicationIndexOperationHandler();
 
-    public Class<? extends OperationHandler<IndexQueryNodeOnNeoPinBoardIndexOperation>> getIndexQueryNodeOnNeoPinBoardIndexOperationHandler();
+    public abstract Class<? extends OperationHandler<IndexQueryNodeOnNeoPinBoardIndexOperation>> getIndexQueryNodeOnNeoPinBoardIndexOperationHandler();
 
-    public Class<? extends OperationHandler<IndexQueryNodeOnNeoPinCommentIndexOperation>> getIndexQueryNodeOnNeoPinCommentIndexOperationHandler();
+    public abstract Class<? extends OperationHandler<IndexQueryNodeOnNeoPinCommentIndexOperation>> getIndexQueryNodeOnNeoPinCommentIndexOperationHandler();
 
-    public Class<? extends OperationHandler<IndexQueryNodeOnNeoPinEntertainmentVideoIndexOperation>> getIndexQueryNodeOnNeoPinEntertainmentVideoIndexOperationHandler();
+    public abstract Class<? extends OperationHandler<IndexQueryNodeOnNeoPinEntertainmentVideoIndexOperation>> getIndexQueryNodeOnNeoPinEntertainmentVideoIndexOperationHandler();
 
-    public Class<? extends OperationHandler<IndexQueryNodeOnNeoPinGameImageIndexOperation>> getIndexQueryNodeOnNeoPinGameImageIndexOperationHandler();
+    public abstract Class<? extends OperationHandler<IndexQueryNodeOnNeoPinGameImageIndexOperation>> getIndexQueryNodeOnNeoPinGameImageIndexOperationHandler();
 
-    public Class<? extends OperationHandler<IndexQueryNodeOnNeoPinImageIndexOperation>> getIndexQueryNodeOnNeoPinImageIndexOperationHandler();
+    public abstract Class<? extends OperationHandler<IndexQueryNodeOnNeoPinImageIndexOperation>> getIndexQueryNodeOnNeoPinImageIndexOperationHandler();
 
-    public Class<? extends OperationHandler<IndexQueryNodeOnNeoPinIndexOperation>> getIndexQueryNodeOnNeoPinIndexOperationHandler();
+    public abstract Class<? extends OperationHandler<IndexQueryNodeOnNeoPinIndexOperation>> getIndexQueryNodeOnNeoPinIndexOperationHandler();
 
-    public Class<? extends OperationHandler<IndexQueryNodeOnNeoPinProductImageIndexOperation>> getIndexQueryNodeOnNeoPinProductImageIndexOperationHandler();
+    public abstract Class<? extends OperationHandler<IndexQueryNodeOnNeoPinProductImageIndexOperation>> getIndexQueryNodeOnNeoPinProductImageIndexOperationHandler();
 
-    public Class<? extends OperationHandler<IndexQueryNodeOnNeoPinUrlIndexOperation>> getIndexQueryNodeOnNeoPinUrlIndexOperationHandler();
+    public abstract Class<? extends OperationHandler<IndexQueryNodeOnNeoPinUrlIndexOperation>> getIndexQueryNodeOnNeoPinUrlIndexOperationHandler();
 
-    public Class<? extends OperationHandler<IndexQueryNodeOnNeoPinUrlHostIndexOperation>> getIndexQueryNodeOnNeoPinUrlHostIndexOperationHandler();
+    public abstract Class<? extends OperationHandler<IndexQueryNodeOnNeoPinUrlHostIndexOperation>> getIndexQueryNodeOnNeoPinUrlHostIndexOperationHandler();
 
-    public Class<? extends OperationHandler<IndexQueryNodeOnNeoPinYoutubeVideoIndexOperation>> getIndexQueryNodeOnNeoPinYoutubeVideoIndexOperationHandler();
+    public abstract Class<? extends OperationHandler<IndexQueryNodeOnNeoPinYoutubeVideoIndexOperation>> getIndexQueryNodeOnNeoPinYoutubeVideoIndexOperationHandler();
 
-    public Class<? extends OperationHandler<IndexQueryNodeOnNeoProductIndexOperation>> getIndexQueryNodeOnNeoProductIndexOperationHandler();
+    public abstract Class<? extends OperationHandler<IndexQueryNodeOnNeoProductIndexOperation>> getIndexQueryNodeOnNeoProductIndexOperationHandler();
 
-    public Class<? extends OperationHandler<IndexQueryNodeOnNeoRootIndexOperation>> getIndexQueryNodeOnNeoRootIndexOperationHandler();
+    public abstract Class<? extends OperationHandler<IndexQueryNodeOnNeoRootIndexOperation>> getIndexQueryNodeOnNeoRootIndexOperationHandler();
 
-    public Class<? extends OperationHandler<IndexQueryNodeOnNeoShippingCountryIndexOperation>> getIndexQueryNodeOnNeoShippingCountryIndexOperationHandler();
+    public abstract Class<? extends OperationHandler<IndexQueryNodeOnNeoShippingCountryIndexOperation>> getIndexQueryNodeOnNeoShippingCountryIndexOperationHandler();
 
-    public Class<? extends OperationHandler<IndexQueryNodeOnNeoSiteIndexOperation>> getIndexQueryNodeOnNeoSiteIndexOperationHandler();
+    public abstract Class<? extends OperationHandler<IndexQueryNodeOnNeoSiteIndexOperation>> getIndexQueryNodeOnNeoSiteIndexOperationHandler();
 
-    public Class<? extends OperationHandler<IndexQueryNodeOnOfferIndexOperation>> getIndexQueryNodeOnOfferIndexOperationHandler();
+    public abstract Class<? extends OperationHandler<IndexQueryNodeOnOfferIndexOperation>> getIndexQueryNodeOnOfferIndexOperationHandler();
 
-    public Class<? extends OperationHandler<IndexQueryNodeOnUserProfileIndexOperation>> getIndexQueryNodeOnUserProfileIndexOperationHandler();
+    public abstract Class<? extends OperationHandler<IndexQueryNodeOnUserProfileIndexOperation>> getIndexQueryNodeOnUserProfileIndexOperationHandler();
 
     /*
      * Add Node to Index
      */
 
-    public Class<? extends OperationHandler<AddNodeToNeoPinBoardIndexOperation>> getAddNodeToNeoPinBoardIndexOperationHandler();
+    public abstract Class<? extends OperationHandler<AddNodeToNeoPinBoardIndexOperation>> getAddNodeToNeoPinBoardIndexOperationHandler();
 
-    public Class<? extends OperationHandler<AddNodeToNeoPinIndexOperation>> getAddNodeToNeoPinIndexOperationHandler();
+    public abstract Class<? extends OperationHandler<AddNodeToNeoPinIndexOperation>> getAddNodeToNeoPinIndexOperationHandler();
 
-    public Class<? extends OperationHandler<AddNodeToNeoPinUrlHostIndexOperation>> getAddNodeToNeoPinUrlHostIndexOperationHandler();
+    public abstract Class<? extends OperationHandler<AddNodeToNeoPinUrlHostIndexOperation>> getAddNodeToNeoPinUrlHostIndexOperationHandler();
 
-    public Class<? extends OperationHandler<AddNodeToNeoPinUrlIndexOperation>> getAddNodeToNeoPinUrlIndexOperationHandler();
+    public abstract Class<? extends OperationHandler<AddNodeToNeoPinUrlIndexOperation>> getAddNodeToNeoPinUrlIndexOperationHandler();
 
-    public Class<? extends OperationHandler<AddNodeToNeoProductIndexOperation>> getAddNodeToNeoProductIndexOperationHandler();
+    public abstract Class<? extends OperationHandler<AddNodeToNeoProductIndexOperation>> getAddNodeToNeoProductIndexOperationHandler();
 
-    public Class<? extends OperationHandler<AddNodeToNeoSiteIndexOperation>> getAddNodeToNeoSiteIndexOperationHandler();
+    public abstract Class<? extends OperationHandler<AddNodeToNeoSiteIndexOperation>> getAddNodeToNeoSiteIndexOperationHandler();
 
     /*
      * Delete Node from Index
      */
 
-    public Class<? extends OperationHandler<DeleteNodeFromNeoPinBoardIndexOperation>> getDeleteNodeFromNeoPinBoardIndexOperationHandler();
+    public abstract Class<? extends OperationHandler<DeleteNodeFromNeoPinBoardIndexOperation>> getDeleteNodeFromNeoPinBoardIndexOperationHandler();
 
-    public Class<? extends OperationHandler<DeleteNodeFromNeoPinCommentIndexOperation>> getDeleteNodeFromNeoPinCommentIndexOperationHandler();
+    public abstract Class<? extends OperationHandler<DeleteNodeFromNeoPinCommentIndexOperation>> getDeleteNodeFromNeoPinCommentIndexOperationHandler();
 
-    public Class<? extends OperationHandler<DeleteNodeFromNeoPinIndexOperation>> getDeleteNodeFromNeoPinIndexOperationHandler();
+    public abstract Class<? extends OperationHandler<DeleteNodeFromNeoPinIndexOperation>> getDeleteNodeFromNeoPinIndexOperationHandler();
 
-    public Class<? extends OperationHandler<DeleteNodeFromNeoSiteIndexOperation>> getDeleteNodeFromNeoSiteIndexOperationHandler();
+    public abstract Class<? extends OperationHandler<DeleteNodeFromNeoSiteIndexOperation>> getDeleteNodeFromNeoSiteIndexOperationHandler();
 }
