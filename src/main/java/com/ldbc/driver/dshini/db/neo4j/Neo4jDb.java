@@ -8,25 +8,8 @@ import com.ldbc.driver.Db;
 import com.ldbc.driver.DbConnectionState;
 import com.ldbc.driver.DbException;
 import com.ldbc.driver.dshini.db.neo4j.emdedded.Neo4jDshiniCommandsEmbedded;
-import com.ldbc.driver.dshini.operations.batch.BatchOperationFactory.BatchOperation;
-import com.ldbc.driver.dshini.operations.core.CreateNodeNeoProductOperationFactory.CreateNodeNeoProductOperation;
-import com.ldbc.driver.dshini.operations.core.CreateRelationshipAuthoredByOperationFactory.CreateRelationshipAuthoredByOperation;
-import com.ldbc.driver.dshini.operations.core.DeleteNodeOperationFactory.DeleteNodeOperation;
-import com.ldbc.driver.dshini.operations.core.DeleteRelationshipOperationFactory.DeleteRelationshipOperation;
-import com.ldbc.driver.dshini.operations.core.GetNodeOperationFactory.GetNodeOperation;
-import com.ldbc.driver.dshini.operations.core.GetNodesIncomingClaimsRelationshipsOperationFactory.GetNodesIncomingClaimsRelationshipsOperation;
-import com.ldbc.driver.dshini.operations.core.GetNodesOutRelationshipsOperationFactory.GetNodesOutRelationshipsOperation;
-import com.ldbc.driver.dshini.operations.core.GetNodesOutgoingIsSpotlightRelationshipsOperationFactory.GetNodesOutgoingIsSpotlightRelationshipsOperation;
-import com.ldbc.driver.dshini.operations.core.GetNodesRelationshipsOperationFactory.GetNodesRelationshipsOperation;
-import com.ldbc.driver.dshini.operations.core.GetRelationshipOperationFactory.GetRelationshipOperation;
-import com.ldbc.driver.dshini.operations.core.UpdateNodeNeoPinOperationFactory.UpdateNodeNeoPinOperation;
-import com.ldbc.driver.dshini.operations.index.AddNodeToNeoPinBoardIndexOperationFactory.AddNodeToNeoPinBoardIndexOperation;
-import com.ldbc.driver.dshini.operations.index.DeleteNodeFromNeoPinBoardIndexOperationFactory.DeleteNodeFromNeoPinBoardIndexOperation;
-import com.ldbc.driver.dshini.operations.index.IndexQueryNodeOnNeoPinEntertainmentVideoIndexOperationFactory.IndexQueryNodeOnNeoPinEntertainmentVideoIndexOperation;
 import com.ldbc.driver.dshini.workloads.DshiniCommands;
 import com.ldbc.driver.util.MapUtils;
-
-// TODO add ALL new cypher operations
 
 /**
  * Neo4j client for LDBC DShini workload
@@ -76,9 +59,7 @@ public class Neo4jDb extends Db
         else if ( dbType.equals( "embedded" ) )
         {
             logger.info( "Connecting to database: " + path );
-
-            // TODO
-            // commands = new Neo4jDshiniCommandsEmbedded( path );
+            commands = new Neo4jDshiniCommandsEmbedded( path );
         }
         else
         {
@@ -86,23 +67,8 @@ public class Neo4jDb extends Db
         }
 
         commands.init();
-
-        if ( clear )
-        {
-            logger.info( "Clearing database" );
-            commands.clearDb();
-        }
-
-        registerHandlers();
-
+        commands.registerHandlersWithDb( this );
         logger.info( "Initialization complete" );
-    }
-
-    private void registerHandlers() throws DbException
-    {
-        // registerOperationHandler( BatchOperation.class,
-        // commands.getBatchOperationHandler() );
-        // TODO register the rest
     }
 
     @Override

@@ -1,9 +1,7 @@
 package com.ldbc.driver.dshini.workloads;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.ldbc.driver.Operation;
+import com.ldbc.driver.Db;
+import com.ldbc.driver.DbException;
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.dshini.operations.index.AddNodeToNeoPinBoardIndexOperationFactory.AddNodeToNeoPinBoardIndexOperation;
 import com.ldbc.driver.dshini.operations.index.AddNodeToNeoPinIndexOperationFactory.AddNodeToNeoPinIndexOperation;
@@ -33,67 +31,66 @@ import com.ldbc.driver.dshini.operations.index.IndexQueryNodeOnNeoShippingCountr
 import com.ldbc.driver.dshini.operations.index.IndexQueryNodeOnNeoSiteIndexOperationFactory.IndexQueryNodeOnNeoSiteIndexOperation;
 import com.ldbc.driver.dshini.operations.index.IndexQueryNodeOnOfferIndexOperationFactory.IndexQueryNodeOnOfferIndexOperation;
 import com.ldbc.driver.dshini.operations.index.IndexQueryNodeOnUserProfileIndexOperationFactory.IndexQueryNodeOnUserProfileIndexOperation;
-import com.ldbc.driver.util.Pair;
 
-public abstract class DshiniIndexCommands implements AllOperationHandlersProvider
+public abstract class DshiniIndexCommands implements OperationHandlersRegistrar
 {
     @Override
-    public final List<Pair<Class<? extends Operation<?>>, Class<? extends OperationHandler<?>>>> allOperationHandlers()
+    public void registerHandlersWithDb( Db db ) throws DbException
     {
-        List<Pair<Class<? extends Operation<?>>, Class<? extends OperationHandler<?>>>> handlers = new ArrayList<Pair<Class<? extends Operation<?>>, Class<? extends OperationHandler<?>>>>();
-        handlers.add( new Pair( IndexQueryNodeOnNeoCategoryIndexOperation.class,
-                getIndexQueryNodeOnNeoCategoryIndexOperationHandler() ) );
-        handlers.add( new Pair( IndexQueryNodeOnNeoPinApplicationIndexOperation.class,
-                getIndexQueryNodeOnNeoPinApplicationIndexOperationHandler() ) );
-        handlers.add( new Pair( IndexQueryNodeOnNeoPinBoardIndexOperation.class,
-                getIndexQueryNodeOnNeoPinBoardIndexOperationHandler() ) );
-        handlers.add( new Pair( IndexQueryNodeOnNeoPinCommentIndexOperation.class,
-                getIndexQueryNodeOnNeoPinCommentIndexOperationHandler() ) );
-        handlers.add( new Pair( IndexQueryNodeOnNeoPinEntertainmentVideoIndexOperation.class,
-                getIndexQueryNodeOnNeoPinEntertainmentVideoIndexOperationHandler() ) );
-        handlers.add( new Pair( IndexQueryNodeOnNeoPinGameImageIndexOperation.class,
-                getIndexQueryNodeOnNeoPinGameImageIndexOperationHandler() ) );
-        handlers.add( new Pair( IndexQueryNodeOnNeoPinImageIndexOperation.class,
-                getIndexQueryNodeOnNeoPinImageIndexOperationHandler() ) );
-        handlers.add( new Pair( IndexQueryNodeOnNeoPinIndexOperation.class,
-                getIndexQueryNodeOnNeoPinIndexOperationHandler() ) );
-        handlers.add( new Pair( IndexQueryNodeOnNeoPinProductImageIndexOperation.class,
-                getIndexQueryNodeOnNeoPinProductImageIndexOperationHandler() ) );
-        handlers.add( new Pair( IndexQueryNodeOnNeoPinUrlIndexOperation.class,
-                getIndexQueryNodeOnNeoPinUrlIndexOperationHandler() ) );
-        handlers.add( new Pair( IndexQueryNodeOnNeoPinUrlHostIndexOperation.class,
-                getIndexQueryNodeOnNeoPinUrlHostIndexOperationHandler() ) );
-        handlers.add( new Pair( IndexQueryNodeOnNeoPinYoutubeVideoIndexOperation.class,
-                getIndexQueryNodeOnNeoPinYoutubeVideoIndexOperationHandler() ) );
-        handlers.add( new Pair( IndexQueryNodeOnNeoProductIndexOperation.class,
-                getIndexQueryNodeOnNeoProductIndexOperationHandler() ) );
-        handlers.add( new Pair( IndexQueryNodeOnNeoRootIndexOperation.class,
-                getIndexQueryNodeOnNeoRootIndexOperationHandler() ) );
-        handlers.add( new Pair( IndexQueryNodeOnNeoShippingCountryIndexOperation.class,
-                getIndexQueryNodeOnNeoShippingCountryIndexOperationHandler() ) );
-        handlers.add( new Pair( IndexQueryNodeOnNeoSiteIndexOperation.class,
-                getIndexQueryNodeOnNeoSiteIndexOperationHandler() ) );
-        handlers.add( new Pair( IndexQueryNodeOnOfferIndexOperation.class,
-                getIndexQueryNodeOnOfferIndexOperationHandler() ) );
-        handlers.add( new Pair( IndexQueryNodeOnUserProfileIndexOperation.class,
-                getIndexQueryNodeOnUserProfileIndexOperationHandler() ) );
-        handlers.add( new Pair( AddNodeToNeoPinBoardIndexOperation.class,
-                getAddNodeToNeoPinBoardIndexOperationHandler() ) );
-        handlers.add( new Pair( AddNodeToNeoPinIndexOperation.class, getAddNodeToNeoPinIndexOperationHandler() ) );
-        handlers.add( new Pair( AddNodeToNeoPinUrlHostIndexOperation.class,
-                getAddNodeToNeoPinUrlHostIndexOperationHandler() ) );
-        handlers.add( new Pair( AddNodeToNeoPinUrlIndexOperation.class, getAddNodeToNeoPinUrlIndexOperationHandler() ) );
-        handlers.add( new Pair( AddNodeToNeoProductIndexOperation.class, getAddNodeToNeoProductIndexOperationHandler() ) );
-        handlers.add( new Pair( AddNodeToNeoSiteIndexOperation.class, getAddNodeToNeoSiteIndexOperationHandler() ) );
-        handlers.add( new Pair( DeleteNodeFromNeoPinBoardIndexOperation.class,
-                getDeleteNodeFromNeoPinBoardIndexOperationHandler() ) );
-        handlers.add( new Pair( DeleteNodeFromNeoPinCommentIndexOperation.class,
-                getDeleteNodeFromNeoPinCommentIndexOperationHandler() ) );
-        handlers.add( new Pair( DeleteNodeFromNeoPinIndexOperation.class,
-                getDeleteNodeFromNeoPinIndexOperationHandler() ) );
-        handlers.add( new Pair( DeleteNodeFromNeoSiteIndexOperation.class,
-                getDeleteNodeFromNeoSiteIndexOperationHandler() ) );
-        return handlers;
+        db.registerOperationHandler( IndexQueryNodeOnNeoCategoryIndexOperation.class,
+                getIndexQueryNodeOnNeoCategoryIndexOperationHandler() );
+        db.registerOperationHandler( IndexQueryNodeOnNeoPinApplicationIndexOperation.class,
+                getIndexQueryNodeOnNeoPinApplicationIndexOperationHandler() );
+        db.registerOperationHandler( IndexQueryNodeOnNeoPinBoardIndexOperation.class,
+                getIndexQueryNodeOnNeoPinBoardIndexOperationHandler() );
+        db.registerOperationHandler( IndexQueryNodeOnNeoPinCommentIndexOperation.class,
+                getIndexQueryNodeOnNeoPinCommentIndexOperationHandler() );
+        db.registerOperationHandler( IndexQueryNodeOnNeoPinEntertainmentVideoIndexOperation.class,
+                getIndexQueryNodeOnNeoPinEntertainmentVideoIndexOperationHandler() );
+        db.registerOperationHandler( IndexQueryNodeOnNeoPinGameImageIndexOperation.class,
+                getIndexQueryNodeOnNeoPinGameImageIndexOperationHandler() );
+        db.registerOperationHandler( IndexQueryNodeOnNeoPinImageIndexOperation.class,
+                getIndexQueryNodeOnNeoPinImageIndexOperationHandler() );
+        db.registerOperationHandler( IndexQueryNodeOnNeoPinIndexOperation.class,
+                getIndexQueryNodeOnNeoPinIndexOperationHandler() );
+        db.registerOperationHandler( IndexQueryNodeOnNeoPinProductImageIndexOperation.class,
+                getIndexQueryNodeOnNeoPinProductImageIndexOperationHandler() );
+        db.registerOperationHandler( IndexQueryNodeOnNeoPinUrlIndexOperation.class,
+                getIndexQueryNodeOnNeoPinUrlIndexOperationHandler() );
+        db.registerOperationHandler( IndexQueryNodeOnNeoPinUrlHostIndexOperation.class,
+                getIndexQueryNodeOnNeoPinUrlHostIndexOperationHandler() );
+        db.registerOperationHandler( IndexQueryNodeOnNeoPinYoutubeVideoIndexOperation.class,
+                getIndexQueryNodeOnNeoPinYoutubeVideoIndexOperationHandler() );
+        db.registerOperationHandler( IndexQueryNodeOnNeoProductIndexOperation.class,
+                getIndexQueryNodeOnNeoProductIndexOperationHandler() );
+        db.registerOperationHandler( IndexQueryNodeOnNeoRootIndexOperation.class,
+                getIndexQueryNodeOnNeoRootIndexOperationHandler() );
+        db.registerOperationHandler( IndexQueryNodeOnNeoShippingCountryIndexOperation.class,
+                getIndexQueryNodeOnNeoShippingCountryIndexOperationHandler() );
+        db.registerOperationHandler( IndexQueryNodeOnNeoSiteIndexOperation.class,
+                getIndexQueryNodeOnNeoSiteIndexOperationHandler() );
+        db.registerOperationHandler( IndexQueryNodeOnOfferIndexOperation.class,
+                getIndexQueryNodeOnOfferIndexOperationHandler() );
+        db.registerOperationHandler( IndexQueryNodeOnUserProfileIndexOperation.class,
+                getIndexQueryNodeOnUserProfileIndexOperationHandler() );
+        db.registerOperationHandler( AddNodeToNeoPinBoardIndexOperation.class,
+                getAddNodeToNeoPinBoardIndexOperationHandler() );
+        db.registerOperationHandler( AddNodeToNeoPinIndexOperation.class, getAddNodeToNeoPinIndexOperationHandler() );
+        db.registerOperationHandler( AddNodeToNeoPinUrlHostIndexOperation.class,
+                getAddNodeToNeoPinUrlHostIndexOperationHandler() );
+        db.registerOperationHandler( AddNodeToNeoPinUrlIndexOperation.class,
+                getAddNodeToNeoPinUrlIndexOperationHandler() );
+        db.registerOperationHandler( AddNodeToNeoProductIndexOperation.class,
+                getAddNodeToNeoProductIndexOperationHandler() );
+        db.registerOperationHandler( AddNodeToNeoSiteIndexOperation.class, getAddNodeToNeoSiteIndexOperationHandler() );
+        db.registerOperationHandler( DeleteNodeFromNeoPinBoardIndexOperation.class,
+                getDeleteNodeFromNeoPinBoardIndexOperationHandler() );
+        db.registerOperationHandler( DeleteNodeFromNeoPinCommentIndexOperation.class,
+                getDeleteNodeFromNeoPinCommentIndexOperationHandler() );
+        db.registerOperationHandler( DeleteNodeFromNeoPinIndexOperation.class,
+                getDeleteNodeFromNeoPinIndexOperationHandler() );
+        db.registerOperationHandler( DeleteNodeFromNeoSiteIndexOperation.class,
+                getDeleteNodeFromNeoSiteIndexOperationHandler() );
     }
 
     /*

@@ -1,9 +1,7 @@
 package com.ldbc.driver.dshini.workloads;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.ldbc.driver.Operation;
+import com.ldbc.driver.Db;
+import com.ldbc.driver.DbException;
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.dshini.operations.cypher.CheckEntitiesLikedByUsersOperationFactory.CheckEntitiesLikedByUsersOperation;
 import com.ldbc.driver.dshini.operations.cypher.CheckUserSubscribedToBoardOperationFactory.CheckUserSubscribedToBoardOperation;
@@ -102,165 +100,171 @@ import com.ldbc.driver.dshini.operations.cypher.GetUsersThatRepinnedPinOperation
 import com.ldbc.driver.dshini.operations.cypher.GetUsersWhoClaimedOperationFactory.GetUsersWhoClaimedOperation;
 import com.ldbc.driver.dshini.operations.cypher.GetUsersWhoClaimsOperationFactory.GetUsersWhoClaimsOperation;
 import com.ldbc.driver.dshini.operations.cypher.GetUsersWhoLikedEntityOperationFactory.GetUsersWhoLikedEntityOperation;
-import com.ldbc.driver.util.Pair;
 
-public abstract class DshiniCypherCommands implements AllOperationHandlersProvider
+public abstract class DshiniCypherCommands implements OperationHandlersRegistrar
 {
     @Override
-    public final List<Pair<Class<? extends Operation<?>>, Class<? extends OperationHandler<?>>>> allOperationHandlers()
+    public void registerHandlersWithDb( Db db ) throws DbException
     {
-        List<Pair<Class<? extends Operation<?>>, Class<? extends OperationHandler<?>>>> handlers = new ArrayList<Pair<Class<? extends Operation<?>>, Class<? extends OperationHandler<?>>>>();
-        handlers.add( new Pair( CheckEntitiesLikedByUsersOperation.class,
-                getCheckEntitiesLikedByUsersOperationHandler() ) );
-        handlers.add( new Pair( CheckUsersSubscribedToSitesOperation.class,
-                getCheckUsersSubscribedToSitesOperationHandler() ) );
-        handlers.add( new Pair( CheckUserSubscribedToBoardOperation.class,
-                getCheckUserSubscribedToBoardOperationHandler() ) );
-        handlers.add( new Pair( CheckUserSubscribedToEntityOperation.class,
-                getCheckUserSubscribedToEntityOperationHandler() ) );
-        handlers.add( new Pair( CountAuthorsOfCommentsOnPinsThatHaveNotBeenTrolledUserOperation.class,
-                getCountAuthorsOfCommentsOnPinsThatHaveNotBeenTrolledUserOperationHandler() ) );
-        handlers.add( new Pair( CountCommentsOnPinsOperation.class, getCountCommentsOnPinsOperationHandler() ) );
-        handlers.add( new Pair( CountOwnersOfSitesShowingBoardsSubscribedToByUserOperation.class,
-                getCountOwnersOfSitesShowingBoardsSubscribedToByUserOperationHandler() ) );
-        handlers.add( new Pair( CountOwnersOfSitesShowingBoardsSubscribedToByUsersOperation.class,
-                getCountOwnersOfSitesShowingBoardsSubscribedToByUsersOperationHandler() ) );
-        handlers.add( new Pair( CountPinsByAuthorsOnBoardsOnSitesOperation.class,
-                getCountPinsByAuthorsOnBoardsOnSitesOperationHandler() ) );
-        handlers.add( new Pair( CountPinsByAuthorsOnBoardsShownOnSitesOperation.class,
-                getCountPinsByAuthorsOnBoardsShownOnSitesOperationHandler() ) );
-        handlers.add( new Pair( CountPinsOnBoards1Operation.class, getCountPinsOnBoards1OperationHandler() ) );
-        handlers.add( new Pair( CountPinsOnBoards2Operation.class, getCountPinsOnBoards2OperationHandler() ) );
-        handlers.add( new Pair( CountPinsReferencingUrlsOperation.class, getCountPinsReferencingUrlsOperationHandler() ) );
-        handlers.add( new Pair( CountProductsInCategoriesUnderOffer1Operation.class,
-                getCountProductsInCategoriesUnderOffer1OperationHandler() ) );
-        handlers.add( new Pair( CountProductsInCategoriesUnderOffer2Operation.class,
-                getCountProductsInCategoriesUnderOffer2OperationHandler() ) );
-        handlers.add( new Pair( CountProductsInCategoriesUnderOfferInCountryOperation.class,
-                getCountProductsInCategoriesUnderOfferInCountryOperationHandler() ) );
-        handlers.add( new Pair( CountProductsUnderOfferInCountryOperation.class,
-                getCountProductsUnderOfferInCountryOperationHandler() ) );
-        handlers.add( new Pair( CountProductsUnderOfferOperation.class, getCountProductsUnderOfferOperationHandler() ) );
-        handlers.add( new Pair( CountRecentPinsOperation.class, getCountRecentPinsOperationHandler() ) );
-        handlers.add( new Pair( CountRepinsOperation.class, getCountRepinsOperationHandler() ) );
-        handlers.add( new Pair( CountThingsLikedByUsersOperation.class, getCountThingsLikedByUsersOperationHandler() ) );
-        handlers.add( new Pair( CountUsersSubscribedToBoardsOnSitesOperation.class,
-                getCountUsersSubscribedToBoardsOnSitesOperationHandler() ) );
-        handlers.add( new Pair( CountUsersSubscribedToBoardsOnSitesOwnedByAuthorsOperation.class,
-                getCountUsersSubscribedToBoardsOnSitesOwnedByAuthorsOperationHandler() ) );
-        handlers.add( new Pair( CountUsersSubscribedToSitesShowingBoardsOperation.class,
-                getCountUsersSubscribedToSitesShowingBoardsOperationHandler() ) );
-        handlers.add( new Pair( CountUsersWhoLikedThingsOperation.class, getCountUsersWhoLikedThingsOperationHandler() ) );
-        handlers.add( new Pair( GetAuthorsAndAssetsOfPinsOnBoardsShownOnSitesUserSubscribesToOperation.class,
-                getGetAuthorsAndAssetsOfPinsOnBoardsShownOnSitesUserSubscribesToOperationHandler() ) );
-        handlers.add( new Pair( GetAuthorsOfCommentsOnPinsOperation.class,
-                getGetAuthorsOfCommentsOnPinsOperationHandler() ) );
-        handlers.add( new Pair( GetAuthorsOfCommentsOperation.class, getGetAuthorsOfCommentsOperationHandler() ) );
-        handlers.add( new Pair( GetAuthorsOfPinsOperation.class, getGetAuthorsOfPinsOperationHandler() ) );
-        handlers.add( new Pair( GetBoardsOnSitesOwnedByUsersOperation.class,
-                getGetBoardsOnSitesOwnedByUsersOperationHandler() ) );
-        handlers.add( new Pair( GetBoardsPinnedByPinsOperation.class, getGetBoardsPinnedByPinsOperationHandler() ) );
-        handlers.add( new Pair( GetBoardsShownOnSitesOperation.class, getGetBoardsShownOnSitesOperationHandler() ) );
-        handlers.add( new Pair( GetBoardsShownOnSitesOwnedByUsersOperation.class,
-                getGetBoardsShownOnSitesOwnedByUsersOperationHandler() ) );
-        handlers.add( new Pair( GetCategoriesOfProducts1Operation.class, getGetCategoriesOfProducts1OperationHandler() ) );
-        handlers.add( new Pair( GetCategoriesOfProducts2Operation.class, getGetCategoriesOfProducts2OperationHandler() ) );
-        handlers.add( new Pair( GetCategoriesOfProductsOfferedByUserOperation.class,
-                getGetCategoriesOfProductsOfferedByUserOperationHandler() ) );
-        handlers.add( new Pair( GetCategoriesOfProductsUnderOfferInCountryOperation.class,
-                getGetCategoriesOfProductsUnderOfferInCountryOperationHandler() ) );
-        handlers.add( new Pair( GetCategoriesOfProductsUnderOfferOperation.class,
-                getGetCategoriesOfProductsUnderOfferOperationHandler() ) );
-        handlers.add( new Pair( GetClaimedByUsersOperation.class, getGetClaimedByUsersOperationHandler() ) );
-        handlers.add( new Pair( GetClaimsByUsersOperation.class, getGetClaimsByUsersOperationHandler() ) );
-        handlers.add( new Pair( GetCommentedOnPinsOperation.class, getGetCommentedOnPinsOperationHandler() ) );
-        handlers.add( new Pair( GetCommentsAndAuthorsOnPins1Operation.class,
-                getGetCommentsAndAuthorsOnPins1OperationHandler() ) );
-        handlers.add( new Pair( GetCommentsAndAuthorsOnPins2Operation.class,
-                getGetCommentsAndAuthorsOnPins2OperationHandler() ) );
-        handlers.add( new Pair( GetCommentsOnPin1Operation.class, getGetCommentsOnPin1OperationHandler() ) );
-        handlers.add( new Pair( GetCommentsOnPin2Operation.class, getGetCommentsOnPin2OperationHandler() ) );
-        handlers.add( new Pair( GetOffersByUserOperation.class, getGetOffersByUserOperationHandler() ) );
-        handlers.add( new Pair( GetOffersInCategoryOfferedByUser1Operation.class,
-                getGetOffersInCategoryOfferedByUser1OperationHandler() ) );
-        handlers.add( new Pair( GetOffersInCategoryOfferedByUser2Operation.class,
-                getGetOffersInCategoryOfferedByUser2OperationHandler() ) );
-        handlers.add( new Pair( GetOffersInCategoryOfferedByUser3Operation.class,
-                getGetOffersInCategoryOfferedByUser3OperationHandler() ) );
-        handlers.add( new Pair( GetOriginalPinOperation.class, getGetOriginalPinOperationHandler() ) );
-        handlers.add( new Pair( GetOwnersOfSitesShowingBoardsSubscribedToByUsers1Operation.class,
-                getGetOwnersOfSitesShowingBoardsSubscribedToByUsers1OperationHandler() ) );
-        handlers.add( new Pair( GetOwnersOfSitesShowingBoardsSubscribedToByUsers2Operation.class,
-                getGetOwnersOfSitesShowingBoardsSubscribedToByUsers2OperationHandler() ) );
-        handlers.add( new Pair( GetParentBoardsOfBoardsOperation.class, getGetParentBoardsOfBoardsOperationHandler() ) );
-        handlers.add( new Pair( GetParentCategoriesOfSubCategoriesOperation.class,
-                getGetParentCategoriesOfSubCategoriesOperationHandler() ) );
-        handlers.add( new Pair( GetPinAssetsOperation.class, getGetPinAssetsOperationHandler() ) );
-        handlers.add( new Pair( GetPinnedViaOperation.class, getGetPinnedViaOperationHandler() ) );
-        handlers.add( new Pair( GetPinsAndTheirAssetsOnBoardsOperation.class,
-                getGetPinsAndTheirAssetsOnBoardsOperationHandler() ) );
-        handlers.add( new Pair( GetPinsAndTheirAuthorsAndAssetsAndBoardsOnSitesSubscribedToByUsersOperation.class,
-                getGetPinsAndTheirAuthorsAndAssetsAndBoardsOnSitesSubscribedToByUsersOperationHandler() ) );
-        handlers.add( new Pair( GetPinsAndTheirAuthorsAndAssetsOnBoardsOperation.class,
-                getGetPinsAndTheirAuthorsAndAssetsOnBoardsOperationHandler() ) );
-        handlers.add( new Pair( GetPinsAndTheirAuthorsAndAssetsOnBoardsShownOnSites1Operation.class,
-                getGetPinsAndTheirAuthorsAndAssetsOnBoardsShownOnSites1OperationHandler() ) );
-        handlers.add( new Pair( GetPinsAndTheirAuthorsAndAssetsOnBoardsShownOnSites2Operation.class,
-                getGetPinsAndTheirAuthorsAndAssetsOnBoardsShownOnSites2OperationHandler() ) );
-        handlers.add( new Pair( GetPinsAndTheirAuthorsAndAssetsOnSubBoardsOfBoards1Operation.class,
-                getGetPinsAndTheirAuthorsAndAssetsOnSubBoardsOfBoards1OperationHandler() ) );
-        handlers.add( new Pair( GetPinsAndTheirAuthorsAndAssetsOnSubBoardsOfBoards2Operation.class,
-                getGetPinsAndTheirAuthorsAndAssetsOnSubBoardsOfBoards2OperationHandler() ) );
-        handlers.add( new Pair( GetPinsInBoardsOperation.class, getGetPinsInBoardsOperationHandler() ) );
-        handlers.add( new Pair( GetPinsLikedByOwnersOfSitesOperation.class,
-                getGetPinsLikedByOwnersOfSitesOperationHandler() ) );
-        handlers.add( new Pair( GetPinsOnAssetsOperation.class, getGetPinsOnAssetsOperationHandler() ) );
-        handlers.add( new Pair( GetPinsRepinnedByUserOperation.class, getGetPinsRepinnedByUserOperationHandler() ) );
-        handlers.add( new Pair( GetProductsInCategoriesUnderOffer1Operation.class,
-                getGetProductsInCategoriesUnderOffer1OperationHandler() ) );
-        handlers.add( new Pair( GetProductsInCategoriesUnderOffer2Operation.class,
-                getGetProductsInCategoriesUnderOffer2OperationHandler() ) );
-        handlers.add( new Pair( GetProductsInCategoriesUnderOfferInCountryOperation.class,
-                getGetProductsInCategoriesUnderOfferInCountryOperationHandler() ) );
-        handlers.add( new Pair( GetProductsUnderOfferInCountryOperation.class,
-                getGetProductsUnderOfferInCountryOperationHandler() ) );
-        handlers.add( new Pair( GetProductsUnderOfferOperation.class, getGetProductsUnderOfferOperationHandler() ) );
-        handlers.add( new Pair( GetRootOperation.class, getGetRootOperationHandler() ) );
-        handlers.add( new Pair( GetSiteModeratorsOperation.class, getGetSiteModeratorsOperationHandler() ) );
-        handlers.add( new Pair( GetSiteOwnersOperation.class, getGetSiteOwnersOperationHandler() ) );
-        handlers.add( new Pair( GetSitesOwnedByUsers1Operation.class, getGetSitesOwnedByUsers1OperationHandler() ) );
-        handlers.add( new Pair( GetSitesOwnedByUsers2Operation.class, getGetSitesOwnedByUsers2OperationHandler() ) );
-        handlers.add( new Pair( GetSitesShowingBoardsOperation.class, getGetSitesShowingBoardsOperationHandler() ) );
-        handlers.add( new Pair( GetSpotlightPinsAndTheirAuthorsAndBoardsAndAssetsOperation.class,
-                getGetSpotlightPinsAndTheirAuthorsAndBoardsAndAssetsOperationHandler() ) );
-        handlers.add( new Pair( GetSpotlightPinsOperation.class, getGetSpotlightPinsOperationHandler() ) );
-        handlers.add( new Pair( GetSubBoardsOfBoardWithNeoPins1Operation.class,
-                getGetSubBoardsOfBoardWithNeoPins1OperationHandler() ) );
-        handlers.add( new Pair( GetSubBoardsOfBoardWithNeoPins2Operation.class,
-                getGetSubBoardsOfBoardWithNeoPins2OperationHandler() ) );
-        handlers.add( new Pair( GetSubCategoriesOfParentCategories1Operation.class,
-                getGetSubCategoriesOfParentCategories1OperationHandler() ) );
-        handlers.add( new Pair( GetSubCategoriesOfParentCategories2Operation.class,
-                getGetSubCategoriesOfParentCategories2OperationHandler() ) );
-        handlers.add( new Pair( GetSubCategoriesOfParentCategories3Operation.class,
-                getGetSubCategoriesOfParentCategories3OperationHandler() ) );
-        handlers.add( new Pair( GetSubscriptionsOfUsersToEntitiesOperation.class,
-                getGetSubscriptionsOfUsersToEntitiesOperationHandler() ) );
-        handlers.add( new Pair( GetUrlsOfHostsOperation.class, getGetUrlsOfHostsOperationHandler() ) );
-        handlers.add( new Pair( GetUrlsReferencedByPinsOperation.class, getGetUrlsReferencedByPinsOperationHandler() ) );
-        handlers.add( new Pair( GetUsersLikesOnEntityOperation.class, getGetUsersLikesOnEntityOperationHandler() ) );
-        handlers.add( new Pair( GetUsersSubscribedToBoardsShownOnSitesOwnedByUserOperation.class,
-                getGetUsersSubscribedToBoardsShownOnSitesOwnedByUserOperationHandler() ) );
-        handlers.add( new Pair( GetUsersSubscribedToSitesShowingBoardsOperation.class,
-                getGetUsersSubscribedToSitesShowingBoardsOperationHandler() ) );
-        handlers.add( new Pair( GetUsersThatLikedEntitiesOperation.class,
-                getGetUsersThatLikedEntitiesOperationHandler() ) );
-        handlers.add( new Pair( GetUsersThatRepinnedPinOperation.class, getGetUsersThatRepinnedPinOperationHandler() ) );
-        handlers.add( new Pair( GetUserSubscriptionsOperation.class, getGetUserSubscriptionsOperationHandler() ) );
-        handlers.add( new Pair( GetUsersWhoClaimedOperation.class, getGetUsersWhoClaimedOperationHandler() ) );
-        handlers.add( new Pair( GetUsersWhoClaimsOperation.class, getGetUsersWhoClaimsOperationHandler() ) );
-        handlers.add( new Pair( GetUsersWhoLikedEntityOperation.class, getGetUsersWhoLikedEntityOperationHandler() ) );
-        return handlers;
+        db.registerOperationHandler( CheckEntitiesLikedByUsersOperation.class,
+                getCheckEntitiesLikedByUsersOperationHandler() );
+        db.registerOperationHandler( CheckUsersSubscribedToSitesOperation.class,
+                getCheckUsersSubscribedToSitesOperationHandler() );
+        db.registerOperationHandler( CheckUserSubscribedToBoardOperation.class,
+                getCheckUserSubscribedToBoardOperationHandler() );
+        db.registerOperationHandler( CheckUserSubscribedToEntityOperation.class,
+                getCheckUserSubscribedToEntityOperationHandler() );
+        db.registerOperationHandler( CountAuthorsOfCommentsOnPinsThatHaveNotBeenTrolledUserOperation.class,
+                getCountAuthorsOfCommentsOnPinsThatHaveNotBeenTrolledUserOperationHandler() );
+        db.registerOperationHandler( CountCommentsOnPinsOperation.class, getCountCommentsOnPinsOperationHandler() );
+        db.registerOperationHandler( CountOwnersOfSitesShowingBoardsSubscribedToByUserOperation.class,
+                getCountOwnersOfSitesShowingBoardsSubscribedToByUserOperationHandler() );
+        db.registerOperationHandler( CountOwnersOfSitesShowingBoardsSubscribedToByUsersOperation.class,
+                getCountOwnersOfSitesShowingBoardsSubscribedToByUsersOperationHandler() );
+        db.registerOperationHandler( CountPinsByAuthorsOnBoardsOnSitesOperation.class,
+                getCountPinsByAuthorsOnBoardsOnSitesOperationHandler() );
+        db.registerOperationHandler( CountPinsByAuthorsOnBoardsShownOnSitesOperation.class,
+                getCountPinsByAuthorsOnBoardsShownOnSitesOperationHandler() );
+        db.registerOperationHandler( CountPinsOnBoards1Operation.class, getCountPinsOnBoards1OperationHandler() );
+        db.registerOperationHandler( CountPinsOnBoards2Operation.class, getCountPinsOnBoards2OperationHandler() );
+        db.registerOperationHandler( CountPinsReferencingUrlsOperation.class,
+                getCountPinsReferencingUrlsOperationHandler() );
+        db.registerOperationHandler( CountProductsInCategoriesUnderOffer1Operation.class,
+                getCountProductsInCategoriesUnderOffer1OperationHandler() );
+        db.registerOperationHandler( CountProductsInCategoriesUnderOffer2Operation.class,
+                getCountProductsInCategoriesUnderOffer2OperationHandler() );
+        db.registerOperationHandler( CountProductsInCategoriesUnderOfferInCountryOperation.class,
+                getCountProductsInCategoriesUnderOfferInCountryOperationHandler() );
+        db.registerOperationHandler( CountProductsUnderOfferInCountryOperation.class,
+                getCountProductsUnderOfferInCountryOperationHandler() );
+        db.registerOperationHandler( CountProductsUnderOfferOperation.class,
+                getCountProductsUnderOfferOperationHandler() );
+        db.registerOperationHandler( CountRecentPinsOperation.class, getCountRecentPinsOperationHandler() );
+        db.registerOperationHandler( CountRepinsOperation.class, getCountRepinsOperationHandler() );
+        db.registerOperationHandler( CountThingsLikedByUsersOperation.class,
+                getCountThingsLikedByUsersOperationHandler() );
+        db.registerOperationHandler( CountUsersSubscribedToBoardsOnSitesOperation.class,
+                getCountUsersSubscribedToBoardsOnSitesOperationHandler() );
+        db.registerOperationHandler( CountUsersSubscribedToBoardsOnSitesOwnedByAuthorsOperation.class,
+                getCountUsersSubscribedToBoardsOnSitesOwnedByAuthorsOperationHandler() );
+        db.registerOperationHandler( CountUsersSubscribedToSitesShowingBoardsOperation.class,
+                getCountUsersSubscribedToSitesShowingBoardsOperationHandler() );
+        db.registerOperationHandler( CountUsersWhoLikedThingsOperation.class,
+                getCountUsersWhoLikedThingsOperationHandler() );
+        db.registerOperationHandler( GetAuthorsAndAssetsOfPinsOnBoardsShownOnSitesUserSubscribesToOperation.class,
+                getGetAuthorsAndAssetsOfPinsOnBoardsShownOnSitesUserSubscribesToOperationHandler() );
+        db.registerOperationHandler( GetAuthorsOfCommentsOnPinsOperation.class,
+                getGetAuthorsOfCommentsOnPinsOperationHandler() );
+        db.registerOperationHandler( GetAuthorsOfCommentsOperation.class, getGetAuthorsOfCommentsOperationHandler() );
+        db.registerOperationHandler( GetAuthorsOfPinsOperation.class, getGetAuthorsOfPinsOperationHandler() );
+        db.registerOperationHandler( GetBoardsOnSitesOwnedByUsersOperation.class,
+                getGetBoardsOnSitesOwnedByUsersOperationHandler() );
+        db.registerOperationHandler( GetBoardsPinnedByPinsOperation.class, getGetBoardsPinnedByPinsOperationHandler() );
+        db.registerOperationHandler( GetBoardsShownOnSitesOperation.class, getGetBoardsShownOnSitesOperationHandler() );
+        db.registerOperationHandler( GetBoardsShownOnSitesOwnedByUsersOperation.class,
+                getGetBoardsShownOnSitesOwnedByUsersOperationHandler() );
+        db.registerOperationHandler( GetCategoriesOfProducts1Operation.class,
+                getGetCategoriesOfProducts1OperationHandler() );
+        db.registerOperationHandler( GetCategoriesOfProducts2Operation.class,
+                getGetCategoriesOfProducts2OperationHandler() );
+        db.registerOperationHandler( GetCategoriesOfProductsOfferedByUserOperation.class,
+                getGetCategoriesOfProductsOfferedByUserOperationHandler() );
+        db.registerOperationHandler( GetCategoriesOfProductsUnderOfferInCountryOperation.class,
+                getGetCategoriesOfProductsUnderOfferInCountryOperationHandler() );
+        db.registerOperationHandler( GetCategoriesOfProductsUnderOfferOperation.class,
+                getGetCategoriesOfProductsUnderOfferOperationHandler() );
+        db.registerOperationHandler( GetClaimedByUsersOperation.class, getGetClaimedByUsersOperationHandler() );
+        db.registerOperationHandler( GetClaimsByUsersOperation.class, getGetClaimsByUsersOperationHandler() );
+        db.registerOperationHandler( GetCommentedOnPinsOperation.class, getGetCommentedOnPinsOperationHandler() );
+        db.registerOperationHandler( GetCommentsAndAuthorsOnPins1Operation.class,
+                getGetCommentsAndAuthorsOnPins1OperationHandler() );
+        db.registerOperationHandler( GetCommentsAndAuthorsOnPins2Operation.class,
+                getGetCommentsAndAuthorsOnPins2OperationHandler() );
+        db.registerOperationHandler( GetCommentsOnPin1Operation.class, getGetCommentsOnPin1OperationHandler() );
+        db.registerOperationHandler( GetCommentsOnPin2Operation.class, getGetCommentsOnPin2OperationHandler() );
+        db.registerOperationHandler( GetOffersByUserOperation.class, getGetOffersByUserOperationHandler() );
+        db.registerOperationHandler( GetOffersInCategoryOfferedByUser1Operation.class,
+                getGetOffersInCategoryOfferedByUser1OperationHandler() );
+        db.registerOperationHandler( GetOffersInCategoryOfferedByUser2Operation.class,
+                getGetOffersInCategoryOfferedByUser2OperationHandler() );
+        db.registerOperationHandler( GetOffersInCategoryOfferedByUser3Operation.class,
+                getGetOffersInCategoryOfferedByUser3OperationHandler() );
+        db.registerOperationHandler( GetOriginalPinOperation.class, getGetOriginalPinOperationHandler() );
+        db.registerOperationHandler( GetOwnersOfSitesShowingBoardsSubscribedToByUsers1Operation.class,
+                getGetOwnersOfSitesShowingBoardsSubscribedToByUsers1OperationHandler() );
+        db.registerOperationHandler( GetOwnersOfSitesShowingBoardsSubscribedToByUsers2Operation.class,
+                getGetOwnersOfSitesShowingBoardsSubscribedToByUsers2OperationHandler() );
+        db.registerOperationHandler( GetParentBoardsOfBoardsOperation.class,
+                getGetParentBoardsOfBoardsOperationHandler() );
+        db.registerOperationHandler( GetParentCategoriesOfSubCategoriesOperation.class,
+                getGetParentCategoriesOfSubCategoriesOperationHandler() );
+        db.registerOperationHandler( GetPinAssetsOperation.class, getGetPinAssetsOperationHandler() );
+        db.registerOperationHandler( GetPinnedViaOperation.class, getGetPinnedViaOperationHandler() );
+        db.registerOperationHandler( GetPinsAndTheirAssetsOnBoardsOperation.class,
+                getGetPinsAndTheirAssetsOnBoardsOperationHandler() );
+        db.registerOperationHandler( GetPinsAndTheirAuthorsAndAssetsAndBoardsOnSitesSubscribedToByUsersOperation.class,
+                getGetPinsAndTheirAuthorsAndAssetsAndBoardsOnSitesSubscribedToByUsersOperationHandler() );
+        db.registerOperationHandler( GetPinsAndTheirAuthorsAndAssetsOnBoardsOperation.class,
+                getGetPinsAndTheirAuthorsAndAssetsOnBoardsOperationHandler() );
+        db.registerOperationHandler( GetPinsAndTheirAuthorsAndAssetsOnBoardsShownOnSites1Operation.class,
+                getGetPinsAndTheirAuthorsAndAssetsOnBoardsShownOnSites1OperationHandler() );
+        db.registerOperationHandler( GetPinsAndTheirAuthorsAndAssetsOnBoardsShownOnSites2Operation.class,
+                getGetPinsAndTheirAuthorsAndAssetsOnBoardsShownOnSites2OperationHandler() );
+        db.registerOperationHandler( GetPinsAndTheirAuthorsAndAssetsOnSubBoardsOfBoards1Operation.class,
+                getGetPinsAndTheirAuthorsAndAssetsOnSubBoardsOfBoards1OperationHandler() );
+        db.registerOperationHandler( GetPinsAndTheirAuthorsAndAssetsOnSubBoardsOfBoards2Operation.class,
+                getGetPinsAndTheirAuthorsAndAssetsOnSubBoardsOfBoards2OperationHandler() );
+        db.registerOperationHandler( GetPinsInBoardsOperation.class, getGetPinsInBoardsOperationHandler() );
+        db.registerOperationHandler( GetPinsLikedByOwnersOfSitesOperation.class,
+                getGetPinsLikedByOwnersOfSitesOperationHandler() );
+        db.registerOperationHandler( GetPinsOnAssetsOperation.class, getGetPinsOnAssetsOperationHandler() );
+        db.registerOperationHandler( GetPinsRepinnedByUserOperation.class, getGetPinsRepinnedByUserOperationHandler() );
+        db.registerOperationHandler( GetProductsInCategoriesUnderOffer1Operation.class,
+                getGetProductsInCategoriesUnderOffer1OperationHandler() );
+        db.registerOperationHandler( GetProductsInCategoriesUnderOffer2Operation.class,
+                getGetProductsInCategoriesUnderOffer2OperationHandler() );
+        db.registerOperationHandler( GetProductsInCategoriesUnderOfferInCountryOperation.class,
+                getGetProductsInCategoriesUnderOfferInCountryOperationHandler() );
+        db.registerOperationHandler( GetProductsUnderOfferInCountryOperation.class,
+                getGetProductsUnderOfferInCountryOperationHandler() );
+        db.registerOperationHandler( GetProductsUnderOfferOperation.class, getGetProductsUnderOfferOperationHandler() );
+        db.registerOperationHandler( GetRootOperation.class, getGetRootOperationHandler() );
+        db.registerOperationHandler( GetSiteModeratorsOperation.class, getGetSiteModeratorsOperationHandler() );
+        db.registerOperationHandler( GetSiteOwnersOperation.class, getGetSiteOwnersOperationHandler() );
+        db.registerOperationHandler( GetSitesOwnedByUsers1Operation.class, getGetSitesOwnedByUsers1OperationHandler() );
+        db.registerOperationHandler( GetSitesOwnedByUsers2Operation.class, getGetSitesOwnedByUsers2OperationHandler() );
+        db.registerOperationHandler( GetSitesShowingBoardsOperation.class, getGetSitesShowingBoardsOperationHandler() );
+        db.registerOperationHandler( GetSpotlightPinsAndTheirAuthorsAndBoardsAndAssetsOperation.class,
+                getGetSpotlightPinsAndTheirAuthorsAndBoardsAndAssetsOperationHandler() );
+        db.registerOperationHandler( GetSpotlightPinsOperation.class, getGetSpotlightPinsOperationHandler() );
+        db.registerOperationHandler( GetSubBoardsOfBoardWithNeoPins1Operation.class,
+                getGetSubBoardsOfBoardWithNeoPins1OperationHandler() );
+        db.registerOperationHandler( GetSubBoardsOfBoardWithNeoPins2Operation.class,
+                getGetSubBoardsOfBoardWithNeoPins2OperationHandler() );
+        db.registerOperationHandler( GetSubCategoriesOfParentCategories1Operation.class,
+                getGetSubCategoriesOfParentCategories1OperationHandler() );
+        db.registerOperationHandler( GetSubCategoriesOfParentCategories2Operation.class,
+                getGetSubCategoriesOfParentCategories2OperationHandler() );
+        db.registerOperationHandler( GetSubCategoriesOfParentCategories3Operation.class,
+                getGetSubCategoriesOfParentCategories3OperationHandler() );
+        db.registerOperationHandler( GetSubscriptionsOfUsersToEntitiesOperation.class,
+                getGetSubscriptionsOfUsersToEntitiesOperationHandler() );
+        db.registerOperationHandler( GetUrlsOfHostsOperation.class, getGetUrlsOfHostsOperationHandler() );
+        db.registerOperationHandler( GetUrlsReferencedByPinsOperation.class,
+                getGetUrlsReferencedByPinsOperationHandler() );
+        db.registerOperationHandler( GetUsersLikesOnEntityOperation.class, getGetUsersLikesOnEntityOperationHandler() );
+        db.registerOperationHandler( GetUsersSubscribedToBoardsShownOnSitesOwnedByUserOperation.class,
+                getGetUsersSubscribedToBoardsShownOnSitesOwnedByUserOperationHandler() );
+        db.registerOperationHandler( GetUsersSubscribedToSitesShowingBoardsOperation.class,
+                getGetUsersSubscribedToSitesShowingBoardsOperationHandler() );
+        db.registerOperationHandler( GetUsersThatLikedEntitiesOperation.class,
+                getGetUsersThatLikedEntitiesOperationHandler() );
+        db.registerOperationHandler( GetUsersThatRepinnedPinOperation.class,
+                getGetUsersThatRepinnedPinOperationHandler() );
+        db.registerOperationHandler( GetUserSubscriptionsOperation.class, getGetUserSubscriptionsOperationHandler() );
+        db.registerOperationHandler( GetUsersWhoClaimedOperation.class, getGetUsersWhoClaimedOperationHandler() );
+        db.registerOperationHandler( GetUsersWhoClaimsOperation.class, getGetUsersWhoClaimsOperationHandler() );
+        db.registerOperationHandler( GetUsersWhoLikedEntityOperation.class, getGetUsersWhoLikedEntityOperationHandler() );
     }
 
     public abstract Class<? extends OperationHandler<CheckEntitiesLikedByUsersOperation>> getCheckEntitiesLikedByUsersOperationHandler();

@@ -1,9 +1,7 @@
 package com.ldbc.driver.dshini.workloads;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.ldbc.driver.Operation;
+import com.ldbc.driver.Db;
+import com.ldbc.driver.DbException;
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.dshini.operations.core.CreateNodeNeoPinBoardOperationFactory.CreateNodeNeoPinBoardOperation;
 import com.ldbc.driver.dshini.operations.core.CreateNodeNeoPinUrlHostOperationFactory.CreateNodeNeoPinUrlHostOperation;
@@ -47,77 +45,81 @@ import com.ldbc.driver.dshini.operations.core.GetRelationshipOperationFactory.Ge
 import com.ldbc.driver.dshini.operations.core.UpdateNodeNeoPinBoardOperationFactory.UpdateNodeNeoPinBoardOperation;
 import com.ldbc.driver.dshini.operations.core.UpdateNodeNeoPinOperationFactory.UpdateNodeNeoPinOperation;
 import com.ldbc.driver.dshini.operations.core.UpdateNodeNeoSiteOperationFactory.UpdateNodeNeoSiteOperation;
-import com.ldbc.driver.util.Pair;
 
-public abstract class DshiniCoreCommands implements AllOperationHandlersProvider
+public abstract class DshiniCoreCommands implements OperationHandlersRegistrar
 {
     @Override
-    public final List<Pair<Class<? extends Operation<?>>, Class<? extends OperationHandler<?>>>> allOperationHandlers()
+    public void registerHandlersWithDb( Db db ) throws DbException
     {
-        List<Pair<Class<? extends Operation<?>>, Class<? extends OperationHandler<?>>>> handlers = new ArrayList<Pair<Class<? extends Operation<?>>, Class<? extends OperationHandler<?>>>>();
-        handlers.add( new Pair( CreateRelationshipSoldOperation.class, getCreateRelationshipSoldOperationHandler() ) );
-        handlers.add( new Pair( CreateRelationshipSitesOwnedByOperation.class,
-                getCreateRelationshipSitesOwnedByOperationHandler() ) );
-        handlers.add( new Pair( CreateRelationshipShipsToOperation.class,
-                getCreateRelationshipShipsToOperationHandler() ) );
-        handlers.add( new Pair( CreateRelationshipRootOperation.class, getCreateRelationshipRootOperationHandler() ) );
-        handlers.add( new Pair( CreateRelationshipRepinsOperation.class, getCreateRelationshipRepinsOperationHandler() ) );
-        handlers.add( new Pair( CreateRelationshipPinsOperation.class, getCreateRelationshipPinsOperationHandler() ) );
-        handlers.add( new Pair( CreateRelationshipPinsAssetOperation.class,
-                getCreateRelationshipPinsAssetOperationHandler() ) );
-        handlers.add( new Pair( CreateRelationshipPinReferencesUrlOperation.class,
-                getCreateRelationshipPinReferencesUrlOperationHandler() ) );
-        handlers.add( new Pair( CreateRelationshipPinnedViaOperation.class,
-                getCreateRelationshipPinnedViaOperationHandler() ) );
-        handlers.add( new Pair( CreateRelationshipOffersOperation.class, getCreateRelationshipOffersOperationHandler() ) );
-        handlers.add( new Pair( CreateRelationshipOfferedByOperation.class,
-                getCreateRelationshipOfferedByOperationHandler() ) );
-        handlers.add( new Pair( CreateRelationshipInCategoryOperation.class,
-                getCreateRelationshipInCategoryOperationHandler() ) );
-        handlers.add( new Pair( CreateRelationshipCommentsOnOperation.class,
-                getCreateRelationshipCommentsOnOperationHandler() ) );
-        handlers.add( new Pair( CreateRelationshipCommentedByOperation.class,
-                getCreateRelationshipCommentedByOperationHandler() ) );
-        handlers.add( new Pair( CreateRelationshipClaimsOperation.class, getCreateRelationshipClaimsOperationHandler() ) );
-        handlers.add( new Pair( CreateRelationshipClaimedOperation.class,
-                getCreateRelationshipClaimedOperationHandler() ) );
-        handlers.add( new Pair( CreateRelationshipBoughtOperation.class, getCreateRelationshipBoughtOperationHandler() ) );
-        handlers.add( new Pair( CreateRelationshipBoardShownOnOperation.class,
-                getCreateRelationshipBoardShownOnOperationHandler() ) );
-        handlers.add( new Pair( CreateRelationshipAuthoredByOperation.class,
-                getCreateRelationshipAuthoredByOperationHandler() ) );
-        handlers.add( new Pair( CreateRelationshipSubBoardOfOperation.class,
-                getCreateRelationshipSubBoardOfOperationHandler() ) );
-        handlers.add( new Pair( CreateRelationshipSubscribesOperation.class,
-                getCreateRelationshipSubscribesOperationHandler() ) );
-        handlers.add( new Pair( CreateRelationshipTrollsOperation.class, getCreateRelationshipTrollsOperationHandler() ) );
-        handlers.add( new Pair( CreateRelationshipUrlHostOfOperation.class,
-                getCreateRelationshipUrlHostOfOperationHandler() ) );
-        handlers.add( new Pair( CreateNodeNeoPinBoardOperation.class, getCreateNodeNeoPinBoardOperationHandler() ) );
-        handlers.add( new Pair( CreateNodeNeoPinUrlHostOperation.class, getCreateNodeNeoPinUrlHostOperationHandler() ) );
-        handlers.add( new Pair( CreateNodeNeoPinUrlOperation.class, getCreateNodeNeoPinUrlOperationHandler() ) );
-        handlers.add( new Pair( CreateNodeNeoProductOperation.class, getCreateNodeNeoProductOperationHandler() ) );
-        handlers.add( new Pair( CreateNodeNeoSiteOperation.class, getCreateNodeNeoSiteOperationHandler() ) );
-        handlers.add( new Pair( GetNodeOperation.class, getGetNodeOperationHandler() ) );
-        handlers.add( new Pair( GetRelationshipOperation.class, getGetRelationshipOperationHandler() ) );
-        handlers.add( new Pair( GetNodesRelationshipsOperation.class, getGetNodesRelationshipsOperationHandler() ) );
-        handlers.add( new Pair( GetNodesOutRelationshipsOperation.class, getGetNodesOutRelationshipsOperationHandler() ) );
-        handlers.add( new Pair( GetNodesOutgoingWantedRelationshipsOperation.class,
-                getGetNodesOutgoingWantedRelationshipsOperationHandler() ) );
-        handlers.add( new Pair( GetNodesOutgoingTrollsRelationshipsOperation.class,
-                getGetNodesOutgoingTrollsRelationshipsOperationHandler() ) );
-        handlers.add( new Pair( GetNodesOutgoingClaimedAndClaimsRelationshipsOperation.class,
-                getGetNodesOutgoingClaimedAndClaimsRelationshipsOperationHandler() ) );
-        handlers.add( new Pair( GetNodesIncomingClaimsRelationshipsOperation.class,
-                getGetNodesIncomingClaimsRelationshipsOperationHandler() ) );
-        handlers.add( new Pair( GetNodesOutgoingIsSpotlightRelationshipsOperation.class,
-                getGetNodesOutgoingIsSpotlightRelationshipsOperationHandler() ) );
-        handlers.add( new Pair( DeleteNodeOperation.class, getDeleteNodeOperationHandler() ) );
-        handlers.add( new Pair( DeleteRelationshipOperation.class, getDeleteRelationshipOperationHandler() ) );
-        handlers.add( new Pair( UpdateNodeNeoPinBoardOperation.class, getUpdateNodeNeoPinBoardOperationHandler() ) );
-        handlers.add( new Pair( UpdateNodeNeoPinOperation.class, getUpdateNodeNeoPinOperationHandler() ) );
-        handlers.add( new Pair( UpdateNodeNeoSiteOperation.class, getUpdateNodeNeoSiteOperationHandler() ) );
-        return handlers;
+        db.registerOperationHandler( CreateRelationshipSoldOperation.class, getCreateRelationshipSoldOperationHandler() );
+        db.registerOperationHandler( CreateRelationshipSitesOwnedByOperation.class,
+                getCreateRelationshipSitesOwnedByOperationHandler() );
+        db.registerOperationHandler( CreateRelationshipShipsToOperation.class,
+                getCreateRelationshipShipsToOperationHandler() );
+        db.registerOperationHandler( CreateRelationshipRootOperation.class, getCreateRelationshipRootOperationHandler() );
+        db.registerOperationHandler( CreateRelationshipRepinsOperation.class,
+                getCreateRelationshipRepinsOperationHandler() );
+        db.registerOperationHandler( CreateRelationshipPinsOperation.class, getCreateRelationshipPinsOperationHandler() );
+        db.registerOperationHandler( CreateRelationshipPinsAssetOperation.class,
+                getCreateRelationshipPinsAssetOperationHandler() );
+        db.registerOperationHandler( CreateRelationshipPinReferencesUrlOperation.class,
+                getCreateRelationshipPinReferencesUrlOperationHandler() );
+        db.registerOperationHandler( CreateRelationshipPinnedViaOperation.class,
+                getCreateRelationshipPinnedViaOperationHandler() );
+        db.registerOperationHandler( CreateRelationshipOffersOperation.class,
+                getCreateRelationshipOffersOperationHandler() );
+        db.registerOperationHandler( CreateRelationshipOfferedByOperation.class,
+                getCreateRelationshipOfferedByOperationHandler() );
+        db.registerOperationHandler( CreateRelationshipInCategoryOperation.class,
+                getCreateRelationshipInCategoryOperationHandler() );
+        db.registerOperationHandler( CreateRelationshipCommentsOnOperation.class,
+                getCreateRelationshipCommentsOnOperationHandler() );
+        db.registerOperationHandler( CreateRelationshipCommentedByOperation.class,
+                getCreateRelationshipCommentedByOperationHandler() );
+        db.registerOperationHandler( CreateRelationshipClaimsOperation.class,
+                getCreateRelationshipClaimsOperationHandler() );
+        db.registerOperationHandler( CreateRelationshipClaimedOperation.class,
+                getCreateRelationshipClaimedOperationHandler() );
+        db.registerOperationHandler( CreateRelationshipBoughtOperation.class,
+                getCreateRelationshipBoughtOperationHandler() );
+        db.registerOperationHandler( CreateRelationshipBoardShownOnOperation.class,
+                getCreateRelationshipBoardShownOnOperationHandler() );
+        db.registerOperationHandler( CreateRelationshipAuthoredByOperation.class,
+                getCreateRelationshipAuthoredByOperationHandler() );
+        db.registerOperationHandler( CreateRelationshipSubBoardOfOperation.class,
+                getCreateRelationshipSubBoardOfOperationHandler() );
+        db.registerOperationHandler( CreateRelationshipSubscribesOperation.class,
+                getCreateRelationshipSubscribesOperationHandler() );
+        db.registerOperationHandler( CreateRelationshipTrollsOperation.class,
+                getCreateRelationshipTrollsOperationHandler() );
+        db.registerOperationHandler( CreateRelationshipUrlHostOfOperation.class,
+                getCreateRelationshipUrlHostOfOperationHandler() );
+        db.registerOperationHandler( CreateNodeNeoPinBoardOperation.class, getCreateNodeNeoPinBoardOperationHandler() );
+        db.registerOperationHandler( CreateNodeNeoPinUrlHostOperation.class,
+                getCreateNodeNeoPinUrlHostOperationHandler() );
+        db.registerOperationHandler( CreateNodeNeoPinUrlOperation.class, getCreateNodeNeoPinUrlOperationHandler() );
+        db.registerOperationHandler( CreateNodeNeoProductOperation.class, getCreateNodeNeoProductOperationHandler() );
+        db.registerOperationHandler( CreateNodeNeoSiteOperation.class, getCreateNodeNeoSiteOperationHandler() );
+        db.registerOperationHandler( GetNodeOperation.class, getGetNodeOperationHandler() );
+        db.registerOperationHandler( GetRelationshipOperation.class, getGetRelationshipOperationHandler() );
+        db.registerOperationHandler( GetNodesRelationshipsOperation.class, getGetNodesRelationshipsOperationHandler() );
+        db.registerOperationHandler( GetNodesOutRelationshipsOperation.class,
+                getGetNodesOutRelationshipsOperationHandler() );
+        db.registerOperationHandler( GetNodesOutgoingWantedRelationshipsOperation.class,
+                getGetNodesOutgoingWantedRelationshipsOperationHandler() );
+        db.registerOperationHandler( GetNodesOutgoingTrollsRelationshipsOperation.class,
+                getGetNodesOutgoingTrollsRelationshipsOperationHandler() );
+        db.registerOperationHandler( GetNodesOutgoingClaimedAndClaimsRelationshipsOperation.class,
+                getGetNodesOutgoingClaimedAndClaimsRelationshipsOperationHandler() );
+        db.registerOperationHandler( GetNodesIncomingClaimsRelationshipsOperation.class,
+                getGetNodesIncomingClaimsRelationshipsOperationHandler() );
+        db.registerOperationHandler( GetNodesOutgoingIsSpotlightRelationshipsOperation.class,
+                getGetNodesOutgoingIsSpotlightRelationshipsOperationHandler() );
+        db.registerOperationHandler( DeleteNodeOperation.class, getDeleteNodeOperationHandler() );
+        db.registerOperationHandler( DeleteRelationshipOperation.class, getDeleteRelationshipOperationHandler() );
+        db.registerOperationHandler( UpdateNodeNeoPinBoardOperation.class, getUpdateNodeNeoPinBoardOperationHandler() );
+        db.registerOperationHandler( UpdateNodeNeoPinOperation.class, getUpdateNodeNeoPinOperationHandler() );
+        db.registerOperationHandler( UpdateNodeNeoSiteOperation.class, getUpdateNodeNeoSiteOperationHandler() );
     }
 
     /*

@@ -1,21 +1,16 @@
 package com.ldbc.driver.dshini.workloads;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.ldbc.driver.Operation;
+import com.ldbc.driver.Db;
+import com.ldbc.driver.DbException;
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.dshini.operations.batch.BatchOperationFactory.BatchOperation;
-import com.ldbc.driver.util.Pair;
 
-public abstract class DshiniBatchCommands implements AllOperationHandlersProvider
+public abstract class DshiniBatchCommands implements OperationHandlersRegistrar
 {
     @Override
-    public final List<Pair<Class<? extends Operation<?>>, Class<? extends OperationHandler<?>>>> allOperationHandlers()
+    public void registerHandlersWithDb( Db db ) throws DbException
     {
-        List<Pair<Class<? extends Operation<?>>, Class<? extends OperationHandler<?>>>> handlers = new ArrayList<Pair<Class<? extends Operation<?>>, Class<? extends OperationHandler<?>>>>();
-        handlers.add( new Pair( BatchOperation.class, getBatchOperationHandler() ) );
-        return handlers;
+        db.registerOperationHandler( BatchOperation.class, getBatchOperationHandler() );
     }
 
     public abstract Class<? extends OperationHandler<BatchOperation>> getBatchOperationHandler();

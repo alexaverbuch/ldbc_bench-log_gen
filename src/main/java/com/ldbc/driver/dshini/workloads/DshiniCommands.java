@@ -1,14 +1,10 @@
 package com.ldbc.driver.dshini.workloads;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.ldbc.driver.Db;
 import com.ldbc.driver.DbConnectionState;
-import com.ldbc.driver.Operation;
-import com.ldbc.driver.OperationHandler;
-import com.ldbc.driver.util.Pair;
+import com.ldbc.driver.DbException;
 
-public abstract class DshiniCommands implements AllOperationHandlersProvider
+public abstract class DshiniCommands implements OperationHandlersRegistrar
 {
     private final DshiniBatchCommands batchCommands;
     private final DshiniCoreCommands coreCommands;
@@ -25,14 +21,12 @@ public abstract class DshiniCommands implements AllOperationHandlersProvider
     }
 
     @Override
-    public final List<Pair<Class<? extends Operation<?>>, Class<? extends OperationHandler<?>>>> allOperationHandlers()
+    public final void registerHandlersWithDb( Db db ) throws DbException
     {
-        List<Pair<Class<? extends Operation<?>>, Class<? extends OperationHandler<?>>>> handlers = new ArrayList<Pair<Class<? extends Operation<?>>, Class<? extends OperationHandler<?>>>>();
-        handlers.addAll( batchCommands.allOperationHandlers() );
-        handlers.addAll( coreCommands.allOperationHandlers() );
-        handlers.addAll( cypherCommands.allOperationHandlers() );
-        handlers.addAll( indexCommands.allOperationHandlers() );
-        return handlers;
+        batchCommands.registerHandlersWithDb( db );
+        coreCommands.registerHandlersWithDb( db );
+        cypherCommands.registerHandlersWithDb( db );
+        indexCommands.registerHandlersWithDb( db );
     }
 
     public final DshiniBatchCommands batch()
@@ -58,8 +52,6 @@ public abstract class DshiniCommands implements AllOperationHandlersProvider
     public abstract void init();
 
     public abstract void cleanUp();
-
-    public abstract void clearDb();
 
     public abstract DbConnectionState getDbConnectionState();
 }
