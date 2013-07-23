@@ -56,8 +56,8 @@ public class RequestLogGeneratorTest
         // Then
         Operation<?> originalOperation = requestLogGenerator.next();
         Operation<?> shiftedOperation = operationGenerator.next();
-        Duration difference = Duration.durationBetween( originalOperation.getScheduledStartTime(),
-                shiftedOperation.getScheduledStartTime() );
+        Duration difference = shiftedOperation.getScheduledStartTime().greaterBy(
+                originalOperation.getScheduledStartTime() );
         int count = 1;
         while ( operationGenerator.hasNext() )
         {
@@ -65,8 +65,8 @@ public class RequestLogGeneratorTest
             shiftedOperation = operationGenerator.next();
             count++;
             assertThat(
-                    Duration.durationBetween( originalOperation.getScheduledStartTime(),
-                            shiftedOperation.getScheduledStartTime() ), is( difference ) );
+                    shiftedOperation.getScheduledStartTime().greaterBy( originalOperation.getScheduledStartTime() ),
+                    is( difference ) );
         }
         assertThat( count, is( 11 ) );
         assertThat( requestLogGenerator.hasNext(), is( false ) );
